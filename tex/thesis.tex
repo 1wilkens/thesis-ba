@@ -1,0 +1,176 @@
+\documentclass[
+	12pt,
+	a4paper,
+	BCOR10mm,
+	%chapterprefix,
+	DIV14,
+	listof=totoc,
+	bibliography=totoc,
+	headsepline
+]{scrreprt}
+
+% Encoding Options
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+% Language
+\usepackage[english]{babel}
+
+% BibLaTex incl. Biber as backend
+\usepackage[
+	backend=biber,
+	style=authoryear-icomp,
+	sortlocale=en_US,
+	url=false,
+	doi=true,
+	eprint=false]{biblatex}
+\addbibresource{sources.bib}
+
+% Modern latin font
+\usepackage{lmodern}
+
+% Various useful packages
+\usepackage[footnote]{acronym}
+\usepackage[page,toc]{appendix}
+\usepackage[autostyle, strict]{csquotes}
+%\usepackage{float} % Don't need that for now?
+\usepackage{graphicx}
+\usepackage[htt]{hyphenat}
+\usepackage{listings}
+\usepackage{microtype}
+\usepackage{pdflscape}
+\usepackage{scrlayer-scrpage}
+\usepackage{subfig}
+\usepackage{textcomp}
+\usepackage[subfigure,titles]{tocloft}
+\usepackage{units}
+
+% Use hyperref last to make sure it can define all necessary commands
+\usepackage[pdfborder={0 0 0}]{hyperref}
+% Some pdf related meta-information
+\hypersetup{
+	pdftitle	={Evaluation of performance and productivity metrics of
+				 	potential programming languages in the HPC environment},
+	pdfauthor 	={Florian Wilkens},
+	pdfkeywords ={HPC, Rust, C, go, performance, productivity}
+}
+
+% Set default graphicspath to 'img' folder
+\graphicspath{img}
+
+% Configure listing settings
+\lstset{
+	basicstyle=\ttfamily,
+	frame=single,
+	numbers=left,
+	numberstyle=\tiny,
+	language=C,
+	breaklines=true,
+	breakatwhitespace=true,
+	postbreak=\hbox{$\hookrightarrow$ },
+	showstringspaces=false,
+	tabsize=4
+}
+
+% Change name of listing from 'Listings' to 'List of Listings' to be consistent
+\renewcommand*{\lstlistlistingname}{List of Listings}
+
+\begin{document}
+
+\begin{titlepage}
+	\begin{center}
+		{\titlefont\huge ﻿Evaluation of performance and productivity metrics of
+			potential programming languages in the HPC environment \par}
+
+		\bigskip
+		\bigskip
+
+		{\titlefont\Large --- Bachelor Thesis ---\par}
+
+		\bigskip
+		\bigskip
+
+		{\large Division Scientific Computing \\
+		Department of Informatics\\
+		Faculty of Mathematics, Informatics und Natural Sciences\\
+		University of Hamburg\par}
+	\end{center}
+
+	\vfill
+
+	{\large \begin{tabular}{ll}
+		Submitted by: & Florian Wilkens \\
+		E-Mail: & \href{mailto:1wilkens@informatik.uni-hamburg.de}
+			{1wilkens@informatik.uni-hamburg.de} \\
+		Matriculation number: & 6324030 \\
+		Course of studies: & Software-System-Entwicklung \\
+		\\
+		First assessor: & Prof. Dr. Thomas Ludwig \\
+		Second assessor: & Sandra Schröder \\ \\
+		Advisor: & Michael Kuhn \\
+		\\
+		Hamburg, 01.01.2012
+	\end{tabular}\par}
+\end{titlepage}
+
+\include{chapters/00_abstract}
+
+\microtypesetup{protrusion=false} % disable protrusion locally for the toc
+\tableofcontents 				  % prints Table of Contents
+\microtypesetup{protrusion=true}  % reenable protrusion
+
+\include{chapters/01_introduction}
+
+\include{chapters/02_design}
+
+\include{chapters/03_implementation}
+
+\include{chapters/04_evaluation}
+
+\include{chapters/05_conclusion}
+
+% Bibliography
+\printbibliography
+
+% Lists of *
+\microtypesetup{protrusion=false} % disable protrusion locally for the following lists
+
+\listoffigures
+\listoftables
+\lstlistoflistings
+
+\microtypesetup{protrusion=true}  % reenable protrusion
+
+% Appendices
+\begin{appendices}
+
+\chapter{Appendix}
+
+- System configuration
+	-> clang/gcc version
+	-> rustc and cargo version (including commit hash!)
+	-> go version
+
+\end{appendices}
+
+\newpage
+
+\thispagestyle{empty}
+
+\chapter*{}
+
+% Eidesstaatliche Erklärung
+\section*{Erklärung}
+
+Ich versichere, dass ich die Arbeit selbstständig verfasst und keine anderen, als die angegebenen Hilfsmittel -- insbesondere keine im Quellenverzeichnis nicht benannten Internetquellen -- benutzt habe, die Arbeit vorher nicht in einem anderen Prüfungsverfahren eingereicht habe und die eingereichte schriftliche Fassung der auf dem elektronischen Speichermedium entspricht.
+
+\smallskip
+
+\textbf{Optional:} Ich bin mit der Einstellung der Bachelor-Arbeit in den Bestand der Bibliothek des Fachbereichs Informatik einverstanden.
+
+\bigskip
+\bigskip
+\bigskip
+
+Hamburg, den 26.11.2014  \quad \dotfill
+
+\end{document}

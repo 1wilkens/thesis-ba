@@ -1,0 +1,5 @@
+# ignore LaTex logs
+*.log
+
+# allow final pdf builds for now
+#*.pdf
