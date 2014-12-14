@@ -20,7 +20,7 @@
 	backend=biber,
 	style=authoryear-icomp,
 	sortlocale=en_US,
-	url=false,
+	url=true,
 	doi=true,
 	eprint=false]{biblatex}
 \addbibresource{sources.bib}
@@ -31,7 +31,7 @@
 % Various useful packages
 \usepackage[footnote]{acronym}
 \usepackage[page,toc]{appendix}
-\usepackage[autostyle, strict]{csquotes}
+\usepackage[autostyle, babel, strict]{csquotes}
 %\usepackage{float} % Don't need that for now?
 \usepackage{graphicx}
 \usepackage[htt]{hyphenat}
@@ -46,6 +46,7 @@
 
 % Use hyperref last to make sure it can define all necessary commands
 \usepackage[pdfborder={0 0 0}]{hyperref}
+
 % Some pdf related meta-information
 \hypersetup{
 	pdftitle	={Evaluation of performance and productivity metrics of

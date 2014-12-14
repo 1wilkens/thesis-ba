@@ -6,26 +6,110 @@ In diesem Kapitel ...
 }
 \bigskip
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-At vero eos et accusam et justo duo dolores et ea rebum.
-Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-At vero eos et accusam et justo duo dolores et ea rebum.
-Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.\footnote{\label{foot:1}Ich bin eine Fußnote} % Fußnote %
+\section{Motivation}
+\label{sec:Motivation}
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-At vero eos et accusam et justo duo dolores et ea rebum.
-Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet:
+The world of high-performance computing is evolving rapidly and programming languages used in
+this environment are held up to a very high standard. It comes as no surprise that runtime performance
+is the top priority in language selection when an hour of computation costs thousands of dollars.
+The focus on raw power led to C and Fortran having an almost monopolistic position in the industry,
+because their execution speed is nearly unmatched.
+\\ \\
+However there are several problems inherent to these rather antique languages. Although they are
+still in active development, their long lifespans resulted in unintuitive syntax (Fortran) and ..(C).
+Especially newcomers are often torn away by the seemingly endless ways a C program can cause a
+segmentation fault.
 
-\begin{itemize}
-    \item Lorem
-    \item Ipsum
-\end{itemize}
+\section{Candidates}
+\label{sec:Candidates}
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-At vero eos et accusam et justo duo dolores et ea rebum.
-„Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.“~\cite{Quelle2012}
+This section aims to provide a rough overview of possible candidates to be used in high performance
+computing. Each language is introduced and categorized and at the end a quick comparison shows which
+are evaluated further in the thesis.
 
-\medskip
+\subsection*{Python}
+\label{ssec:Candidates.Python}
 
-Referenzbeispiel: Für mehr Informationen, siehe Kapitel~\ref{Aufgabenstellung}.
+Most of the people programming for high performance computers are scientist of research fields other
+than computer science. With this in mind Python seems a logical programming language to use. It is
+an interpreted general-purpose programming language which aims to be very expressive and flexible.
+Compared with C and Fortran which sacrifice feature richness for performance, Python's huge standard
+library combined with the automatic memory management offers a low border of entry and quick
+prototyping capabilities.
+%  wording
+As a matter of fact many introductory computer science courses at Universities in the
+United States recently switched from Java to Python as their first programing language.\autocite{GUO14}
+This allows the students to focus on core concepts and algorithms instead of boilerplate code.
+\\ \\
+// code example (hello world?)
+\\ \\
+In addition to the very extensive standard library the Python community has created a lot of open
+source projects aiming to support especially scientific applications. There is NumPy\footnote{
+www.numpy.org} which offers efficient implementations for multidimensional arrays and common numeric
+algorithms like Fourier transforms or MPI4Py\footnote{www.mpi4py.scipy.org}, an MPI abstraction layer
+able to interface with various backends like OpenMPI or MPICH.
+\\ \\
+Unfortunately dynamic typing and automatic memory management come at a high cost...
+
+\subsection*{Erlang}
+\label{ssec:Candidates.Erlang}
+Erlang is a relatively niche programming language originally designed for the use in telephony
+applications. It features a high focus on concurrency and a garbage collector which is enabled
+through the execution inside the BEAM virtual machine.
+
+- brief history?
+
+- code example (not hello world rather show message passing)
+
+- Upsides
+    - Great concurrency
+    - Message passing is default (no locks)
+    - Hot swap?
+- Downsides
+    - Bad interfacing to other languages
+    - Weird syntax
+    - Limited (community/support?)
+
+
+\subsection*{Go}
+\label{ssec:Candidates.Go}
+Go is a relatively new programming language which focusses on simplicity and clarity while not
+sacrificing too much performance.
+\\ \\
+- brief history
+
+- hello world or something similar
+\\ \\
+Go was chosen as a candidate because it provides simple concurrency primitives as part of the
+language (goroutines) while having a C-like syntax and beeing resonably performant. It also compiles
+to native code without external dependencies which makes it usable on cluster computers which might
+not have required libraries installed.
+
+- Prediction implementation
+    - A bit of syntax weirdness
+    - Relatively quick PoC with decent concurrency aspects
+    - Some fixing/optimization afterwards regarding common concurrency errors
+    -> More time spent after initial PoC but less than in C
+
+
+\subsection*{Rust}
+\label{ssec:Candidates.Rust}
+The last possible candidate is Rust. Developed in the open but strongly backed by Mozilla Rust aims
+to directly compete with C and C++ as a systems language. It focuses on memory safety which is
+checked and verified at compile without (or with minimal) impact on runtime performance.
+
+- Key features
+
+- Up/Downside
+
+- Prediction Implementation
+    - Moderatly quick PoC without concurrency at first
+    - Nearly only otimization afterwards since compilation secures memory safety
+    -> More time spent before initial PoC than after
+
+
+\subsection*{Comparison}
+\label{ssec:Candidates.Comparison}
+
+\section{Goals of this Thesis}
+\label{sec:Goals}
