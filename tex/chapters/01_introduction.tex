@@ -21,15 +21,18 @@ This section aims to provide a rough overview of possible candidates to be used 
 \subsection*{Python}
 \label{ssec:Candidates.Python}
 
-Most of the people programming for high performance computers are scientist of research fields other than computer science. With this in mind Python seems a logical programming language to use. It is an interpreted general-purpose programming language which aims to be very expressive and flexible. Compared with C and Fortran which sacrifice feature richness for performance, Python's huge standard library combined with the automatic memory management offers a low border of entry and quick prototyping capabilities.
+Most of the people programming for high performance computers are scientist of research fields other than computer science. With this in mind Python seems a logical programming language to use. It is an interpreted general-purpose programming language which aims to be very expressive and flexible. Compared with C and Fortran which sacrifice feature richness for performance, Python's huge standard library combined with the automatic memory management offers a low border of entry and quick prototyping capabilities. \\
 %  wording
 As a matter of fact many introductory computer science courses at universities in the United States recently switched from Java to Python as their first programing language.\autocite{GUO14} This allows the students to focus on core concepts and algorithms instead of boilerplate code.
 \\ \\
 // code example (hello world?)
 \\ \\
-In addition to the very extensive standard library the Python community has created a lot of open source projects aiming to support especially scientific applications. There is NumPy\footnote{www.numpy.org} which offers efficient implementations for multidimensional arrays and common numeric algorithms like Fourier transforms or MPI4Py\footnote{www.mpi4py.scipy.org}, an MPI abstraction layer able to interface with various backends like OpenMPI or MPICH.
+In addition to the very extensive standard library the Python community has created a lot of open source projects aiming to support especially scientific applications. There is NumPy\footnote{www.numpy.org} which offers efficient implementations for multidimensional arrays and common numeric algorithms like Fourier transforms or MPI4Py\footnote{www.mpi4py.scipy.org}, an MPI abstraction layer able to interface with various backends like OpenMPI or MPICH. Especially the existance of the latter shows the ongoing attempts to use Python in a cluster environment and there have been successful examples of scientific high-performance applications ( //need ref ).
 \\ \\
-Unfortunately dynamic typing and automatic memory management come at a high cost...
+Unfortunately dynamic typing and automatic memory management come at a rather high price. The speed of raw numeric algorithms written in plain Python is almost always orders of magnitude slower than implementations in C or Fortran. As a consequence nearly all of the mentioned libraries implement the critical routines in C and focus in optmizing the interop (// wording) experience. This often means one needs to make tradeoffs between idiomatic Python - which might not be transferable to the foreign language - and maximum performance.
+
+- python losing expressiveness (find alternatives) -> python losing justification for HPC
+- alternative implementations (medusa! and others)
 
 \subsection*{Erlang}
 \label{ssec:Candidates.Erlang}
@@ -68,7 +71,7 @@ Go was chosen as a candidate because it provides simple concurrency primitives a
 
 \subsection*{Rust}
 \label{ssec:Candidates.Rust}
-The last possible candidate is Rust. Developed in the open but strongly backed by Mozilla Rust aims to directly compete with C and C++ as a systems language. It focuses on memory safety which is checked and verified at compile without (or with minimal) impact on runtime performance.
+The last candidate discussed in this chapter is Rust. Developed in the open but strongly backed by Mozilla Rust aims to directly compete with C and C++ as a systems language. It focuses on memory safety which is checked and verified at compile without (or with minimal) impact on runtime performance.
 
 - Key features
 
@@ -83,24 +86,39 @@ The last possible candidate is Rust. Developed in the open but strongly backed b
 \subsection*{Comparison}
 \label{ssec:Candidates.Comparison}
 
+% will probably not fit
 \begin{tabular}{llll}
     \toprule
     % Header
-    Language
-        & Execution model
-        & Biggest advantages for HPC
-        & Relative performance \\
+        & Python
+        & Erlang
+        & Go
+        & Rust \\
     \midrule
-    % Pyton
-    Python
+
+    Execution model
         & interpreted
-        & very expressive, low barrier of entry
-        & slow to average \\
-    % Erlang
-    Erlang
         & compiled to bytecode
-        & native concurrency support
-        & average to fast \\
+        & compiled to native code
+        & compiled to native code \\
+
+    Advantages
+        & low barrier of entry
+        & builtin (lockfree) concurrency support
+        & adv go
+        & adv rust \\
+
+    Disadvantages
+        & speed
+        & obscure syntax
+        & mandatory runtime
+        & disadv rust \\
+
+    Relative speed
+        & slow to average
+        & average to fast
+        & speed go
+        & speed rust \\
     \bottomrule
 \end{tabular}
 
