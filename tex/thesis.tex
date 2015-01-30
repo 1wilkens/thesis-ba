@@ -18,12 +18,18 @@
 % BibLaTex incl. Biber as backend
 \usepackage[
 	backend=biber,
-	style=authoryear-icomp,
+	style=alphabetic,
 	sortlocale=en_US,
 	url=true,
 	doi=true,
 	eprint=false]{biblatex}
 \addbibresource{sources.bib}
+
+\addto\captionsenglish{% Replace "english" with the language you use
+\renewcommand{\contentsname}%
+	{Table of Contents}%
+}
+
 
 % Modern latin font
 \usepackage{lmodern}
@@ -59,18 +65,30 @@
 % Set default graphicspath to 'img' folder
 \graphicspath{img}
 
-% Configure listing settings
-\lstset{
+% Define language environments or listings
+\lstdefinestyle{base}{
 	basicstyle=\ttfamily,
 	frame=single,
 	numbers=left,
 	numberstyle=\tiny,
-	language=C,
 	breaklines=true,
 	breakatwhitespace=true,
 	postbreak=\hbox{$\hookrightarrow$ },
 	showstringspaces=false,
 	tabsize=4
+}
+
+\lstdefinestyle{c}{
+	language=C,
+	style=base
+}
+
+\lstdefinestyle{go}{
+	style=base
+}
+
+\lstdefinestyle{rust}{
+	style=base
 }
 
 % Change name of listing from 'Listings' to 'List of Listings' to be consistent
@@ -110,7 +128,7 @@
 		Second assessor: & Sandra Schr\"oder \\ \\
 		Advisor: & Michael Kuhn, Sandra Schr\"oder \\
 		\\
-		Hamburg, 01.01.2012
+		Hamburg, \today
 	\end{tabular}\par}
 \end{titlepage}
 
@@ -122,7 +140,7 @@
 
 \include{chapters/01_introduction}
 
-\include{chapters/02_design}
+\include{chapters/02_state_of_the_art}
 
 \include{chapters/03_implementation}
 
@@ -149,8 +167,8 @@
 
 - System configuration
 	-> clang/gcc version
-	-> rustc and cargo version (including commit hash!)
-	-> go version
+	-> rustc and cargo version (possibly including commit hash!)
+	-> go version and implmentation (cgo?)
 
 \end{appendices}
 
