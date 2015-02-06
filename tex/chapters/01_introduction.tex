@@ -1,10 +1,9 @@
 \chapter{Introduction}
 \label{chap:Introduction}
 
-\textit{%
-In diesem Kapitel ...
+\abstract{%
+This chapter aims to provide some background information to high-performance computing. The first section describes problems with the currently used programming languages and motivates the search for new candidates. After that the chapter concludes with a quick rundown of the thesis' goals.
 }
-\bigskip
 
 \section{Motivation}
 \label{sec:Motivation}
@@ -16,10 +15,16 @@ However programming in these rather antique languages can be rather difficult. A
 Considering the fact that scientific applications are mostly written by scientist without a concrete background in information technology it is evident that the current situation is less than ideal.
 - new technologies emerged
     - badly (and late) or not supported at all by c and fortran
-    -> time to evaluate new languages while kepping performance in mind
+    -> time to evaluate new languages while keeping performance in mind
 
-\section{Goals of this Thesis}
+\section{Goals of this thesis}
 \label{sec:Goals}
+
+This thesis aim to evaluate Rust and Go as potential programming languages in the high-performance computing environment. The comparison is based on a reimplementation of an existing parallel application in the two languages as well as C. This application is streets4MPI, a traffic simulation software written in Python using MPI to parellelize calculations. Since libraries for interprocess communication in Rust and Go are nowhere near production-ready this thesis will focus on shared memory parallelization to avoid unfair bias based solely on the quality of the supporting ecosystem.
+\\ \\
+The final application is a simplified version of the original streets4MPI but will behave nearly identical. It uses the OpenStreeMap Project's .osm.pbf files as input and writes the results to a custom output format for later analysis. To reduce complexity it does not support additional commandline arguments and has limited error handling regarding in- and output.
+\\ \\
+While performance will be the main concern additional software metrics will also be reviewed to measure the complexity and overall quality of the produced applications. Another aspect to review is the tool support and ease of development.
 
 - evaluate languages for use in (scientific) high-performance computing
     - shared memory -> thread-parallelization
