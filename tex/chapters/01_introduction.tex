@@ -12,28 +12,24 @@ The world of high-performance computing is evolving rapidly and programming lang
 \\
 However programming in these rather antique languages can be rather difficult. Although they are still in active development, their long lifespans resulted in sometimes unintuitive syntax and large amounts of historical debt. Especially C's \textit{undefined behaviour} often causes inexperienced programmers to write unreliable code which is unnecessarily dependant on implementation details of a specific compiler. Understanding and maintaining these programs requires deep knowledge of memory layout and other technical details.
 \\ \\
-Considering the fact that scientific applications are often written by scientist without a concrete background in information technology it is evident that the current situation is less than ideal. There have been various efforts to make programming languages more accessible in the recent years but unfortunately none of the newly emerged ones have been successful in establishing themselves in the HPC community to this day. Although many features and concepts have found their way in newer revision of C and Fortran standards most of them feel tacked (//wording) on and are not well integrated into the core languages.
+Considering the fact that scientific applications are often written by scientist without a concrete background in compuer science it is evident that the current situation is less than ideal. There have been various efforts to make programming languages more accessible in the recent years but unfortunately none of the newly emerged ones have been successful in establishing themselves in the HPC community to this day. Although many features and concepts have found their way in newer revision of C and Fortran standards most of them feel tacked (//wording) on and are not well integrated into the core languages.
 \\
-One example for this is the common practice of testing. Specifically with the growing popularity of \textif{test driven development} it became vital to the development process to be able to quickly and regularly execute a set of tests to verfiy the ongoing work. Of course there are also testing frameworks and libraries for Fortran and C but since these languages lack deep integration of testing concepts, they often require a lot of setup and boilerplate code and are generelly not that pleasant to work with. In contrast for example the Go programming language includes a complete testing framework with the ability to perform benchmarks, execute global setup/teardown work and even do basic output testing.\cite{GO_TEST} Maybe most important all this is available via a single executable \lstinline$go test$ which may be easily integrated in scipts or other parts of the workflow.
+One example for this is the common practice of testing. Specifically with the growing popularity of \textif{test driven development} it became vital to the development process to be able to quickly and regularly execute a set of tests to verfiy the ongoing work. Of course there are also testing frameworks and libraries for Fortran and C but since these languages lack deep integration of testing concepts, they often require a lot of setup and boilerplate code and are generelly not that pleasant to work with. In contrast for example the Go programming language includes a complete testing framework with the ability to perform benchmarks, execute global setup/teardown work and even do basic output testing.\cite{GO_TEST} (// cite vs footnote) Maybe most important all this is available via a single executable \lstinline$go test$ which may be easily integrated in scipts or other parts of the workflow.
 \\ \\
-
-
-- new technologies emerged
-    - badly (and late) or not supported at all by c and fortran
-    -> time to evaluate new languages while keeping performance in mind
+While testing is just one example there are a lot of ``best practices'' and the like which can greatly increase both developer productivity and code quality but require a language-level integration to work best. Combined with the advancements in type system theory and compiler construction both C and Fortran's feature sets look very dated. With this in mind it is time to evaluate new potential successors of the two giants of high-performance computing.
 
 \section{Goals of this thesis}
 \label{sec:Goals}
 
-This thesis aim to evaluate Rust and Go as potential programming languages in the high-performance computing environment. The comparison is based on a reimplementation of an existing parallel application in the two languages as well as C. This application is streets4MPI, a traffic simulation software written in Python using MPI to parellelize calculations. Since libraries for interprocess communication in Rust and Go are nowhere near production-ready this thesis will focus on shared memory parallelization to avoid unfair bias based solely on the quality of the supporting ecosystem.
+This thesis aims to evaluate Rust and Go as potential programming languages in the high-performance computing environment. The comparison is based on a reimplementation of an existing parallel application in the two languages as well as C. This application is streets4MPI, a traffic simulation software written in Python using MPI to parellelize calculations. Since libraries for interprocess communication in Rust and Go are nowhere near production-ready this thesis will focus on shared memory parallelization to avoid unfair bias based solely on the quality of the supporting library ecosystem.
 \\ \\
 The final application is a simplified version of the original streets4MPI but will behave nearly identical. It uses the OpenStreeMap Project's .osm.pbf files as input and writes the results to a custom output format for later analysis. To reduce complexity it does not support additional commandline arguments and has limited error handling regarding in- and output.
 \\ \\
 While performance will be the main concern additional software metrics will also be reviewed to measure the complexity and overall quality of the produced applications. Another aspect to review is the tool support and ease of development.
 
-- evaluate languages for use in (scientific) high-performance computing
-    - shared memory -> thread-parallelization
-    - tools, (common) frameworks,
-- through implementation of streets4mpi in C, go and rust
-    - performance(!)
-    - metrics
+% - evaluate languages for use in (scientific) high-performance computing
+    % - shared memory -> thread-parallelization
+    % - tools, (common) frameworks,
+% - through implementation of streets4mpi in C, go and rust
+    % - performance(!)
+    % - metrics
