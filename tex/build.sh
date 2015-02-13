@@ -5,9 +5,9 @@ latex="pdflatex -interaction=batchmode"
 fileExt="thesis.tex"
 file="thesis"
 
-echo "Running $latex $fileExt"
+echo "Running $latex -draftmode $fileExt"
 echo ""
-$latex $fileExt
+$latex -draftmode $fileExt
 echo ""
 
 echo "Running biber $file"
