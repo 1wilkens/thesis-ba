@@ -38,6 +38,7 @@
 \usepackage[footnote]{acronym}
 \usepackage[page,toc]{appendix}
 \usepackage{booktabs}
+\usepackage{color}
 \usepackage[autostyle, babel, strict]{csquotes}
 %\usepackage{float} % Don't need that for now?
 \usepackage{graphicx}
@@ -54,6 +55,11 @@
 % Use hyperref last to make sure it can define all necessary commands
 \usepackage[pdfborder={0 0 0}]{hyperref}
 
+% Page (indent) definitions
+\sloppy
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1.2ex plus 0.5ex minus 0.5ex}
+
 % Some pdf related meta-information
 \hypersetup{
 	pdftitle	={Evaluation of performance and productivity metrics of
@@ -68,13 +74,18 @@
 % Define language environments or listings
 \lstdefinestyle{base}{
 	basicstyle=\ttfamily,
+	breakatwhitespace=true,
+	breaklines=true,
+	captionpos=b,
+	commentstyle=\color{green},
 	frame=single,
+	keywordstyle=\color{blue},
 	numbers=left,
 	numberstyle=\tiny,
-	breaklines=true,
-	breakatwhitespace=true,
+	rulecolor=\color{black},
 	postbreak=\hbox{$\hookrightarrow$ },
 	showstringspaces=false,
+	stringstyle=\color{red},
 	tabsize=4
 }
 
@@ -84,10 +95,17 @@
 }
 
 \lstdefinestyle{go}{
-	style=base
+	language=C,
+	style=base,
+	morekeywords={func, import, go, make, package}
 }
 
 \lstdefinestyle{rust}{
+	style=base
+}
+
+\lstdefinestyle{python}{
+	language=python,
 	style=base
 }
 
