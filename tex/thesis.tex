@@ -17,13 +17,28 @@
 
 % BibLaTex incl. Biber as backend
 \usepackage[
+	% General options
 	backend=biber,
 	style=alphabetic,
 	sortlocale=en_US,
-	url=true,
+	% Specific options
+	backref=true,
 	doi=true,
-	eprint=false]{biblatex}
+	eprint=false,
+	hyperref=true,
+	url=true]{biblatex}
 \addbibresource{sources.bib}
+
+% change date format from 'mm/dd/yyyy' to 'dd. mm . yyyy' TODO: revert later?
+\renewbibmacro*{url+urldate}{%
+\printfield{url}%
+\iffieldundef{urlyear}
+	{}
+	{\setunit*{\addspace}%
+	\printtext[urldate]{\printfield{urlday}\setunit*{\adddot\addthinspace}%
+			\printfield{urlmonth}\setunit*{\adddot\addthinspace}%
+			\printfield{urlyear}%\setunit*{\adddot}
+}}}%
 
 \addto\captionsenglish{% Replace "english" with the language you use
 \renewcommand{\contentsname}%
@@ -138,6 +153,7 @@
 \include{chapters/06_conclusion}
 
 % Bibliography
+\nocite{*}
 \printbibliography
 
 % Lists of *

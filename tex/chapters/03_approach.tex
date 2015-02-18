@@ -1,8 +1,27 @@
 \chapter{Approach}
 \label{chap:Approach}
 
+\abstract{The first section of the third chapter describes the existing application the evaluation is based on.  In addition the implementation process is illustrated and methods the comparison of languages is based on are introduced.}
+
 \section{Overview: Streets4MPI}
-\label{sec:Approach::Overview_Streets4MPI}
+\label{sec:Approach::Overview}
+
+As stated in~\autoref{sec:Introduction::Goals} the language evaluation is based on a reimplementation of an existing parallel program originally written in Python. The application in question is \textit{streets4MPI} - a traffic simulation using OpenStreetMap files as input and calculating shortest routes via Dijkstra's algorithm. Streets4MPI was implemented in scope of the module ``Parallel Programming Project'' in Spring 2012. It was written by Julian Fietkau and Joachim Nitschke and makes heavy use of the various libraries of the Python ecosystem. The original project contained the main simulation as well as a visualization script.~\cite{streets_report} For the purpose of this thesis the visualization was omitted and the evaluation is only based on software quality metrics as well as the result's correctness.
+
+\section{Differences to the base implementation}
+\label{sec:Approach::Differences}
+
+\subsection*{Input format}
+\label{subsec:Approach::Overview::Input}
+
+The original implementation used the somewhat dates OpenStreetMap-xml format~\footnote{//url} as input which is then parsed into a data structure the used graph library can work with.
+
+\subsection*{Simulation}
+\label{subsec:Approach::Overview::Simulation}
+
+\subsection*{Concurrency}
+\label{subsec:Approach::Overview::Concurrency}
+
 
 \section{Implementation process}
-\label{sec:Approach::Implementation_process}
+\label{sec:Approach::Implementation}
