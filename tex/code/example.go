@@ -12,7 +12,7 @@ func example() {
 	for i := 0; i < GOROUTINES; i++ {
 		// Start a goroutine
 		go func(nr int) {
-			fmt.Printf("Hello from rountine %v", nr)
+			fmt.Printf("Hello from routine %v", nr)
 			// Signalize completion via channel
 			c <- 1
 		}(i)
