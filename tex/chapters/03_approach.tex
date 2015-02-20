@@ -11,7 +11,9 @@ As stated in~\autoref{sec:Introduction::Goals} the language evaluation is based 
 \section{Differences to the base implementation}
 \label{sec:Approach::Differences}
 
-Although the evaluated implementations are based on the original Streets4MPI, there are some key differences (mainly to reduce complexity). This section gives a brief overview over the most important aspects that have been changed and describes both the original application as well as the the redeveloped version. //wording..
+Although the evaluated implementations are based on the original Streets4MPI, there are some key differences (mainly to reduce complexity). This section gives a brief overview over the most important aspects that have been changed and describes both the original application as well as the the redeveloped version.
+
+In the course of the thesis the different implementations will be referenced quite frequently. For brevity each application will be called by its name ``streets4<language>'' for example ``streets4go''. //wording..
 
 \subsection*{Input format}
 \label{subsec:Approach::Differences::Input}
@@ -23,11 +25,14 @@ The reimplementations require the input to be in ``.osm.pbf'' format. This newer
 \subsection*{Simulation}
 \label{subsec:Approach::Differences::Simulation}
 
-Streets4MPI performs 
+Streets4MPI performs
 
 \subsection*{Concurrency}
 \label{subsec:Approach::Differences::Concurrency}
 
+The base application parallelizes its calculations on multiple processes that communicate via message passing. This is achieved with the aforementioned MPI4Py library which delegates to a native MPI implementation installed on the system if possible to reach maximum performance.
+
+Although Rust as well as Go can integrate decently with existing native code, the reimplementations will be limited to shared memory parallelization on threads. This was mostly decided to evaluate and compare the language inherent concurrency constructs rather than the quality of the forrign funtion interface. To achieve fair comparability \textit{streets4c} will use OpenMP~\footnote{\url{http://www.openmp.org}} as it is the defacto standard for simple thread parallelization in C.
 
 \section{Implementation process}
 \label{sec:Approach::Implementation}
