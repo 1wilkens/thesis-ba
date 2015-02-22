@@ -6,14 +6,18 @@
 \section{Overview: Streets4MPI}
 \label{sec:Approach::Overview}
 
-As stated in~\autoref{sec:Introduction::Goals} the language evaluation is based on a reimplementation of an existing parallel program originally written in Python. The application in question is \textit{streets4MPI} - a traffic simulation using OpenStreetMap files as input and calculating shortest routes via Dijkstra's algorithm. Streets4MPI was implemented in scope of the module ``Parallel Programming Project'' in Spring 2012. It was written by Julian Fietkau and Joachim Nitschke and makes heavy use of the various libraries of the Python ecosystem. The original project contained the main simulation as well as a visualization script.~\cite[p.~3]{streets_report} For the purpose of this thesis the visualization was omitted and the evaluation is only based on software quality metrics as well as the result's correctness. //TODO: really cite page?
+As stated in~\autoref{sec:Introduction::Goals} the language evaluation is based on a reimplementation of an existing parallel program originally written in Python. The application in question is \textit{streets4MPI} - a traffic simulation using OpenStreetMap files as input and calculating shortest routes via Dijkstra's algorithm. Streets4MPI was implemented in scope of the module ``Parallel Programming Project'' in Spring 2012. It was written by Julian Fietkau and Joachim Nitschke and makes heavy use of the various libraries of the Python ecosystem.
+
+//TODO: more description
+
+The original project contained the main simulation as well as a visualization script.~\cite[p.~3]{streets_report} For the purpose of this thesis the visualization was omitted and the evaluation is only based on software quality metrics as well as the result's correctness. //TODO: really cite page?
 
 \section{Differences to the base implementation}
 \label{sec:Approach::Differences}
 
 Although the evaluated implementations are based on the original Streets4MPI, there are some key differences (mainly to reduce complexity). This section gives a brief overview over the most important aspects that have been changed and describes both the original application as well as the the redeveloped version.
 
-In the course of the thesis the different implementations will be referenced quite frequently. For brevity each application will be called by its name ``streets4<language>'' for example ``streets4go''. //wording..
+In the remaining part of the thesis the different implementations will be referenced quite frequently. For brevity each application will be called by its name ``streets4<language>'' for example ``streets4go''. //wording..
 
 \subsection*{Input format}
 \label{subsec:Approach::Differences::Input}
@@ -25,6 +29,7 @@ The reimplementations require the input to be in ``.osm.pbf'' format. This newer
 \subsection*{Simulation}
 \label{subsec:Approach::Differences::Simulation}
 
+The simulation in streets4MPI is based on randomly generated trips in the directed graph that was build from the input. For these trips the shortest path is calculated by Dijkstra's algorithm (//cite). To avoid oscillation a random factor called ``??-tolerance'' is introduced. Then after some time has passed in the simulation existing streets get expanded or shut down depending on the usage. The reimplementations to compare also perform trip based simulation but to without the added randomness and street modification. Also Diskstra's algorithm was implemented in all three languages in a benchmarkable way so it can be compared separately. This is done to rule out possible errors in the complete streets4x implementations.
 
 \subsection*{Concurrency}
 \label{subsec:Approach::Differences::Concurrency}
@@ -35,3 +40,8 @@ Although Rust as well as Go can integrate decently with existing native code, th
 
 \section{Implementation process}
 \label{sec:Approach::Implementation}
+
+The implementation process was performed iteratively. Certain milestones were defined and were implemented in all three languages. The process only proceeded to the next phase when the previous milestone was reached in all applications. This approach was chosen to allow for a fair comparison of the different stages of development. If the implementations would have been developed one after another to completion, this might have introduced a certain bias to the evaluation because of possible knowledge about the problem aquired in a previous language translating to faster results in the next one.
+
+\subsection*{1. Counting nodes, ways and relations in an .osm.pbf file}
+\label{subsec:Approach::Implementation::Counting}
