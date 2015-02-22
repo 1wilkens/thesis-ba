@@ -5,17 +5,17 @@ latex="pdflatex -interaction=batchmode"
 fileExt="thesis.tex"
 file="thesis"
 
-echo "Running $latex -draftmode $fileExt"
+echo "Running '$latex -draftmode $fileExt'"
 echo ""
 $latex -draftmode $fileExt
 echo ""
 
-echo "Running biber $file"
+echo "Running 'biber $file'"
 echo ""
 biber $file
 echo ""
 
-echo "ReRunning $latex $fileExt twice"
+echo "ReRunning '$latex $fileExt' twice"
 echo ""
 $latex $fileExt
 $latex $fileExt

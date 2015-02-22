@@ -1,11 +1,11 @@
-package example
+package main
 
 import "fmt"
 
 // Number of gorountines to start
 const GOROUTINES = 4
 
-func example() {
+func helloWorldConcurrent() {
 	// Create a channel to track completion
 	c := make(chan int)
 
