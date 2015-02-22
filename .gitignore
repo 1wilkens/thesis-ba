@@ -3,3 +3,6 @@
 
 # allow final pdf builds for now
 #*.pdf
+
+# Ignore target folder for rust projects
+target

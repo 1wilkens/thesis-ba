@@ -1,0 +1,49 @@
+[root]
+name = "streets4rust"
+version = "0.0.1"
+dependencies = [
+ "osmpbfreader 0.0.1 (git+https://github.com/TeXitoi/osmpbfreader-rs)",
+]
+
+[[package]]
+name = "flate2"
+version = "0.1.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "libc 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "miniz-sys 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "gcc"
+version = "0.1.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "libc"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "miniz-sys"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "gcc 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libc 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "osmpbfreader"
+version = "0.0.1"
+source = "git+https://github.com/TeXitoi/osmpbfreader-rs#d8afdc3dba7771bede0b2c27b32abe84eb8434f1"
+dependencies = [
+ "flate2 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "protobuf 0.0.9 (git+https://github.com/stepancheg/rust-protobuf.git)",
+]
+
+[[package]]
+name = "protobuf"
+version = "0.0.9"
+source = "git+https://github.com/stepancheg/rust-protobuf.git#dba233d7ec58caecbecd1ef110d33dc25ebbe29f"
+

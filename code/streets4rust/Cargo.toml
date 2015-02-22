@@ -3,3 +3,6 @@
 name = "streets4rust"
 version = "0.0.1"
 authors = ["Florian Wilkens <floya@live.de>"]
+
+[dependencies.osmpbfreader]
+git = "https://github.com/TeXitoi/osmpbfreader-rs"
