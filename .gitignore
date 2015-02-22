@@ -4,5 +4,8 @@
 # allow final pdf builds for now
 #*.pdf
 
-# Ignore target folder for rust projects
+# Ignore target folder for streets4rust
 target
+
+# Ignore executable of streets4c
+streets4c.x
