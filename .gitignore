@@ -7,5 +7,10 @@
 # Ignore target folder for streets4rust
 target
 
-# Ignore executable of streets4c
-streets4c.x
+# Ignore executables
+streets4c
+streets4go
+streets4rust
+
+# Ignore .vim swap files
+*.swp

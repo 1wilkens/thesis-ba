@@ -1,11 +1,13 @@
-CC 			?= gcc
-CFLAGS		?= -std=c99 -O3 -Wall -Wextra -pedantic
-LIBFLAGS	?= -pthread -lz -lprotobuf-c -losmpbf
+CC 		= gcc
+CFLAGS	= -std=c99 -O3 -Wall -Wextra -pedantic
+LDLIBS	= -losmpbf -lprotobuf-c -lz -lpthread
 
-all: streets4c.x
+.PHONY: streets4c clean
 
-streets4c.x: main.c
-	$(CC) $(CFLAGS) $(LIBFLAGS) main.c -o streets4c.x
+all: streets4c
 
+streets4c: main.c
+	$(CC) $(CFLAGS) main.c $(LDLIBS) -o streets4c
+	
 clean:
-	rm -rf *.o streets4c.x
+	rm -rf *.o streets4c

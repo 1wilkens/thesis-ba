@@ -33,7 +33,7 @@ int main(int argc, char** argv)
 	uint8_t buf[max_blob_header_size];
   	size_t msg_len = read_buffer (max_blob_header_size, buf, file);
 
-	//blob = osmpbf__blob__unpack(NULL, msg_len, buf);
+	blob = osmpbf__blob__unpack(NULL, msg_len, buf);
 
 	if (blob == NULL)
 	{
