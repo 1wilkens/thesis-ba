@@ -11,9 +11,18 @@ Milestones:
     - Count all nodes, ways and relations in hamburg-latest.osm.pbf
         - Rust:
             - SLOC: 37
-            - dev-time: 2000s -> 33,33 min
+            - dev-time: 1989 -> 33,15 min
             - run-time:
                 - -0O: target/streets4rust ../osm/hamburg-latest.osm.pbf  27,61s user 0,12s system 99\% cpu 27,749 total
                 - -03: target/release/streets4rust ../osm/hamburg-latest.osm.pbf  2,59s user 0,13s system 99\% cpu 2,722 total
             - counts: Found 2180418 nodes, 409424 ways and 7182 relations in ../osm/hamburg-latest.osm.pbf
-        - 
+            - notes:
+                - easy dependency management, huuge optimization gains
+        - Go
+            - SLOC: 55
+            - dev-time: 1276 -> 21,27 min
+            - run-time:
+                - GOMAXPROCS = 1: ./streets4go ../osm/hamburg-latest.osm.pbf  4,85s user 0,05s system 101\% cpu 4,846 total
+                - GOMAXPROCS = 8: ./streets4go ../osm/hamburg-latest.osm.pbf  9,00s user 0,28s system 672\% cpu 1,381 total
+            - counts: Found 2180418 nodes, 409424 ways and 7182 relations in ../osm/hamburg-latest.osm.pbf
+                - library parallelizeable, but singlethreaded slower
