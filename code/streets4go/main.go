@@ -54,4 +54,8 @@ func main() {
 		}
 	}
 	fmt.Printf("Found %d nodes, %d ways and %d relations in %s\n", nodes, ways, relations, osmPath)
+
+	var m runtime.MemStats
+	runtime.ReadMemStats(&m)
+	fmt.Printf("total heap usage: %d allocs, %d frees, %d bytes allocated", m.Mallocs, m.Frees, m.TotalAlloc)
 }

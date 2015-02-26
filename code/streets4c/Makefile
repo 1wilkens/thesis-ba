@@ -8,6 +8,6 @@ all: streets4c
 
 streets4c: main.c
 	$(CC) $(CFLAGS) main.c $(LDLIBS) -o streets4c
-	
+
 clean:
 	rm -rf *.o streets4c

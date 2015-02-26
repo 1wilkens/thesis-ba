@@ -13,16 +13,28 @@ Milestones:
             - SLOC: 37
             - dev-time: 1989 -> 33,15 min
             - run-time:
-                - -0O: target/streets4rust ../osm/hamburg-latest.osm.pbf  27,61s user 0,12s system 99\% cpu 27,749 total
-                - -03: target/release/streets4rust ../osm/hamburg-latest.osm.pbf  2,59s user 0,13s system 99\% cpu 2,722 total
+                - -O0: target/streets4rust ../osm/hamburg-latest.osm.pbf  27,61s user 0,12s system 99\% cpu 27,749 total
+                - -O3: target/release/streets4rust ../osm/hamburg-latest.osm.pbf  2,59s user 0,13s system 99\% cpu 2,722 total
+            - allocs: total heap usage: 11,373,558 allocs, 11,373,557 frees, 2,186,107,072 bytes allocated
             - counts: Found 2180418 nodes, 409424 ways and 7182 relations in ../osm/hamburg-latest.osm.pbf
             - notes:
                 - easy dependency management, huuge optimization gains
         - Go
-            - SLOC: 55
+            - SLOC: ~55 (+ helper functions)
             - dev-time: 1276 -> 21,27 min
             - run-time:
-                - GOMAXPROCS = 1: ./streets4go ../osm/hamburg-latest.osm.pbf  4,85s user 0,05s system 101\% cpu 4,846 total
-                - GOMAXPROCS = 8: ./streets4go ../osm/hamburg-latest.osm.pbf  9,00s user 0,28s system 672\% cpu 1,381 total
+                - GOMAXPROCS=1: ./streets4go ../osm/hamburg-latest.osm.pbf  4,85s user 0,05s system 101\% cpu 4,846 total
+                - GOMAXPROCS=8: ./streets4go ../osm/hamburg-latest.osm.pbf  9,00s user 0,28s system 672\% cpu 1,381 total
+            - allocs: total heap usage: 11,164,068 allocs, 11,000,199 frees, 1,447,543,184 bytes allocated
             - counts: Found 2180418 nodes, 409424 ways and 7182 relations in ../osm/hamburg-latest.osm.pbf
                 - library parallelizeable, but singlethreaded slower
+        - C
+            - SLOC: 55
+            - dev-time: 3078 -> 51,30 min
+            - run-time:
+                - -O0: ./streets4c ../osm/hamburg-latest.osm.pbf  0,95s user 0,07s system 99\% cpu 1,017 total
+                - -O3: ./streets4c ../osm/hamburg-latest.osm.pbf  0,92s user 0,08s system 99\% cpu 0,994 total
+            - allocs: total heap usage: 2,390,566 allocs, 2,390,566 frees, 372,758,206 bytes allocated
+            - counts: Found 2180418 nodes, 409424 ways and 7182 relations in ../osm/hamburg-latest.osm.pbf
+                - no library available, linking problems, freeing problems, fastest solution (run), slowest solution (dev)
+    - 
