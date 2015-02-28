@@ -36,12 +36,20 @@ The simulation in streets4MPI is based on randomly generated trips in the direct
 
 The base application parallelizes its calculations on multiple processes that communicate via message passing. This is achieved with the aforementioned MPI4Py library which delegates to a native MPI implementation installed on the system if possible to reach maximum performance.
 
-Although Rust as well as Go can integrate decently with existing native code, the reimplementations will be limited to shared memory parallelization on threads. This was mostly decided to evaluate and compare the language inherent concurrency constructs rather than the quality of the forrign funtion interface. To achieve fair comparability \textit{streets4c} will use OpenMP~\footnote{\url{http://www.openmp.org}} as it is the defacto standard for simple thread parallelization in C.
+Although Rust as well as Go can integrate decently with existing native code, the reimplementations will be limited to shared memory parallelization on threads. This was mostly decided to evaluate and compare the language inherent concurrency constructs rather than the quality of the forrign funtion interface. To achieve fair comparability \textit{streets4c} will use OpenMP~\footnote{\url{http://www.openmp.org}} as it is the de facto standard for simple thread parallelization in C.
 
 \section{Implementation process}
 \label{sec:Approach::Implementation}
 
-The implementation process was performed iteratively. Certain milestones were defined and were implemented in all three languages. The process only proceeded to the next phase when the previous milestone was reached in all applications. This approach was chosen to allow for a fair comparison of the different stages of development. If the implementations would have been developed one after another to completion, this might have introduced a certain bias to the evaluation because of possible knowledge about the problem aquired in a previous language translating to faster results in the next one.
+The implementation process was performed iteratively. Certain milestones were defined and implemented in all three languages. The process only proceeded to the next phase when the previous milestone was reached in all applications. This approach was chosen to allow for a fair comparison of the different stages of development. If the implementations would have been developed one after another to completion, this might have introduced a certain bias to the evaluation because of possible knowledge about the problem aquired in a previous language translating to faster results in the next one.
+
+For each stage various characteristics were captured and compared to highlight the languages' features and performance in the varaious areas
+
+\subsection*{0. [Setting up the project]}
+
+The first stage of development was to create project skeletons and infrastructure for the future development. The milestone was to have a working environment in place where the sample application could be build and executed. While this is certainly not the most important or even interesting part it did show the differences in comfort between the various toolchains.
 
 \subsection*{1. Counting nodes, ways and relations in an .osm.pbf file}
 \label{subsec:Approach::Implementation::Counting}
+
+The first real milestone was to read a .osm.pbf file and count all nodes, ways and relations in it. This was done to get familiar with the required libraries and the file format in general. The time recorded began from the initial project created in stage 0 and finished after the milestone was reached. As this is the most input and output intensive stage it already showed some key differences between the candidated both in speed and also memory consumption.
