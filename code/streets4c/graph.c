@@ -1,6 +1,8 @@
 #include "graph.h"
 #include <stdlib.h>
 
+// taken and modified from http://rosettacode.org/wiki/Priority_queue#C
+
 queue_t *new_queue(int cap)
 {
     queue_t *q = malloc(sizeof(queue_t));
@@ -27,7 +29,7 @@ void queue_push(queue_t *q, node_t* node)
 
     int n = q->n++;
     int m = 0;
-    while ((m = n / 2))
+    while ((m = n / 2) && node->cost < q->buf[m]->cost)
     {
         q->buf[n] = q->buf[m];
         n = m;

@@ -3,7 +3,6 @@
 
 #include <stdio.h>
 
-#include <osmpbf/osmpbf.h>
 #include <osmpbf/fileformat.pb-c.h>
 #include <osmpbf/osmformat.pb-c.h>
 
