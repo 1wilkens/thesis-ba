@@ -2,7 +2,7 @@ CC 		= gcc
 CFLAGS	= -std=c99 -O3 -Wall -Wextra -pedantic
 LDLIBS	= -losmpbf -lprotobuf-c -lz -lpthread
 
-OBJ		= osmpbfreader.o graph.o
+OBJ		= osmpbfreader.o graph.o util.o
 
 .PHONY: streets4c test clean
 

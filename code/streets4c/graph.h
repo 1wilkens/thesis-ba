@@ -2,24 +2,9 @@
 #define GRAPH_H
 
 // typedefs
-typedef struct queue_t queue_t;
-
 typedef struct node_t node_t;
 typedef struct edge_t edge_t;
 typedef struct graph_t graph_t;
-
-// queue_t functions and struct
-queue_t *new_queue(int);
-void queue_free(queue_t*);
-
-void queue_push(queue_t*, node_t*);
-node_t *queue_pop(queue_t*);
-
-struct queue_t
-{
-    node_t **buf;
-    int n, cap;
-};
 
 // graph related functions and structs
 graph_t *new_graph(int);
