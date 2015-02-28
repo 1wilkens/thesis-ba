@@ -2,26 +2,28 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "graph.h"
+#include "util.h"
 
 int main(int argc, char** argv)
 {
     srand(time(NULL));
-    queue_t *q = new_queue(50);
+    hashtable_t *h = hashtable_new(100);
 
-    for (int i = 0; i < 50; i++)
+    for (int i = 0; i < 100; i++)
     {
-        node_t *n = malloc(sizeof(node_t));
-        n->cost = rand() % 1000;
-        queue_push(q, n);
+        long key = rand();
+        char* str = malloc(15);
+        sprintf(str, "val:%d", key);
+        hash_insert(h, key, str);
     }
 
-    for (int i = 0; i < 50; i++)
+    for (int i = 0; i < 100; i++)
     {
-        node_t *n = queue_pop(q);
-        printf("Got node #%d with cost=%d\n", i, n->cost);
-        free(n);
-    }
+        printf("key=%d, value=%s\n", h->keys[i], h->values[i]);
+        free(h->values[i]);
 
+    }
+    
+    hashtable_free(h);
     return 0;
 }

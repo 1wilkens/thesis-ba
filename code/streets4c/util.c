@@ -89,7 +89,9 @@ static int hash_index(hashtable_t *h, long key)
 {
     int index = key % h->cap;
     while (h->keys[index] && h->keys[index] != key)
+    {
         index = (index + 1) % h->cap;
+    }
     return index;
 }
 
