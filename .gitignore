@@ -4,13 +4,10 @@
 # allow final pdf builds for now
 #*.pdf
 
-# Ignore target folder for streets4rust
-target
-
 # Ignore executables
-streets4c
-streets4go
-streets4rust
+code/streets4c/streets4c
+code/streets4go/streets4go
+code/streets4rust/target
 
 # Ignore .vim swap files
 *.swp
