@@ -2,7 +2,7 @@
 \label{chap:State_of_the_art}
 
 \abstract{%
-This chapter describes the current state of the art in high-performance computing. The dominance of Fortran and C is explained in~\autoref{sec:State_of_the_art::Weaknesses_C_Fortran} and after that all considered language candidates are introduced and characterized.
+This chapter describes the current state of the art in high-performance computing. The dominance of Fortran and C is explained and questioned in~\autoref{sec:State_of_the_art::Weaknesses_C_Fortran}. After that all considered language candidates are introduced and characterized.
 }
 
 - state of C and Fortran (section name?)
@@ -17,13 +17,15 @@ This chapter describes the current state of the art in high-performance computin
 
 As stated in~\autoref{sec:Introduction::Motivation} high-performance computing is largely dominated by C and Fortran. To understand why a new language is needed it is essential to understand the shortcomings of these programming veterans. (//language?)
 
+The main drawback of both languages is their age. Although new revisions are regularly aproves Fortran and C strive to be backwards compatible for the most part. This has some very serious consequences especially in their respective syntax. A lot of features of newer standards are integrated suboptimally to preserve backwards compatability.
+
 \subsection*{}
 
 // Candidates here for now might need another chapter for those
-\section{Candidates}
+\section{Language candidates}
 \label{sec:State_of_the_art::Candidates}
 
-This section aims to provide a rough overview of possible candidates that were considered for further evaluation in this thesis.
+As previously stated Go and Rust were chosen to be evaluated in the context of high-performance computing. This section aims to provide a rough overview of all possible language candidates that were considered for further evaluation in this thesis.
 
 \subsection*{Python}
 \label{subsec:State_of_the_art::Candidates::Python}
@@ -37,13 +39,16 @@ As a matter of fact many introductory computer science courses at universities i
 
 In addition to the very extensive standard library the Python community has created a lot of open source projects aiming to support especially scientific applications. There is NumPy~\footnote{\url{http://www.numpy.org}} which offers efficient implementations for multidimensional arrays and common numeric algorithms like Fourier transforms or MPI4Py~\footnote{\url{http://www.mpi4py.scipy.org}}, an MPI abstraction layer able to interface with various backends like OpenMPI or MPICH. Especially the existance of the latter shows the ongoing attempts to use Python in a cluster environment and there have been successful examples of scientific high-performance applications using these libraries( //need ref ).
 
-Unfortunately dynamic typing and automatic memory management come at a rather high price. The speed of raw numeric algorithms written in plain Python is almost always orders of magnitude slower than implementations in C or Fortran. As a consequence nearly all of the mentioned libraries implement the critical routines in C and focus in optimizing the interop (// wording) experience. This often means one needs to make tradeoffs between idiomatic Python - which might not be transferable to the foreign language - and maximum performance. As a result performance critical python code often looks like it's equivalent written in a statically typed language and the more terseness Python loses because of this the less desireable it becomes to use in high-performance computing since one could just fall back to C for a similar experience.
+Unfortunately dynamic typing and automatic memory management come at a rather high price. The speed of raw numeric algorithms written in plain Python is almost always orders of magnitude slower than implementations in C or Fortran. As a consequence nearly all of the mentioned libraries implement the critical routines in C and focus in optimizing the interop (// wording) experience between the two languages. This often means one needs to make tradeoffs between idiomatic Python - which might not be transferable to the foreign language - and maximum performance. As a result performance critical ython code often looks like it's equivalent written in a statically typed language. The more terseness Python loses because of this, the less desireable it becomes to use in high-performance computing since one could just fall back to C for a similar experience.
 
-In conclusion Python was not chosen to be further evaluated because of the mentioned lack of performance (in pure Python). This might change with some new implementations emerging recently though. Most of the problems discussed here are present in all stable Python implementations today (most notably \textit{Cython} and \textit{PyPy}) but new projects aim to improve the execution speed in various ways. \textit{Medusa} compiles Python code to Google's Dart to make use of the underlying virtual machine. Although these ventures are still in early phases of development, first early benchmarks promise drastic performance improvements. Once Python can achieve similar execution speed to native code (by a maximum of one order of magnitude) it will become a serious competitor in the high performance area.
+In conclusion Python was not chosen to be further evaluated because of the mentioned lack of performance (in pure Python). This might change with some new implementations emerging recently though. Most of the problems discussed here are present in all stable Python implementations today (most notably \textit{Cython} and \textit{PyPy}) but new projects aim to improve the execution speed in various ways. \textit{Medusa} compiles Python code to Google's Dart to make use of the underlying virtual machine. Although these ventures are still in early phases of development, first early benchmarks promise drastic performance improvements. Once Python can achieve similar execution speed to native code it will become a serious competitor in the high performance area.
 
 \subsection*{Erlang}
 \label{subsec:State_of_the_art::Candidates::Erlang}
+
 Erlang is a relatively niche programming language originally designed for the use in telephony applications. It features a high focus on concurrency and a garbage collector which is enabled through the execution inside the BEAM virtual machine. Today it is most often used in soft real-time computing~\footnote{see \url{https://en.wikipedia.org/wiki/Real-time_computing}} because of it's error tolerance, hot code reload capabilities and lock-free concurrency support.
+
+
 
 - brief history?
 
@@ -61,15 +66,20 @@ Erlang is a relatively niche programming language originally designed for the us
 
 \subsection*{Go}
 \label{subsec:State_of_the_art::Candidates::Go}
+
 Go is a relatively new programming language which focusses on simplicity and clarity while not sacrificing too much performance. Initially developed by Google it aims to ``make it easy to build simple, reliable and efficient software'' (//cite). It is statically typed, offers a garbage collector, basic type inference and a large standard library. Go's syntax is loosely inspired by C but made some major changes like removing the mandatory semicolon at the end of commands and changing the order of types and identifiers. It was chosen as a candidate because it provides simple concurrency primitives as part of the language (so called \textit{goroutines}) while having a familiar syntax and beeing reasonably performant.~\cite{intro_go} It also compiles to native code without external dependencies which makes it usable on cluster computers without many additional libraries installed.
 
 The chosen code example demonstrates two key features which are essential to concurrent programming in Go - the already mentioned goroutines as well as channels used for synchronization purposes. These provide a way to communicate with running goroutines via message passing.
 \\
 \lstinputlisting[caption={Go concurrency example}, label={lst:example.go}, style=go]{code/example.go}
 
-Initially developed for server scenarios Go has seen production use in many different areas. At Google it is used for various internal project such as the download service ``dl.google.com'' which has been completely rewritten from C++ to Go in 2012. The new version can handle more bandwith while using less memory. It is also noteable that the Go codebase is about half the size of the legacy application with increases test coverage and performance.~\cite{go_dl_google}
+Initially developed for server scenarios Go has seen production use in many different areas. At Google it is used for various internal project such as the download service ``dl.google.com'' which has been completely rewritten from C++ to Go in 2012. The new version can handle more bandwith while using less memory. It is also noteable that the Go codebase is about half the size of the legacy application with increased test coverage and performance.~\cite{go_dl_google}
 
-All these statistics show the core focus of the language // simplicity and avoidance of boilerplate
+While Go's focus on simplicity is admireable it has also been it's greatest point of criticism. The language feature set is very carefully selected and rarely extended. It even misses some of the most natural constructs which a programmer might expect in a reasonably high-level language - the main example for this beeing generics. As of the time of this writing Go does not offer the common concept of generic structs (or classes) and the authors have stated this is not a big priority at the moment.
+
+One other important fact - especially for high-performance computing - is the mandatory garbage collector. Go completey takes the burden of memory management out of the hands of the programmer and relies on the embedded runtime to efficiently perform this job. This makes it impossible to predictably allocate and release memory which can lead to performance loss. This also means the Go runtime has to be statically linked into every application. Although that might not be important for bigger codebases it increases the binary size considerably.
+
+In the end Go was mainly chosen to be evaluated further because of promised ``simple'' parallelism via goroutines. It will probably not directly compete with C in execution performance but the great toolchain and simplified concurrency might outshine the performance loss.
 
 - Prediction implementation
     - A bit of syntax weirdness
@@ -80,6 +90,7 @@ All these statistics show the core focus of the language // simplicity and avoid
 
 \subsection*{Rust}
 \label{subsec:State_of_the_art::Candidates::Rust}
+
 The last candidate discussed in this chapter is Rust. Developed in the open but strongly backed by Mozilla Rust aims to directly compete with C and C++ as a systems language. It focuses on memory safety which is checked and verified at compile without (or with minimal) impact on runtime performance. Rust compiles to native code using a custom fork of the popular LLVM\footnote{\url{http://www.llvm.org}} as backend and is compatible to common tools like \textbf{The GNU Project Debugger} (\textit{gdb})~\footnote{\url{http://www.gnu.org/software/gdb/}} which makes integration into existing workflows a bit easier.
 
 Out of the here discussed languages Rust is closest to C while attempting to fix common mistakes made possible by it's loose standard allowing undefined behaviour. (//wording?) Memory safety is enforced through a very sophisticated model of ownership. It is based on common concepts which are already employed on concurrent applications but integrates them on a langage level and enforces them at compile time. The basic rule is that every resource in an applications (for example allocated memory or file handles) has exactly one \textit{owner} at a time. To share access to a resource one can you use references denoted by a '\&'. These can been seen as pointers in C with the additional caveat that they are readonly. To gain mutable access to a resource one must acquire a mutable reference via '\&mut'. To ensure memory safety a special part of the compiler, the \textit{borrow checker}, validates that there is never more than one mutable reference to the same resource. This effectively prevents mutable aliasing which in turn rules out a whole class of errors like iterator invalidation. It is important to remember that these checks are a ``zero cost abstraction'' which means they do not have any runtime overhead but enforce additional security at compile time through static analysis.
