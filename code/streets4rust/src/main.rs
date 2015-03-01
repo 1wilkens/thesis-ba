@@ -1,10 +1,10 @@
-#![feature(env, old_io, old_path)]
+#![feature(fs, path)]
 
 extern crate osmpbfreader;
 
 use std::env;
-use std::old_io::File;
-use std::old_path::Path;
+use std::fs::File;
+use std::path::Path;
 
 use osmpbfreader::{OsmPbfReader, blocks, objects};
 

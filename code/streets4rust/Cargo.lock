@@ -6,17 +6,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "byteorder"
+version = "0.2.12"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
 name = "flate2"
-version = "0.1.8"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "libc 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "miniz-sys 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "miniz-sys 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "gcc"
-version = "0.1.7"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
@@ -26,19 +31,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "miniz-sys"
-version = "0.1.2"
+version = "0.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "gcc 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gcc 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "libc 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "osmpbfreader"
 version = "0.0.1"
-source = "git+https://github.com/TeXitoi/osmpbfreader-rs#d8afdc3dba7771bede0b2c27b32abe84eb8434f1"
+source = "git+https://github.com/TeXitoi/osmpbfreader-rs#b9f1a8a210a8cba9a0b1710d6dcb99d8b5aa86c9"
 dependencies = [
- "flate2 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "byteorder 0.2.12 (registry+https://github.com/rust-lang/crates.io-index)",
+ "flate2 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "protobuf 0.0.9 (git+https://github.com/stepancheg/rust-protobuf.git)",
 ]
 
