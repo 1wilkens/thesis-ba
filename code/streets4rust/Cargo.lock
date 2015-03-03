@@ -41,7 +41,7 @@ dependencies = [
 [[package]]
 name = "osmpbfreader"
 version = "0.0.1"
-source = "git+https://github.com/TeXitoi/osmpbfreader-rs#b9f1a8a210a8cba9a0b1710d6dcb99d8b5aa86c9"
+source = "git+https://github.com/TeXitoi/osmpbfreader-rs#277581e1e1dc136c5dafad022e6312dc0e5106b1"
 dependencies = [
  "byteorder 0.2.12 (registry+https://github.com/rust-lang/crates.io-index)",
  "flate2 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
