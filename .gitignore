@@ -9,5 +9,8 @@ code/streets4c/streets4c
 code/streets4go/streets4go
 code/streets4rust/target
 
+# Ignore object files
+*.o
+
 # Ignore .vim swap files
 *.swp
