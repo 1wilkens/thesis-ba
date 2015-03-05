@@ -1,44 +1,69 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
+#include <glib.h>
+
 // typedefs
-typedef struct node_t node_t;
-typedef struct edge_t edge_t;
-typedef struct graph_t graph_t;
+typedef struct node_t *node;
+typedef struct edge_t *edge;
+typedef struct graph_t *graph;
 
-// graph related functions and structs
-graph_t *new_graph(int);
-void free_graph(graph_t*);
+typedef struct dgraph_t *dgraph;
 
-void add_node(graph_t*, node_t*);
-void add_edge(graph_t*, edge_t*);
-node_t *dijkstra(graph_t*, node_t*, long);
+// node related functions
+node new_node();
+void free_node(node);
 
+// edge related functions
+edge new_edge();
+void free_edge(edge);
+
+// graph related functions
+graph new_graph(int);
+void free_graph(graph);
+
+void add_node(graph, node);
+void add_edge(graph, node, node, edge);
+
+// dijkstra functions
+dgraph dgraph_new(graph);
+void free_dgraph();
+
+void dijkstra(dgraph, node);
+
+// structs
 struct node_t
 {
-    // general
-    node_t *pred;
-    int cost;
+    long osm_id;
 
-    // osm
-    long id;
-    long lon, lat;
+    double lon, lat;
+
+    // adj[node] = edge
+    GHashTable *adj;
 };
 
 struct edge_t
 {
-    // general
-    node_t *from, *to;
-    int weight;
+    long osm_id;
 
-    // osm
-    long id;
+    int length;
+    int max_speed, actual_speed;
 };
 
 struct graph_t
 {
-    node_t **nodes;
-    edge_t **edges;
+    int n_nodes, n_edges;
+    node *nodes;
+    edge *edges;
+};
+
+struct dgraph_t
+{
+    graph g;
+    // dist[node] = int
+    GHashTable *dist;
+    // parents[node] = node
+    GHashTable *parents;
 };
 
 #endif

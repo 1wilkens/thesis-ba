@@ -3,107 +3,60 @@
 #include "util.h"
 
 // taken and modified from http://rosettacode.org/wiki/Priority_queue#C
-queue_t *queue_new(int cap)
+pqueue pqueue_new(int cap)
 {
-    queue_t *q = calloc(1, sizeof(queue_t));
-    q->buf = calloc(cap, sizeof(node_t*));
+    pqueue q = malloc(sizeof(struct pqueue_t));
+    q->buf = malloc(cap * sizeof(q_elem));
     q->cap = cap;
     q->n = 1;
 
     return q;
 }
 
-void queue_free(queue_t *q)
+void pqueue_free(pqueue q)
 {
     free(q->buf);
     free(q);
 }
 
-void queue_push(queue_t *q, node_t* node)
+void pqueue_push(pqueue q, void *data, int pri)
 {
-    if (q->n >= q->cap)
-    {
-        q->cap *= 2;
-        q->buf = realloc(q->buf, sizeof(node_t) * q->cap);
-    }
+    q_elem *b = q->buf;
 
     int n = q->n++;
     int m = 0;
-    while ((m = n / 2) && node->cost < q->buf[m]->cost)
+    /* append at end, then up heap */
+    while ((m = n / 2) && pri < b[m].pri)
     {
-        q->buf[n] = q->buf[m];
+        b[n] = b[m];
         n = m;
     }
-    q->buf[n] = node;
+    b[n].data = data;
+    b[n].pri = pri;
 }
 
-node_t *queue_pop(queue_t *q)
+void *pqueue_pop(pqueue q)
 {
-    if (q->n == 1)
-    {
-        return NULL;
-    }
+    if (q->n == 1) return 0;
 
-    node_t *res = q->buf[1];
+    q_elem *b = q->buf;
+
+    void *result = b[1].data;
 
     /* pull last item to top, then down heap. */
-    q->n -= 1;
+    --q->n;
 
-    int n = 1, m = 0;
+    int n = 1, m;
     while ((m = n * 2) < q->n)
     {
-        if (m + 1 < q->n && q->buf[m]->cost > q->buf[m + 1]->cost)
-        {
-            m++;
-        }
+        if (m + 1 < q->n && b[m].pri > b[m + 1].pri) m++;
 
-        if (q->buf[q->n]->cost <= q->buf[m]->cost)
-        {
-            break;
-        }
-        q->buf[n] = q->buf[m];
+        if (b[q->n].pri <= b[m].pri) break;
+
+        b[n] = b[m];
         n = m;
     }
 
-    q->buf[n] = q->buf[q->n];
-
-    return res;
-}
-
-hashtable_t *hashtable_new(int capacity) {
-    hashtable_t *h = calloc(1, sizeof (hashtable_t));
-    h->cap = capacity;
-    h->keys = calloc(capacity, sizeof(long));
-    h->values = calloc(capacity, sizeof(void *));
-    return h;
-}
-
-void hashtable_free(hashtable_t *h)
-{
-    free(h->values);
-    free(h->keys);
-    free(h);
-}
-
-static int hash_index(hashtable_t *h, long key)
-{
-    int index = key % h->cap;
-    while (h->keys[index] && h->keys[index] != key)
-    {
-        index = (index + 1) % h->cap;
-    }
-    return index;
-}
-
-void hash_insert(hashtable_t *h, long key, void *value)
-{
-    int index = hash_index(h, key);
-    h->keys[index] = key;
-    h->values[index] = value;
-}
-
-void *hash_lookup(hashtable_t *h, long key)
-{
-    int index = hash_index(h, key);
-    return h->values[index];
+    b[n] = b[q->n];
+    return result;
 }

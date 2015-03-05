@@ -63,7 +63,7 @@ static OSMPBF__BlobHeader *read_blob_header(osmpbf_reader_t *r)
 {
 	// read BlobHeader size
 	int sz = 0;
-	if (fread(&sz, 1, 4, r->file) == EOF)
+	if ((int)fread(&sz, 1, 4, r->file) == EOF)
 	{
 		return NULL;
 	}

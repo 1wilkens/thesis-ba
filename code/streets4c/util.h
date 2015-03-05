@@ -3,34 +3,26 @@
 
 #include "graph.h"
 
-typedef struct queue_t queue_t;
-typedef struct hashtable_t hashtable_t;
+typedef struct pqueue_t *pqueue;
+typedef struct q_elem_t q_elem;
 
-// queue_t functions and struct
-queue_t *queue_new(int);
-void queue_free(queue_t*);
+// pqueue_t functions and struct
+pqueue pqueue_new(int);
+void pqueue_free(pqueue);
 
-void queue_push(queue_t*, node_t*);
-node_t *queue_pop(queue_t*);
+void pqueue_push(pqueue, void*, int);
+void *pqueue_pop(pqueue);
 
-struct queue_t
+struct pqueue_t
 {
-    node_t **buf;
+    q_elem *buf;
     int n, cap;
 };
 
-// hashtable_t functions and struct
-hashtable_t *hashtable_new(int);
-void hashtable_free(hashtable_t*);
-
-void hash_insert(hashtable_t*, long, void*);
-void *hash_loopup(hashtable_t*, long);
-
-struct hashtable_t
+struct q_elem_t
 {
-    int cap;
-    long *keys;
-    void **values;
+    void * data;
+    int pri;
 };
 
 #endif
