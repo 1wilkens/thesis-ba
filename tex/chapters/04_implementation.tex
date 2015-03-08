@@ -20,13 +20,14 @@ Milestones:
             - notes:
                 - easy dependency management, huuge optimization gains
         - Go:
-            - SLOC: ~55 (+ helper functions)
+            - SLOC: 55 (+ helper functions)
             - dev-time: 1276 -> 21,27 min
             - run-time:
                 - GOMAXPROCS=1: ./streets4go ../osm/hamburg-latest.osm.pbf  4,85s user 0,05s system 101\% cpu 4,846 total
                 - GOMAXPROCS=8: ./streets4go ../osm/hamburg-latest.osm.pbf  9,00s user 0,28s system 672\% cpu 1,381 total
             - allocs: total heap usage: 11,164,068 allocs, 11,000,199 frees, 1,447,543,184 bytes allocated
             - counts: Found 2180418 nodes, 409424 ways and 7182 relations in ../osm/hamburg-latest.osm.pbf
+            - notes:
                 - library parallelizeable, but singlethreaded slower
         - C:
             - SLOC: 55
@@ -36,12 +37,13 @@ Milestones:
                 - -O3: ./streets4c ../osm/hamburg-latest.osm.pbf  0,92s user 0,08s system 99\% cpu 0,994 total
             - allocs: total heap usage: 2,390,566 allocs, 2,390,566 frees, 372,758,206 bytes allocated
             - counts: Found 2180418 nodes, 409424 ways and 7182 relations in ../osm/hamburg-latest.osm.pbf
+            - notes:
                 - no library available, linking problems, freeing problems, fastest solution (run), slowest solution (dev)
     - Write basic graph structure
-        - notes:
-            - edges <-> streets:
-                - ID (OSMID)
-                - vertices (from node and to node)
-            - vertices <-> nodes:
-                - ID (OSMID)
-                -
+        - C:
+            - SLOC: 404 (*.c), 136 (*.h) -> 540 total
+            - dev-time: 12110 - 3078 = 9032 -> 2:30,53
+            - notes:
+                - glib verbosity, 
+        - Rust:
+            -

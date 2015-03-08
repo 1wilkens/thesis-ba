@@ -46,10 +46,16 @@ The implementation process was performed iteratively. Certain milestones were de
 For each stage various characteristics were captured and compared to highlight the languages' features and performance in the varaious areas
 
 \subsection*{0. [Setting up the project]}
+\label{subsec:Approach::Implementation::Setup}
 
 The first stage of development was to create project skeletons and infrastructure for the future development. The milestone was to have a working environment in place where the sample application could be build and executed. While this is certainly not the most important or even interesting part it did show the differences in comfort between the various toolchains.
 
 \subsection*{1. Counting nodes, ways and relations in an .osm.pbf file}
 \label{subsec:Approach::Implementation::Counting}
 
-The first real milestone was to read a .osm.pbf file and count all nodes, ways and relations in it. This was done to get familiar with the required libraries and the file format in general. The time recorded began from the initial project created in stage 0 and finished after the milestone was reached. As this is the most input and output intensive stage it already showed some key differences between the candidated both in speed and also memory consumption.
+The first real milestone was to read a .osm.pbf file and count all nodes, ways and relations in it. This was done to get familiar with the required libraries and the file format in general. The time recorded began from the initial project created in stage 0 and finished after the milestone was reached. As this is the most input and output intensive stage it already showed some key differences between the candidates both in speed as well as memory consumption.
+
+\subsection*{2. Building a basic graph representation for the simulation}
+\label{subsec:Approach::Implementation::Graph_Representation}
+
+The next goal was to conceptionally build the graph and related structures the simulation would later operate on. This involved thinking about the relation between edges and nodes as well as the choice of various containers to store the objects efficiently while also keeping access simple. This milestone tested the language's standard libraries and ability to express functions in a compact way (lambda..)
