@@ -1,4 +1,4 @@
-#![feature(fs, path)]
+#![feature(path)]
 
 extern crate osmpbfreader;
 
@@ -7,6 +7,9 @@ use std::fs::File;
 use std::path::Path;
 
 use osmpbfreader::{OsmPbfReader, blocks, objects};
+
+#[allow(dead_code)]
+mod graph;
 
 fn main() {
     println!("This is streets4rust\n");
