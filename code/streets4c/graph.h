@@ -3,6 +3,8 @@
 
 #include <glib.h>
 
+#include "util.h"
+
 // typedefs
 typedef struct node_t *node;
 typedef struct edge_t *edge;
@@ -47,23 +49,39 @@ struct edge_t
     long osm_id;
 
     int length;
-    int max_speed, actual_speed;
+    int max_speed;
+
+    int driving_time; // == weigth
 };
 
 struct graph_t
 {
     int n_nodes, n_edges;
+
     node *nodes;
     edge *edges;
+
+    // node_idx[node] = int
+    GHashTable *node_idx;
+    // edge_idx[edge] = int
+    GHashTable *edge_idx;
 };
 
 struct dgraph_t
 {
+    // base graph to work on
     graph g;
+    // priority queue to store nodes to explore
+    pqueue pq;
+
+    // current node to explore
+    node cur;
+
     // dist[node] = int
-    GHashTable *dist;
+    int *dist;
+
     // parents[node] = node
-    GHashTable *parents;
+    node *parents;
 };
 
 #endif
