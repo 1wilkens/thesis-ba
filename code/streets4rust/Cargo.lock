@@ -6,9 +6,17 @@ dependencies = [
 ]
 
 [[package]]
-name = "byteorder"
-version = "0.2.12"
+name = "bswap"
+version = "0.1.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "byteorder"
+version = "0.2.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "bswap 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
+]
 
 [[package]]
 name = "flate2"
@@ -43,7 +51,7 @@ name = "osmpbfreader"
 version = "0.0.1"
 source = "git+https://github.com/TeXitoi/osmpbfreader-rs#277581e1e1dc136c5dafad022e6312dc0e5106b1"
 dependencies = [
- "byteorder 0.2.12 (registry+https://github.com/rust-lang/crates.io-index)",
+ "byteorder 0.2.14 (registry+https://github.com/rust-lang/crates.io-index)",
  "flate2 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "protobuf 0.0.9 (git+https://github.com/stepancheg/rust-protobuf.git)",
 ]
@@ -51,5 +59,5 @@ dependencies = [
 [[package]]
 name = "protobuf"
 version = "0.0.9"
-source = "git+https://github.com/stepancheg/rust-protobuf.git#dba233d7ec58caecbecd1ef110d33dc25ebbe29f"
+source = "git+https://github.com/stepancheg/rust-protobuf.git#b400e3d12fb2137de568e2372bb45d5632bd7950"
 
