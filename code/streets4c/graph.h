@@ -25,7 +25,7 @@ graph new_graph(int);
 void free_graph(graph);
 
 void add_node(graph, node);
-void add_edge(graph, node, node, edge);
+void add_edge(graph, long, long, edge);
 
 // dijkstra functions
 dgraph dgraph_new(graph);
@@ -51,7 +51,7 @@ struct edge_t
     int length;
     int max_speed;
 
-    int driving_time; // == weigth
+    int driving_time; // == weight
 };
 
 struct graph_t
@@ -61,9 +61,9 @@ struct graph_t
     node *nodes;
     edge *edges;
 
-    // node_idx[node] = int
+    // node_idx[long] = int
     GHashTable *node_idx;
-    // edge_idx[edge] = int
+    // edge_idx[long] = int
     GHashTable *edge_idx;
 };
 
@@ -75,13 +75,13 @@ struct dgraph_t
     pqueue pq;
 
     // current node to explore
-    node cur;
+    int cur;
 
     // dist[node] = int
     int *dist;
 
     // parents[node] = node
-    node *parents;
+    int *parents;
 };
 
 #endif
