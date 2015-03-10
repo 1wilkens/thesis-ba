@@ -10,7 +10,6 @@ struct Node {
     pub adj: HashMap<usize, usize>
 }
 
-#[derive(PartialEq, Eq, Hash)]
 struct Edge {
     pub osm_id: i64,
 
@@ -36,6 +35,25 @@ impl Graph {
             nodes_idx: HashMap::new(),
             edges_idx: HashMap::new()
         }
+    }
+
+    pub fn add_node(&mut self, n: Node) {
+        self.nodes_idx.insert(n.osm_id, self.nodes.len());
+        self.nodes.push(n);
+    }
+
+    pub fn add_edge(&mut self, n1_id: i64, n2_id: i64, e: Edge) {
+        // add edge to graph
+        let edge_idx = self.edges.len();
+        self.edges_idx.insert(e.osm_id, edge_idx);
+        self.edges.push(e);
+
+        // link up adjecents
+        let n1_idx = self.nodes_idx.get(&n1_id).unwrap();
+        let n2_idx = self.nodes_idx.get(&n2_id).unwrap();
+
+        self.nodes[*n1_idx].adj.insert(*n2_idx, edge_idx);
+        self.nodes[*n2_idx].adj.insert(*n1_idx, edge_idx);
     }
 }
 
@@ -75,14 +93,17 @@ impl <'a> DijkstraGraph<'a> {
                 let cur = &self.graph.nodes[idx];
 
                 // relax all adjecent edges
-                for (edge, node) in cur.adj.iter() {
-                    let w_cur = self.dist[*node];
-                    let w_new = self.dist[idx] + self.graph.edges[*edge].driving_time;
+                for (node, edge) in cur.adj.iter() {
+                    let node_idx = *node;
+                    let edge_idx = *edge;
+
+                    let w_cur = self.dist[node_idx];
+                    let w_new = self.dist[idx] + self.graph.edges[edge_idx].driving_time;
 
                     if w_new < w_cur {
-                        self.dist[*node] = w_new;
-                        self.parents[*node] = idx;
-                        self.queue.push(NodeState { idx: *node, dist: w_new })
+                        self.dist[node_idx] = w_new;
+                        self.parents[node_idx] = idx;
+                        self.queue.push(NodeState { idx: node_idx, dist: w_new })
                     }
                 }
             }
