@@ -11,7 +11,7 @@ Milestones:
     - Count all nodes, ways and relations in hamburg-latest.osm.pbf
         - Rust:
             - SLOC: 37
-            - dev-time: 1989 -> 33,15 min
+            - dev-time: 1989 -> 33:09 min
             - run-time:
                 - -O0: target/streets4rust ../osm/hamburg-latest.osm.pbf  27,61s user 0,12s system 99\% cpu 27,749 total
                 - -O3: target/release/streets4rust ../osm/hamburg-latest.osm.pbf  2,59s user 0,13s system 99\% cpu 2,722 total
@@ -21,7 +21,7 @@ Milestones:
                 - easy dependency management, huuge optimization gains
         - Go:
             - SLOC: 55 (+ helper functions)
-            - dev-time: 1276 -> 21,27 min
+            - dev-time: 1276 -> 21:16 min
             - run-time:
                 - GOMAXPROCS=1: ./streets4go ../osm/hamburg-latest.osm.pbf  4,85s user 0,05s system 101\% cpu 4,846 total
                 - GOMAXPROCS=8: ./streets4go ../osm/hamburg-latest.osm.pbf  9,00s user 0,28s system 672\% cpu 1,381 total
@@ -31,7 +31,7 @@ Milestones:
                 - library parallelizeable, but singlethreaded slower
         - C:
             - SLOC: 55
-            - dev-time: 3078 -> 51,30 min
+            - dev-time: 3078 -> 51:18 min
             - run-time:
                 - -O0: ./streets4c ../osm/hamburg-latest.osm.pbf  0,95s user 0,07s system 99\% cpu 1,017 total
                 - -O3: ./streets4c ../osm/hamburg-latest.osm.pbf  0,92s user 0,08s system 99\% cpu 0,994 total
@@ -42,11 +42,16 @@ Milestones:
     - Write basic graph structure
         - C:
             - SLOC: 385 (*.c), 136 (*.h) -> 521 total
-            - dev-time: 12110 - 3078 = 9032 -> 02:30,53
+            - dev-time: 12110 - 3078 = 9032 -> 02:30:32
             - notes:
                 - glib verbosity, missing generics / typesafety
         - Rust:
             - SLOC: 171 total
-            - dev-time: 6457 - 1989 = 4468 -> 01:14,47
+            - dev-time: 6457 - 1989 = 4468 -> 01:14:28
             - notes:
                 - lifetime gotchas (explicit readonly of dg.g etc.)
+        - Go:
+            - SLOC: 196 total (including util (priorityqueue) but excluding test)
+            - dev-time: 5242 - 1276 = 3966 -> 01:06:06
+            - notes:
+                - testability
