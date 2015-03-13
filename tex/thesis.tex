@@ -53,7 +53,6 @@
 \usepackage[footnote]{acronym}
 \usepackage[page,toc]{appendix}
 \usepackage{booktabs}
-\usepackage{color}
 \usepackage[autostyle, babel, strict]{csquotes}
 %\usepackage{float} % Don't need that for now?
 \usepackage{graphicx}
@@ -66,9 +65,13 @@
 \usepackage{textcomp}
 \usepackage[subfigure,titles]{tocloft}
 \usepackage{units}
+\usepackage[usenames, dvipsnames]{xcolor}
 
 % Use hyperref last to make sure it can define all necessary commands
 \usepackage[pdfborder={0 0 0}]{hyperref}
+
+% Limit ToC depth
+\setcounter{tocdepth}{1}
 
 % Page (indent) definitions
 \sloppy
@@ -86,18 +89,23 @@
 % Set default graphicspath to 'img' folder
 \graphicspath{img}
 
+% Define some custom colors
+\definecolor{light-gray}{gray}{0.85}
+\definecolor{comment-green}{HTML}{009900}
+
 % Define language environments or listings
 \lstdefinestyle{base}{
 	basicstyle=\ttfamily,
 	breakatwhitespace=true,
 	breaklines=true,
 	captionpos=b,
-	commentstyle=\color{green},
+	commentstyle=\color{comment-green},
 	frame=single,
 	keywordstyle=\color{blue},
 	numbers=left,
 	numberstyle=\tiny,
 	rulecolor=\color{black},
+	% prebreak=\textbackslash,
 	postbreak=\hbox{$\hookrightarrow$ },
 	showstringspaces=false,
 	stringstyle=\color{red},
@@ -125,6 +133,15 @@
 	language=python,
 	style=base
 }
+
+\lstdefinestyle{erlang}{
+	language=erlang,
+	morekeywords={MODULE},
+	style=base
+}
+
+% Define some custom commands for inline code
+\newcommand{\markdowninline}[1]{\colorbox{light-gray}{\texttt{#1}}}
 
 % Change name of listing from 'Listings' to 'List of Listings' to be consistent
 \renewcommand*{\lstlistlistingname}{List of Listings}
