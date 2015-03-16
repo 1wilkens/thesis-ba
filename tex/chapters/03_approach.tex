@@ -22,9 +22,9 @@ In the remaining part of the thesis the different implementations will be refere
 \subsection*{Input format}
 \label{subsec:Approach::Differences::Input}
 
-The original implementation used the somewhat dated OpenStreetMap XML format~\footnote{\url{http://wiki.openstreetmap.org/wiki/OSM_XML}} as input which is parsed by \textit{imposm.parser}~\footnote{\url{http://imposm.org/docs/imposm.parser/latest/}}. Streets4MPI then builds a directed graph via the \textit{python-graph}~\footnote{\url{https://code.google.com/p/python-graph/}} library to base the simulation on.\cite{streets_report}
+The original implementation used the somewhat dated OpenStreetMap XML format~\fnote{\url{http://wiki.openstreetmap.org/wiki/OSM_XML}} as input which is parsed by \textit{imposm.parser}~\fnote{\url{http://imposm.org/docs/imposm.parser/latest/}}. Streets4MPI then builds a directed graph via the \textit{python-graph}~\fnote{\url{https://code.google.com/p/python-graph/}} library to base the simulation on.\cite{streets_report}
 
-The reimplementations require the input to be in ``.osm.pbf'' format. This newer version of the OpenStreetMap format is based on Google's \textit{Protocol Buffers}~\footnote{\url{https://developers.google.com/protocol-buffers/}} and is superior to the XML variant in both size and speed~\cite{osm_wiki_pbf}. It also simplifies multilanguage development because the code performing the actual parsing is auto generated from a language independent description file and there are protobuf backends for C, Rust and Go which can perform that generation.
+The reimplementations require the input to be in ``.osm.pbf'' format. This newer version of the OpenStreetMap format is based on Google's \textit{Protocol Buffers}~\fnote{\url{https://developers.google.com/protocol-buffers/}} and is superior to the XML variant in both size and speed~\cite{osm_wiki_pbf}. It also simplifies multilanguage development because the code performing the actual parsing is auto generated from a language independent description file and there are protobuf backends for C, Rust and Go which can perform that generation.
 
 \subsection*{Simulation}
 \label{subsec:Approach::Differences::Simulation}
@@ -36,7 +36,7 @@ The simulation in streets4MPI is based on randomly generated trips in the direct
 
 The base application parallelizes its calculations on multiple processes that communicate via message passing. This is achieved with the aforementioned MPI4Py library which delegates to a native MPI implementation installed on the system. If no supported implementation is found it falls back to a pure Python solution although the native one should be preferred for maximum performance.
 
-Although Rust as well as Go can integrate decently with existing native code, the reimplementations will be limited to shared memory parallelization on threads. This was mostly decided to evaluate and compare the language inherent concurrency constructs rather than the quality of the forrign funtion interface. To achieve fair comparability \textit{streets4c} will use OpenMP~\footnote{\url{http://www.openmp.org}} as it is the de facto standard for simple thread parallelization in C.
+Although Rust as well as Go can integrate decently with existing native code, the reimplementations will be limited to shared memory parallelization on threads. This was mostly decided to evaluate and compare the language inherent concurrency constructs rather than the quality of the forrign funtion interface. To achieve fair comparability \textit{streets4c} will use OpenMP~\fnote{\url{http://www.openmp.org}} as it is the de facto standard for simple thread parallelization in C.
 
 \section{Implementation process}
 \label{sec:Approach::Implementation}

@@ -148,7 +148,10 @@
 }
 
 % Define some custom commands for inline code
-\newcommand{\markdowninline}[1]{\colorbox{light-gray}{\texttt{#1}}}
+\newcommand{\mdinline}[1]{\colorbox{light-gray}{\texttt{#1}}}
+
+% Custom footnote command that adds \hspace before the text
+\newcommand{\fnote}[1]{\footnote{\hspace{2pt}#1}}
 
 % Change name of listing from 'Listings' to 'List of Listings' to be consistent
 \renewcommand*{\lstlistlistingname}{List of Listings}

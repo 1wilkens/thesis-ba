@@ -43,13 +43,13 @@
 
         Allocation count
             & 2,390,566
-            & 11,164,068\footnote{The memory statistics for Go have not been acquired by valgrind but by \markdowninline{runtime.MemStats} this and the fact that Go is garbage collected explain the discrepancy in allocations and frees}
+            & 11,164,068\fnote{The memory statistics for Go have not been acquired by valgrind but by \mdinline{runtime.MemStats} this and the fact that Go is garbage collected explain the discrepancy in allocations and frees}
             & 11,373,558 \\
 
         Free count
             & 2,390,566
-            & 11,000,199\footnote{See footnote 1}
-            & 11,373,557\footnote{This is due to a bug in the osmpbf library used. In safe Rust code it is not possible to leak memory.} \\
+            & 11,000,199\fnote{See footnote 1}
+            & 11,373,557\fnote{This is due to a bug in the osmpbf library used. In safe Rust code it is impossible to leak memory} \\
         \bottomrule
     \end{tabular}
     \caption{Milestone 1: Counting nodes, ways and relations}
