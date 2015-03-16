@@ -2,7 +2,7 @@
 \label{chap:State_of_the_art}
 
 \abstract{%
-This chapter describes the current state of the art in high-performance computing. The dominance of Fortran and C is explained and questioned in~\autoref{sec:State_of_the_art::Weaknesses_C_Fortran}. After that all considered language candidates are introduced and characterized.
+This chapter describes the current state of the art in high-performance computing. The dominance of Fortran and C is explained and questioned in~\autoref{sec:State_of_the_art::Paradigms}. After that all considered language candidates are introduced and characterized.
 }
 
 - state of C and Fortran (section name?)
@@ -12,11 +12,15 @@ This chapter describes the current state of the art in high-performance computin
     - ..
     -> But no real adaption possible, because language level support is missing (already included in introduction)
 
-\section{Weaknesses of C and Fortran} % change name?
-\label{sec:State_of_the_art::Weaknesses}
+\section{Programmign paradigms in Fortran and C} % change name?
+\label{sec:State_of_the_art::Paradigms}
 
-As stated in~\autoref{sec:Introduction::Motivation} high-performance computing is largely dominated by C and Fortran. To understand why a new language is needed it is essential to understand the shortcomings of these programming veterans. (//language?)
+As stated in~\autoref{sec:Introduction::Motivation} high-performance computing is largely dominated by C and Fortran and although their trademark is mostly performance these two languages achieve this in very different ways.
 
+
+To understand why a new language is needed it is essential to understand the shortcomings of these programming veterans. (//language?)
+
+// remove or rephrase this (maybe as the last aragraph of this section?)
 The main drawback of both languages is their age. Although new revisions are regularly aproves Fortran and C strive to be backwards compatible for the most part. This has some very serious consequences especially in their respective syntax. A lot of features of newer standards are integrated suboptimally to preserve backwards compatability.
 
 \subsection*{}
@@ -56,20 +60,20 @@ One core concept of Erlang is the idea of processes. These lightweight primitive
 
 Conceptionally Erlang offers various constructs known from functional languages like pattern matching, clause based function definition and immutable variables but the language as a whole is not purely functional. Rather each erlang process in itself (ideally) behaves pure (meaning the result of a function depends solely on its input) while the collection of processes interacting which each other through messages of course contain state and side effects.
 
-Erlang was considered as a possible candidate for HPC because of its concurrency capcabilities. The fact that processes are a core part of the language and are rather cheap in both creation and destruction seems ideal for high performance applications often demanding enormous amounts of parallelism. Sadly
+Erlang was considered as a possible candidate for HPC because of its concurrency capcabilities. The fact that processes are a core part of the language and are rather cheap in both creation and destruction seems ideal for high performance applications often demanding enormous amounts of parallelism. Sadly Erlang suffers from what one might call over specialization. The well adapted type system makes it very suited for tasks where concurrency is essential like serverside request management, task scheduling and other services with high connection fluctuation, but ``The ease of concurrency doesn’t make up for the difficulty in interfacing with other languages.''\cite{erlang_fps} Even advocates of Erlang say they would not use Erlang for regular business logic. In high performance computing most of the processing time is spent solving numeric problems. These are of course parallelized to increase effectiveness but the concurrency aspect is often not really inherent to the problem itself. Because of this Erlang's concurrency capabilities just do not outweigh it's numeric slowness for traditional HPC problems.\cite{erlang_guide}
 
-- brief history?
-
-- code example (not hello world rather show message passing)
-
-- Upsides
-    - Great concurrency
-    - Message passing is default (no locks)
-    - Hot swap?
-- Downsides
-    - Bad interfacing to other languages
-    - Weird syntax
-    - Limited (community/support?)
+% - brief history?
+%
+% - code example (not hello world rather show message passing)
+%
+% - Upsides
+%     - Great concurrency
+%     - Message passing is default (no locks)
+%     - Hot swap?
+% - Downsides
+%     - Bad interfacing to other languages
+%     - Weird syntax
+%     - Limited (community/support?)
 
 
 \subsection*{Go}
@@ -110,12 +114,12 @@ Another core aspect of Rust are \textit{lifetimes}. As many other programming la
 Although Rust focusses on performance and safety it also adopted some functional concepts like \textit{pattern matching} and the \markdowninline{Option} type. Combined with \markdowninline{range} expressions and macros which operate on syntax level codong in Rust often feels like in a scripting language which is just very performant. This was also the main reason it was chosen to be further evaluated. Rust focusses on safety while not sacrificing any performnce in the process. Most of the checks happen at compile time making the resulting binary often close or on par with equivalent C programs. It also has the advantage of beeing still in development\footnote{current version beeing \textsc{1.0.0-alpha-2} at the time of this writing} so concepts which did not work out can be quickly changed or completely dropped.
 But Rust's immatureness is also its greatest weakness. The
 
-- mention cargo
-
-- Prediction Implementation
-    - Moderatly quick PoC without concurrency at first
-    - Nearly only otimization afterwards since compilation secures memory safety
-    -> More time spent before initial PoC than after
+% - mention cargo
+%
+% - Prediction Implementation
+%     - Moderatly quick PoC without concurrency at first
+%     - Nearly only otimization afterwards since compilation secures memory safety
+%     -> More time spent before initial PoC than after
 
 
 \subsection*{Comparison}
