@@ -1,5 +1,6 @@
-# ignore LaTex logs
+# ignore LaTex temp files
 *.log
+*.aux
 
 # allow final pdf builds for now
 #*.pdf
@@ -14,3 +15,7 @@ code/streets4rust/target
 
 # Ignore .vim swap files
 *.swp
+
+# Ignore script besides build.sh
+!build.sh
+*.sh
