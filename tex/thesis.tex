@@ -65,7 +65,14 @@
 \usepackage{textcomp}
 \usepackage[subfigure,titles]{tocloft}
 \usepackage{units}
+
+% Need to add footnote after xcolor to avoid conflict
 \usepackage[usenames, dvipsnames]{xcolor}
+\usepackage{footnote}
+
+% Allow footnotes in tables
+\makesavenoteenv{tabular}
+\makesavenoteenv{table}
 
 % Use hyperref last to make sure it can define all necessary commands
 \usepackage[pdfborder={0 0 0}]{hyperref}

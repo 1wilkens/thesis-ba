@@ -1,10 +1,60 @@
 \chapter{Implementation}
 \label{chap:Implementation}
 
-\textit{%
-In diesem Kapitel ...
+\abstract{This chapter describes the implementation process for all three compared languages. It is divided in sections based on the development milestones defined in the previous chapter~\ref{sec:Approach::Implementation}.
 }
-\bigskip
+
+\setcounter{section}{-1}
+\section{Project setup}
+\label{sec:Implementation::Setup}
+
+
+
+\section{Counting nodes, ways and relations in an .osm.pbf file}
+\label{sec:Implementation::Counting}
+
+\begin{table}[htb]
+    \centering
+    \begin{tabular}{llll}
+        \toprule
+        % Header
+            & C
+            & Go
+            & Rust \\
+        \midrule
+
+        SLOC
+            & 55
+            & 55
+            & 37 \\
+
+        Development time (min)
+            & 51:18
+            & 21:16
+            & 33:09 \\
+
+        Execution time (sec)
+            & 1,017 (-O0)
+            & 4,846 (GOMAXPROCS=1)
+            & 27,749 (-O0) \\
+            & 0,994 (-O3)
+            & 1,381 (GOMAXPROCS=8)
+            & \hspace{6pt}2,722 (-O3) \\
+
+        Allocation count
+            & 2,390,566
+            & 11,164,068\footnote{The memory statistics for Go have not been acquired by valgrind but by \markdowninline{runtime.MemStats} this and the fact that Go is garbage collected explain the discrepancy in allocations and frees}
+            & 11,373,558 \\
+
+        Free count
+            & 2,390,566
+            & 11,000,199\footnote{See footnote 1}
+            & 11,373,557\footnote{This is due to a bug in the osmpbf library used. In safe Rust code it is not possible to leak memory.} \\
+        \bottomrule
+    \end{tabular}
+    \caption{Milestone 1: Counting nodes, ways and relations}
+    \label{tb:milestone1}
+\end{table}
 
 \begin{verbatim}
 Milestones:
