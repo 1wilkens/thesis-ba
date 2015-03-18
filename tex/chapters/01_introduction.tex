@@ -21,7 +21,7 @@ While testing is just one example there are a lot of ``best practices'' and tech
 \section{Goals of this thesis}
 \label{sec:Introduction::Goals}
 
-This thesis aims to evaluate Rust and Go as potential programming languages in the high-performance computing environment. The comparison is based on a port of an existing parallel application orginally written in Python. It was ported to the two language candidates as well as C to have a fair base to compare to. Since libraries for interprocess communication in Rust and Go are nowhere near production-ready this thesis will focus on shared memory parallelization to avoid unfair bias based solely on the quality of the supporting library ecosystem.
+This thesis aims to evaluate Rust and Go as potential programming languages in the high-performance computing environment. The comparison is based on a port of an existing parallel application orginally written in Python. It was rewritten in the two language candidates as well as C to have a fair base to compare to. Since libraries for interprocess communication in Rust and Go are nowhere near production-ready this thesis will focus on shared memory parallelization to avoid unfair bias based solely on the quality of the supporting library ecosystem.
 
 The final application is a simplified version of the original but will behave nearly identical. It will use similar input formats and write result to a reduced custom output format for later analysis. To reduce complexity it does not support additional commandline arguments and has limited error handling regarding in- and output.
 

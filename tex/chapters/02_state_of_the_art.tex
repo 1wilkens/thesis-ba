@@ -12,7 +12,7 @@ This chapter describes the current state of the art in high-performance computin
     - ..
     -> But no real adaption possible, because language level support is missing (already included in introduction)
 
-\section{Programmign paradigms in Fortran and C} % change name?
+\section{Programming paradigms in Fortran and C} % change name?
 \label{sec:State_of_the_art::Paradigms}
 
 As stated in~\autoref{sec:Introduction::Motivation} high-performance computing is largely dominated by C and Fortran and although their trademark is mostly performance these two languages achieve this in very different ways.
@@ -158,3 +158,15 @@ But Rust's immatureness is also its greatest weakness. The
         & speed rust \\
     \bottomrule
 \end{tabular}
+
+\section{Related work}
+\label{sec:Introduction::Related}
+
+The search for new programming languages which are fit for HPC is not a recently developing trend. There have been multiple studies and evaluations but so far none of the proposed languages have gained enough traction to receive widespread adoption. Also most reports focused on the execution performance without really considering additional software metrics or developer productivity. \cite{related_multicore} at least adds lines of code and development time to the equation but both of these metrics only allow for superficial conclusions about the code quality.
+
+From the here presented candidates Go in particular has been compared to other approaches to parallel programming with mixed results. Although its regular execution speed is somewhat lacking \cite{related_sor_study} showed the highest speedup from parallelization amongst the evaluated languages.
+
+// needs more work
+
+// really mention this here without \refs?
+Rut on the other hand has not been seriously evaluated in the HPC environment.
