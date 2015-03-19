@@ -15,13 +15,13 @@ As all applications written for this thesis have been developed on Linux the set
 
 //TODO: Add footnotes/links
 
-The buildtool for streets4C is GNU \textit{make} with a simple handcrafted \mdinline{Makefile}. It was chosen to strike a balance between full blown build systems like \textit{Autotools} or \textit{CMake} and manual compilation. The setup steps required for this configuration are relatively straight forward and listed below.
+The buildtool for streets4C is GNU \textit{make} with a simple handcrafted \shinline{Makefile}. It was chosen to strike a balance between full blown build systems like \textit{Autotools} or \textit{CMake} and manual compilation. The setup steps required for this configuration are relatively straight forward and listed below.
 \\
 \lstinputlisting[caption={Project setup: streets4C}, label={lst:setup_c.sh}, style=shell]{code/setup_c}
 
-After creatig a new directory for the application a \mdinline{Makefile} and a sourcefile are created. \mdinline{main.c} contains just a bare bones main method while the \mdinline{Makefile} uses basic rules to compile an executable named streets4c with various optimization flags.
+After creatig a new directory for the application a \shinline{Makefile} and a sourcefile are created. \shinline{main.c} contains just a bare bones main method while the \shinline{Makefile} uses basic rules to compile an executable named streets4c with various optimization flags.
 
-All in all the setup in C is quite painless although manual. The only caveat are Makefiles. They may be simple for small projects without real dependencies but as soon as different source and object files are involved in the compilation process they can get quite confusing. At that point the mentioned build systems might prove their worth in generating the Makefile(s).
+All in all the setup in C is quite painless although manual. The only caveat are Makefiles. They may be simple for small projects without real dependencies but as soon as different source and object files are involved in the compilation process they can get quite confusing. At that point the mentioned build systems might prove their worth in generating the \shinline{Makefile}(s).
 
 
 \subsection{Go}
@@ -29,24 +29,24 @@ All in all the setup in C is quite painless although manual. The only caveat are
 
 //TODO: Add footnotes/links
 
-For Go the choice of buildtool is nonexistent. The language provides the \mdinline{go} executable which is responsible for nearly the complete development cycle. It can compile your code, install arbitary Go packages from various sources, run tests and format code just to name the most common features.
+For Go the choice of buildtool is nonexistent. The language provides the \shinline{go} executable which is responsible for nearly the complete development cycle. It can compile your code, install arbitary Go packages from various sources, run tests and format code just to name the most common features.
 
 This makes Go (the language) extremly convenient since everything you want to do is probably one commandline away. For example to get a depdendency one would invoke the tool like so:
 \mdinline{go get github.com/petar/GoLLRB/llrb}
 \\
 This will download the package in source form which can then be imported in any project on that machine via its fully qualified package name.
 
-To achieve this convenience the \mdinline{go} tool requires some setup work before it can be used for the first time. Because of this this section contains two setup examples.
+To achieve this convenience the \shinline{go} tool requires some setup work before it can be used for the first time. Because of this this section contains two setup examples.
 \\
 \lstinputlisting[caption={Project setup: streets4Go}, label={lst:setup_go.sh}, style=shell]{code/setup_go}
 
-Listing \ref{lst:setup_go.sh} describes the steps that were taken to create the streets4go project inside the thesis' repository. It is pretty similiar to the C version. A directory gets creates then a source file containing a \mdinline{main} function is created which can be build and run with a single command.
+Listing \ref{lst:setup_go.sh} describes the steps that were taken to create the streets4go project inside the thesis' repository. It is pretty similiar to the C version. A directory gets creates then a source file containing a \shinline{main} function is created which can be build and run with a single command.
 
-One thing to remind here is the fact, that this code does not live inside a globally set drectory called GOPATH. To be able to download packages only once \mdinline{go} assumes an environment variable called GOPATH to be set to a directory which it has full control over. This directory contains all source files as well a the compiled binaries all stored through a consistent naming scheme. Normally it is assumed that all Go project live inside their own subdirectories of the GOPATH but it is possible to avoid this at the cost of some convenience.
+One thing to remind here is the fact, that this code does not live inside a globally set drectory called \shinline{GOPATH}. To be able to download packages only once \shinline{go} assumes an environment variable called \shinline{GOPATH} to be set to a directory which it has full control over. This directory contains all source files as well a the compiled binaries all stored through a consistent naming scheme. Normally it is assumed that all Go project live inside their own subdirectories of the \shinline{GOPATH} but it is possible to avoid this at the cost of some convenience.
 
-The project that was created through the commands of listing \ref{lst:setup_go.sh} for example cannot be installed to the system by running \mdinline{go install} since it does not reside in the correct folder instead one has to copy the compiled binary to a directory in PATH manually.
+The project that was created through the commands of listing \ref{lst:setup_go.sh} for example cannot be installed to the system by running \mdinline{go install} since it does not reside in the correct folder instead one has to copy the compiled binary to a directory in \shinline{PATH} manually.
 
-The next listing shows a more realistic workflow for creating a new Go project from scratch without any prior setup required. It assumes one starts in the directory that should be set as GOPATH and assumes \url{www.github.com} as code host which in reality just determines the package name. It is also important to add the export shown in the first line to any inititalization file of your shell or operating system to ensure it always beeing available.
+The next listing shows a more realistic workflow for creating a new Go project from scratch without any prior setup required. It assumes one starts in the directory that should be set as \shinline{GOPATH} and assumes \url{www.github.com} as code host which in reality just determines the package name. It is also important to add the export shown in the first line to any inititalization file of your shell or operating system to ensure it always beeing available.
 \\
 \lstinputlisting[caption={Full setup for new Go projects}, label={lst:setup_go_full.sh}, style=shell]{code/setup_go_full}
 
@@ -56,9 +56,21 @@ The next listing shows a more realistic workflow for creating a new Go project f
 
 //TODO: Add footnotes/links
 
-Similar to Go Rust provides its own build system. As mentioned in the \hyperref[subsec:State_of_the_art::Candidates::Rust]{candidate introduction} Rust installs its own package manager \mdinline{cargo}. It functions as build system and is also capable of creating new projects.
+Similar to Go also Rust provides its own build system. As mentioned in the \hyperref[subsec:State_of_the_art::Candidates::Rust]{candidate introduction} Rust installs its own package manager \textit{cargo}. It functions as build system and is also capable of creating new projects. This shortens the setup process considerably as observable in the next listing.
 \\
 \lstinputlisting[caption={Project setup: streets4Rust}, label={lst:setup_rust.sh}, style=shell]{code/setup_rust}
+
+With the \shinline{new} subcommand a new project gets created. The \shinline{-{}-bin} flag tells \shinline{cargo} to create an executable project instead of a library which is the default.
+Thanks to the one command all the initial files and directories are created with one single command. This includes:
+\begin{itemize}
+    \item{the project directory itself (named like the given project name)}
+    \item{a \shinline{src} directory for source files}
+    \item{a \shinline{target} directory for build results}
+    \item{a required manifest file named \shinline{Cargo.toml} including the given project name}
+    \item{a sample file inside \shinline{src} which is either called \shinline{main.rs} for binaries or \shinline{lib.rs} for libraries containing some sample code
+    \item{and optionally an empty initialized git repository (if the \shinline{-{}-git} command line option has been passed)}
+\end{itemize}
+The resulting application is already runnable via \mdinline{cargo run}\footnote{which is executable anywhere inside the project directory} and produces some output in \texttt{stdout}
 
 
 \subsection{Comparison}
@@ -97,7 +109,7 @@ Similar to Go Rust provides its own build system. As mentioned in the \hyperref[
 
         Allocation count
             & 2,390,566
-            & 11,164,068\fnote{The memory statistics for Go have not been acquired by valgrind but by \mdinline{runtime.MemStats} this and the fact that Go is garbage collected explain the discrepancy in allocations and frees}
+            & 11,164,068\fnote{The memory statistics for Go have not been acquired by valgrind but by \shinline{runtime.MemStats} this and the fact that Go is garbage collected explain the discrepancy in allocations and frees}
             & 11,373,558 \\
 
         Free count
