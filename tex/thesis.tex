@@ -87,10 +87,9 @@
 
 % Some pdf related meta-information
 \hypersetup{
-	pdftitle	={Evaluation of performance and productivity metrics of
-				 	potential programming languages in the HPC environment},
+	pdftitle	={Evaluation of performance and productivity metrics of potential programming languages in the HPC environment},
 	pdfauthor 	={Florian Wilkens},
-	pdfkeywords ={HPC, Rust, C, go, performance, productivity}
+	pdfkeywords ={HPC, Rust, C, Go, performance, productivity}
 }
 
 % Set default graphicspath to 'img' folder
@@ -119,10 +118,14 @@
 	tabsize=4
 }
 
-\lstdefinestyle{shell}{
-	language=sh,
+\lstdefinestyle{plain}{
 	style=base,
 	numbers=none
+}
+
+\lstdefinestyle{shell}{
+	style=plain,
+	language=sh
 }
 
 \lstdefinestyle{c}{
@@ -202,14 +205,7 @@
 
 % Appendices
 \begin{appendices}
-
-\chapter{Appendix}
-
-- System configuration
-	-> clang/gcc version
-	-> rustc and cargo version (possibly including commit hash!)
-	-> go version and implmentation (cgo?)
-
+\include{misc/appendix}
 \end{appendices}
 
 \newpage

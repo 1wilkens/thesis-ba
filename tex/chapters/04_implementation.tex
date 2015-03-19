@@ -1,5 +1,5 @@
 \chapter{Implementation}
-\label{chap:Implementation}
+\label{ch:Implementation}
 
 \abstract{This chapter describes the implementation process for all three compared languages. It is divided in sections based on the development milestones defined in the previous chapter~\ref{sec:Approach::Implementation}.
 }
@@ -46,7 +46,7 @@ One thing to remind here is the fact, that this code does not live inside a glob
 
 The project that was created through the commands of listing \ref{lst:setup_go.sh} for example cannot be installed to the system by running \mdinline{go install} since it does not reside in the correct folder instead one has to copy the compiled binary to a directory in PATH manually.
 
-The next listing shows a more realistic workflow for creating a new Go project from scratch without any prior setup required. It assumes one starts in the directory that should be set as GOPATH and assumes \url{www.github.com} as code host which in reality just determines the package name.
+The next listing shows a more realistic workflow for creating a new Go project from scratch without any prior setup required. It assumes one starts in the directory that should be set as GOPATH and assumes \url{www.github.com} as code host which in reality just determines the package name. It is also important to add the export shown in the first line to any inititalization file of your shell or operating system to ensure it always beeing available.
 \\
 \lstinputlisting[caption={Full setup for new Go projects}, label={lst:setup_go_full.sh}, style=shell]{code/setup_go_full}
 
@@ -55,7 +55,8 @@ The next listing shows a more realistic workflow for creating a new Go project f
 \label{subsec:Implementation::Setup::Rust}
 
 //TODO: Add footnotes/links
-Lorem ipsum
+
+Similar to Go Rust provides its own build system. As mentioned in the \hyperref[subsec:State_of_the_art::Candidates::Rust]{candidate introduction} Rust installs its own package manager \mdinline{cargo}. It functions as build system and is also capable of creating new projects.
 \\
 \lstinputlisting[caption={Project setup: streets4Rust}, label={lst:setup_rust.sh}, style=shell]{code/setup_rust}
 

@@ -5,6 +5,18 @@ latex="pdflatex -interaction=batchmode"
 fileExt="thesis.tex"
 file="thesis"
 
+mode=${1:-"default"}
+
+if [ $mode == "full" ]; then
+	echo "Performing a full build inluding software configuration.."
+	echo ""
+	uname -a > misc/system.cfg
+	gcc --version > misc/gcc.version
+	go version > misc/go.version
+	rustc --version > misc/rustc.version
+	cargo --version > misc/cargo.version
+fi
+
 echo "Running '$latex -draftmode $fileExt'"
 echo ""
 $latex -draftmode $fileExt
