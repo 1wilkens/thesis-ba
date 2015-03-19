@@ -1,0 +1,5 @@
+$ mkdir -p streets4c
+$ cd streets4c
+$ vim main.c
+$ vim Makefile
+$ make && ./streets4c

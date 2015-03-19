@@ -1,0 +1,4 @@
+$ mkdir -p streets4go
+$ cd streets4go
+$ vim main.go
+$ go run main.go

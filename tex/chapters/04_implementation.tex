@@ -8,7 +8,56 @@
 \section{Project setup}
 \label{sec:Implementation::Setup}
 
+As all applications written for this thesis have been developed on Linux the setup instructions are for this operating system. They \textbf{should} work on *nix as well but there is no definite guarantee this is the case. Also each section assumes the toolchains for the various languages are installed as this is largely different based on what operating system and on Linux which distribution is used. It is therefore not covered in this thesis.
 
+\subsection{C}
+\label{subsec:Implementation::Setup::C}
+
+//TODO: Add footnotes/links
+
+The buildtool for streets4C is GNU \textit{make} with a simple handcrafted \mdinline{Makefile}. It was chosen to strike a balance between full blown build systems like \textit{Autotools} or \textit{CMake} and manual compilation.
+\\
+\lstinputlisting[caption={Project setup: streets4C}, label={lst:setup_c.sh}, style=shell]{code/setup_c}
+
+
+\subsection{Go}
+\label{subsec:Implementation::Setup::Go}
+
+//TODO: Add footnotes/links
+
+For Go the choice of buildtool is nonexistent. The language provides the \mdinline{go} executable which is responsible for nearly the complete development cycle. It can compile your code, install arbitary Go packages from various sources, run tests and format code just to name the most common features.
+
+This makes Go (the language) extremly convenient since everything you want to do is probably one commandline away. For example to get a depdendency one would invoke the tool like so:
+\mdinline{go get github.com/petar/GoLLRB/llrb}
+\\
+This will download the package in source form which can then be imported in any project on that machine via its fully qualified package name.
+
+To achieve this convenience the \mdinline{go} tool requires some setup work before it can be used for the first time. Because of this this section contains two setup examples.
+\\
+\lstinputlisting[caption={Project setup: streets4Go}, label={lst:setup_go.sh}, style=shell]{code/setup_go}
+
+Listing \ref{lst:setup_go.sh} describes the steps that were taken to create the streets4go project inside the thesis' repository. It is pretty similiar to the C version. A directory gets creates then a source file containing a \mdinline{main} function is created which can be build and run with a single command.
+
+One thing to remind here is the fact, that this code does not live inside a globally set drectory called GOPATH. To be able to download packages only once \mdinline{go} assumes an environment variable called GOPATH to be set to a directory which it has full control over. This directory contains all source files as well a the compiled binaries all stored through a consistent naming scheme. Normally it is assumed that all Go project live inside their own subdirectories of the GOPATH but it is possible to avoid this at the cost of some convenience.
+
+The project that was created through the commands of listing \ref{lst:setup_go.sh} for example cannot be installed to the system by running \mdinline{go install} since it does not reside in the correct folder instead one has to copy the compiled binary to a directory in PATH manually.
+
+The next listing shows a more realistic workflow for creating a new Go project from scratch without any prior setup required. It assumes one starts in the directory that should be set as GOPATH.
+\\
+\lstinputlisting[caption={Full setup for new Go projects}, label={lst:setup_go_full.sh}, style=shell]{code/setup_go_full}
+
+
+\subsection{Rust}
+\label{subsec:Implementation::Setup::Rust}
+
+//TODO: Add footnotes/links
+Lorem ipsum
+\\
+\lstinputlisting[caption={Project setup: streets4Rust}, label={lst:setup_rust.sh}, style=shell]{code/setup_rust}
+
+
+\subsection{Comparison}
+\label{subsec:Implementation::Setup::Comparison}
 
 \section{Counting nodes, ways and relations in an .osm.pbf file}
 \label{sec:Implementation::Counting}
@@ -26,7 +75,7 @@
         SLOC
             & 55
             & 55
-            & 37 \\
+            & 36 \\
 
         Development time (min)
             & 51:18
@@ -56,11 +105,39 @@
     \label{tb:milestone1}
 \end{table}
 
+\section{Building a basic graph representation for the simulation}
+\label{sec:Implementation::Graph_Representation}
+
+\begin{table}[htb]
+    \centering
+    \begin{tabular}{llll}
+        \toprule
+        % Header
+            & C
+            & Go
+            & Rust \\
+        \midrule
+
+        SLOC
+            & 385
+            & 196
+            & 170 \\
+
+        Development time (hours)
+            & 02:30:32
+            & 01:06:06
+            & 01:14:28 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Milestone 2: Building a basic graph representation}
+    \label{tb:milestone2}
+\end{table}
+
 \begin{verbatim}
 Milestones:
 - Count all nodes, ways and relations in hamburg-latest.osm.pbf
     - Rust:
-        - SLOC: 37
+        - SLOC: 36
         - dev-time: 1989 -> 33:09 min
         - run-time:
             - -O0: target/streets4rust ../osm/hamburg-latest.osm.pbf  27,61s user 0,12s system 99\% cpu 27,749 total
@@ -96,7 +173,7 @@ Milestones:
         - notes:
             - glib verbosity, missing generics / typesafety
     - Rust:
-        - SLOC: 171 total
+        - SLOC: 170 total
         - dev-time: 6457 - 1989 = 4468 -> 01:14:28
         - notes:
             - lifetime gotchas (explicit readonly of dg.g etc.)

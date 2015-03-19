@@ -1,0 +1,3 @@
+$ cargo new --bin streets4rust
+$ cd streets4rust
+$ cargo run
