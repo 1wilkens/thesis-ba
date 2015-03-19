@@ -15,9 +15,13 @@ As all applications written for this thesis have been developed on Linux the set
 
 //TODO: Add footnotes/links
 
-The buildtool for streets4C is GNU \textit{make} with a simple handcrafted \mdinline{Makefile}. It was chosen to strike a balance between full blown build systems like \textit{Autotools} or \textit{CMake} and manual compilation.
+The buildtool for streets4C is GNU \textit{make} with a simple handcrafted \mdinline{Makefile}. It was chosen to strike a balance between full blown build systems like \textit{Autotools} or \textit{CMake} and manual compilation. The setup steps required for this configuration are relatively straight forward and listed below.
 \\
 \lstinputlisting[caption={Project setup: streets4C}, label={lst:setup_c.sh}, style=shell]{code/setup_c}
+
+After creatig a new directory for the application a \mdinline{Makefile} and a sourcefile are created. \mdinline{main.c} contains just a bare bones main method while the \mdinline{Makefile} uses basic rules to compile an executable named streets4c with various optimization flags.
+
+All in all the setup in C is quite painless although manual. The only caveat are Makefiles. They may be simple for small projects without real dependencies but as soon as different source and object files are involved in the compilation process they can get quite confusing. At that point the mentioned build systems might prove their worth in generating the Makefile(s).
 
 
 \subsection{Go}
@@ -42,7 +46,7 @@ One thing to remind here is the fact, that this code does not live inside a glob
 
 The project that was created through the commands of listing \ref{lst:setup_go.sh} for example cannot be installed to the system by running \mdinline{go install} since it does not reside in the correct folder instead one has to copy the compiled binary to a directory in PATH manually.
 
-The next listing shows a more realistic workflow for creating a new Go project from scratch without any prior setup required. It assumes one starts in the directory that should be set as GOPATH.
+The next listing shows a more realistic workflow for creating a new Go project from scratch without any prior setup required. It assumes one starts in the directory that should be set as GOPATH and assumes \url{www.github.com} as code host which in reality just determines the package name.
 \\
 \lstinputlisting[caption={Full setup for new Go projects}, label={lst:setup_go_full.sh}, style=shell]{code/setup_go_full}
 
