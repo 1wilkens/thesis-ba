@@ -29,7 +29,7 @@ All in all the setup in C is quite painless although manual. The only caveat are
 
 //TODO: Add footnotes/links
 
-For Go the choice of buildtool is nonexistent. The language provides the \shinline{go} executable which is responsible for nearly the complete development cycle. It can compile your code, install arbitary Go packages from various sources, run tests and format code just to name the most common features.
+For Go the choice of buildtool is nonexistent. The language provides the \shinline{go} executable which is responsible for nearly the complete development cycle. It can compile your code, install arbitrary Go packages from various sources, run tests and format code just to name the most common features.
 
 This makes Go (the language) extremely convenient since everything you want to do is probably one commandline away. For example to get a depdendency one would invoke the tool like so:
 \mdinline{go get github.com/petar/GoLLRB/llrb}
@@ -70,15 +70,17 @@ Thanks to the one command all the initial files and directories are created with
     \item{a sample file inside \shinline{src} which is either called \shinline{main.rs} for binaries or \shinline{lib.rs} for libraries containing some sample code
     \item{and optionally an empty initialized version control repository (\shinline{git} or \shinline{mercurial} if the corresponding command line option has been passed)}
 \end{itemize}
-The resulting application is already runnable via \mdinline{cargo run}\footnote{which is executable anywhere inside the project directory} and produces some output in \shinline{stdout}. This process is extremely convenient and error proof since \shinline{cargo} validates all input before executing any task. The \shninline{man} pages and help texts are quite thin at the moment but as with everything in the Rust world \shinline{cargo} is still beein developed.
+The resulting application is already runnable via \mdinline{cargo run}\footnote{which is executable anywhere inside the project directory} and produces some output in \shinline{stdout}. This process is extremely convenient and error proof since \shinline{cargo} validates all input before executing any task. The \shninline{man} pages and help texts are quite thin at the moment but as with everything in the Rust world \shinline{cargo} is still beeing developed.
 
 The overall greated advantage however is that the Rust process does not involve any manual text editing. What might sound trivial at first, is actually quite important for newcomers to the language. You do not have to know any syntax to get started with Rust since the generated code already compiles and does something interesting. In the other languages you have to write a valid, minimal program manually to even test the project setup while Rust is ready to go after just one command.
 
-Of course this strategy is not without limitations.
+Of course this strategy is not without limitations. To be able to use \shinline{cargo} all files and directories have to follow a special pattern. Although the chosen conventions are somewhat common one cannot use arbitrary directory and file names.
 
 
 \subsection{Comparison}
 \label{subsec:Implementation::Setup::Comparison}
+
+For newcomers Rust definitely provides the best experience. One can get a valid \textit{Hello world!} application without any prior knowledge which lowers the barrier of entry dramatically.
 
 \section{Counting nodes, ways and relations in an .osm.pbf file}
 \label{sec:Implementation::Counting}
