@@ -10,7 +10,8 @@ mode=${1:-"default"}
 if [ $mode == "full" ]; then
 	echo "Performing a full build inluding software configuration.."
 	echo ""
-	uname -a > misc/system.cfg
+	uname -a > misc/uname.cfg
+	lscpu > misc/lscpu.cfg
 	gcc --version > misc/gcc.version
 	go version > misc/go.version
 	rustc --version > misc/rustc.version

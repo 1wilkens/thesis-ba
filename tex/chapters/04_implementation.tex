@@ -21,7 +21,7 @@ The buildtool for streets4C is GNU \textit{make} with a simple handcrafted \shin
 
 After creatig a new directory for the application a \shinline{Makefile} and a sourcefile are created. \shinline{main.c} contains just a bare bones main method while the \shinline{Makefile} uses basic rules to compile an executable named streets4c with various optimization flags.
 
-All in all the setup in C is quite painless although manual. The only caveat are Makefiles. They may be simple for small projects without real dependencies but as soon as different source and object files are involved in the compilation process they can get quite confusing. At that point the mentioned build systems might prove their worth in generating the \shinline{Makefile}(s).
+All in all the setup in C is quite painless although manual. The only caveat are Makefiles. They may be simple for small projects without real dependencies but as soon as different source and object files are involved in the compilation process they can get quite confusing. At that point the mentioned build systems might prove their worth in generating the \shinline{Makefile}(s) from other configuration files.
 
 
 \subsection{Go}
@@ -31,7 +31,7 @@ All in all the setup in C is quite painless although manual. The only caveat are
 
 For Go the choice of buildtool is nonexistent. The language provides the \shinline{go} executable which is responsible for nearly the complete development cycle. It can compile your code, install arbitary Go packages from various sources, run tests and format code just to name the most common features.
 
-This makes Go (the language) extremly convenient since everything you want to do is probably one commandline away. For example to get a depdendency one would invoke the tool like so:
+This makes Go (the language) extremely convenient since everything you want to do is probably one commandline away. For example to get a depdendency one would invoke the tool like so:
 \mdinline{go get github.com/petar/GoLLRB/llrb}
 \\
 This will download the package in source form which can then be imported in any project on that machine via its fully qualified package name.
@@ -68,9 +68,13 @@ Thanks to the one command all the initial files and directories are created with
     \item{a \shinline{target} directory for build results}
     \item{a required manifest file named \shinline{Cargo.toml} including the given project name}
     \item{a sample file inside \shinline{src} which is either called \shinline{main.rs} for binaries or \shinline{lib.rs} for libraries containing some sample code
-    \item{and optionally an empty initialized git repository (if the \shinline{-{}-git} command line option has been passed)}
+    \item{and optionally an empty initialized version control repository (\shinline{git} or \shinline{mercurial} if the corresponding command line option has been passed)}
 \end{itemize}
-The resulting application is already runnable via \mdinline{cargo run}\footnote{which is executable anywhere inside the project directory} and produces some output in \texttt{stdout}
+The resulting application is already runnable via \mdinline{cargo run}\footnote{which is executable anywhere inside the project directory} and produces some output in \shinline{stdout}. This process is extremely convenient and error proof since \shinline{cargo} validates all input before executing any task. The \shninline{man} pages and help texts are quite thin at the moment but as with everything in the Rust world \shinline{cargo} is still beein developed.
+
+The overall greated advantage however is that the Rust process does not involve any manual text editing. What might sound trivial at first, is actually quite important for newcomers to the language. You do not have to know any syntax to get started with Rust since the generated code already compiles and does something interesting. In the other languages you have to write a valid, minimal program manually to even test the project setup while Rust is ready to go after just one command.
+
+Of course this strategy is not without limitations.
 
 
 \subsection{Comparison}
