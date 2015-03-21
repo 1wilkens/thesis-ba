@@ -2,6 +2,11 @@ package main
 
 import (
 	"container/heap"
+	"fmt"
+)
+
+const (
+	INFINITY = ^uint(0) // uint.MaxValue
 )
 
 type Node struct {
@@ -36,11 +41,11 @@ type DijkstraGraph struct {
 	parents []int
 }
 
-func NewGraph(cap int) *Graph {
+func NewGraph() *Graph {
 	g := new(Graph)
 
-	g.nodes = make([]Node, cap) // not strictly required but should help performance
-	g.edges = make([]Edge, cap)
+	g.nodes = *new([]Node)
+	g.edges = *new([]Edge)
 
 	g.nodeIdx = make(map[int64]int)
 	g.edgeIdx = make(map[int64]int)
@@ -48,20 +53,39 @@ func NewGraph(cap int) *Graph {
 	return g
 }
 
-func (g *Graph) AddNode(n Node) {
+func (g *Graph) AddNode(n *Node) {
 	g.nodeIdx[n.osmID] = len(g.nodes)
-	g.nodes = append(g.nodes, n)
+	g.nodes = append(g.nodes, *n)
 }
 
-func (g *Graph) AddEdge(n1, n2 int, e Edge) {
+func (g *Graph) AddEdge(n1, n2 int, e *Edge) {
 	// add edge
 	idx := len(g.edges)
-	g.edges = append(g.edges, e)
+	g.edges = append(g.edges, *e)
 	g.edgeIdx[e.osmID] = idx
 
 	// link up adjecents
+	if _, ok := g.nodes[n1].adj[n2]; ok {
+		fmt.Println("Adding duplicate edge")
+	}
 	g.nodes[n1].adj[n2] = idx
 	g.nodes[n2].adj[n1] = idx
+}
+
+func (g *Graph) Print() {
+	fmt.Printf("Nodes (%d):\n", len(g.nodes))
+	for n := range g.nodes {
+		node := g.nodes[n]
+		fmt.Printf("(osm: %d, id: %d)\n", node.osmID, g.nodeIdx[node.osmID])
+	}
+	fmt.Printf("\nEdges (%d):\n", len(g.edges))
+	for n := range g.nodes {
+		node := g.nodes[n]
+		for adj, e := range node.adj {
+			fmt.Printf("N%d -> N%d [label=%d];\n", node.osmID, g.nodes[adj].osmID, g.edges[e].drivingTime)
+		}
+	}
+	fmt.Println("")
 }
 
 func FromGraph(g *Graph) (dg *DijkstraGraph) {
@@ -75,7 +99,7 @@ func FromGraph(g *Graph) (dg *DijkstraGraph) {
 
 func (dg *DijkstraGraph) Dijkstra(start int) {
 	for i := range dg.g.nodes {
-		dg.dist[i] = ^uint(0) // uint.MaxValue
+		dg.dist[i] = INFINITY
 		dg.parents[i] = -1
 	}
 	dg.dist[start] = 0
