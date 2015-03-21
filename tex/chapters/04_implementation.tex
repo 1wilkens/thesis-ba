@@ -80,7 +80,15 @@ Of course this strategy is not without limitations. To be able to use \shinline{
 \subsection{Comparison}
 \label{subsec:Implementation::Setup::Comparison}
 
-For newcomers Rust definitely provides the best experience. One can get a valid \textit{Hello world!} application without any prior knowledge which lowers the barrier of entry dramatically.
+For newcomers Rust definitely provides the best experience. One can get a valid \textit{Hello world!} application without any prior knowledge which lowers the barrier of entry dramatically. In addition Rust does not require any presetup before the first project. just install the language toolchain (either through the operating system's package manager or the very simple setup script~\fnote{\url{https://static.rust-lang.org/rustup.sh}}) and start coding.
+
+Go required some intial setup besides the installation but it still quite easy to setup. The \shinline{GOPATH} exporting is a small annoyance but it balances out with the benefits the developer get later down the line like dependency management. The syntax is very concise so creating a new source file with a \shinline{main} function is still quite fast.
+
+Considering C's long lifespan the tooling for project setup is not very good. Full blown IDEs like Eclipse provide wizards to create all required files but for free standing development with a simple text editor and GNU \textit{make} there is no real automation possible. Naturally it is not hard to create an empty C source file however in this day and age it should not be necessary to manually have to adjust the order of linker flags in the \shinline{Makefile} because of obscure warnings in the compilation process.
+
+This probably does not apply to seasoned C developers and one could make the argument that it is inherent to the language's ``closeness to the metal''. But acknowledging the fact that scientists more often than not see programming as an unwanted necessity to be able to complete their research it is questionable whether this technical know-how should really be required to use a language like C.
+
+//TODO: maybe to wordy?
 
 \section{Counting nodes, ways and relations in an .osm.pbf file}
 \label{sec:Implementation::Counting}
@@ -127,6 +135,21 @@ For newcomers Rust definitely provides the best experience. One can get a valid 
     \caption{Milestone 1: Counting nodes, ways and relations}
     \label{tb:milestone1}
 \end{table}
+
+\subsection{C}
+\label{subsec:Implementation::Counting::C}
+
+
+\subsection{Go}
+\label{subsec:Implementation::Counting::Go}
+
+
+\subsection{Rust}
+\label{subsec:Implementation::Counting::Rust}
+
+
+\subsection{Comparison}
+\label{subsec:Implementation::Counting::Comparison}
 
 \section{Building a basic graph representation for the simulation}
 \label{sec:Implementation::Graph_Representation}
@@ -205,4 +228,26 @@ Milestones:
         - dev-time: 5242 - 1276 = 3966 -> 01:06:06
         - notes:
             - testability
+ - Verify graph structure
+    - Go:
+        - SLOC: 271 total
+        - dev-time: 9851 - 5242 = 4609 -> 01:16:49
+        - run-time: go run main.go graph.go util.go  0,26s user 0,04s system 100% cpu 0,296 total
+        - allocs: total heap usage: 530 allocs, 170 frees, 53,336 bytes allocated
+        - notes:
+            - new vs make, by value <-> by reference
+    - C:
+        - SLOC:
+        - dev-time:
+        - run-time:
+        - allocs:
+        - notes:
+            -
+    - Rust:
+        - SLOC:
+        - dev-time:
+        - run-time:
+        - allocs:
+        - notes:
+            -
 \end{verbatim}
