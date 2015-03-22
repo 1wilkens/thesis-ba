@@ -19,39 +19,37 @@ void pqueue_free(pqueue q)
     free(q);
 }
 
-void pqueue_push(pqueue q, void *data, int pri)
+void pqueue_push(pqueue q, q_elem data)
 {
     q_elem *b = q->buf;
 
     int n = q->n++;
     int m = 0;
     /* append at end, then up heap */
-    while ((m = n / 2) && pri < b[m].pri)
+    while ((m = n / 2) && data->pri < b[m]->pri)
     {
         b[n] = b[m];
         n = m;
     }
-    b[n].data = data;
-    b[n].pri = pri;
+    b[n] = data;
 }
 
-void *pqueue_pop(pqueue q)
+q_elem pqueue_pop(pqueue q)
 {
     if (q->n == 1) return 0;
 
     q_elem *b = q->buf;
 
-    void *result = b[1].data;
-
+    void *result = b[1];
     /* pull last item to top, then down heap. */
     --q->n;
 
     int n = 1, m;
     while ((m = n * 2) < q->n)
     {
-        if (m + 1 < q->n && b[m].pri > b[m + 1].pri) m++;
+        if (m + 1 < q->n && b[m]->pri > b[m + 1]->pri) m++;
 
-        if (b[q->n].pri <= b[m].pri) break;
+        if (b[q->n]->pri <= b[m]->pri) break;
 
         b[n] = b[m];
         n = m;

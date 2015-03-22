@@ -83,7 +83,7 @@ func testGraphStructure() {
 		g.AddNode(&Node{osmID: int64(i * 5), adj: make(map[int]int)})
 	}
 	for i := 0; i < EDGES/2; i++ {
-		n1, n2, n3 := (i * 5), ((i + 2) * 5), ((i + 5) * 5)
+		n1, n2, n3 := i*5, (i+2)*5, (i+5)*5
 		g.AddEdge(int64(n1), int64(n2), &Edge{osmID: int64(i), drivingTime: uint((i % MAX_WEIGTH) + 1)})
 		g.AddEdge(int64(n1), int64(n3), &Edge{osmID: int64(i + EDGES), drivingTime: uint((i + 5%MAX_WEIGTH) + 1)})
 	}

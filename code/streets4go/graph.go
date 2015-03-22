@@ -65,9 +65,9 @@ func (g *Graph) AddEdge(n1, n2 int64, e *Edge) {
 	g.edgeIdx[e.osmID] = idx
 
 	// link up adjecents
-	n1_id, n2_id := g.nodeIdx[n1], g.nodeIdx[n2]
-	g.nodes[n1_id].adj[n2_id] = idx
-	g.nodes[n2_id].adj[n1_id] = idx
+	n1_idx, n2_idx := g.nodeIdx[n1], g.nodeIdx[n2]
+	g.nodes[n1_idx].adj[n2_idx] = idx
+	g.nodes[n2_idx].adj[n1_idx] = idx
 }
 
 func (g *Graph) Print() {

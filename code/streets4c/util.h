@@ -2,14 +2,14 @@
 #define UTIL_H
 
 typedef struct pqueue_t *pqueue;
-typedef struct q_elem_t q_elem;
+typedef struct q_elem_t *q_elem;
 
 // pqueue_t functions and struct
 pqueue pqueue_new(int);
 void pqueue_free(pqueue);
 
-void pqueue_push(pqueue, void*, int);
-void *pqueue_pop(pqueue);
+void pqueue_push(pqueue, q_elem);
+q_elem pqueue_pop(pqueue);
 
 struct pqueue_t
 {
@@ -19,7 +19,7 @@ struct pqueue_t
 
 struct q_elem_t
 {
-    void * data;
+    int idx;
     int pri;
 };
 

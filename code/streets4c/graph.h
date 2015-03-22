@@ -5,6 +5,8 @@
 
 #include "util.h"
 
+#define INFINITY INT_MAX
+
 // typedefs
 typedef struct node_t *node;
 typedef struct edge_t *edge;
@@ -21,17 +23,18 @@ edge new_edge();
 void free_edge(edge);
 
 // graph related functions
-graph new_graph(int);
+void print_graph(graph);
+graph new_graph(int, int);
 void free_graph(graph);
 
 void add_node(graph, node);
 void add_edge(graph, long, long, edge);
 
 // dijkstra functions
-dgraph dgraph_new(graph);
+dgraph new_dgraph(graph);
 void free_dgraph();
 
-void dijkstra(dgraph, node);
+void dijkstra(dgraph, int);
 
 // structs
 struct node_t
