@@ -58,18 +58,16 @@ func (g *Graph) AddNode(n *Node) {
 	g.nodes = append(g.nodes, *n)
 }
 
-func (g *Graph) AddEdge(n1, n2 int, e *Edge) {
+func (g *Graph) AddEdge(n1, n2 int64, e *Edge) {
 	// add edge
 	idx := len(g.edges)
 	g.edges = append(g.edges, *e)
 	g.edgeIdx[e.osmID] = idx
 
 	// link up adjecents
-	if _, ok := g.nodes[n1].adj[n2]; ok {
-		fmt.Println("Adding duplicate edge")
-	}
-	g.nodes[n1].adj[n2] = idx
-	g.nodes[n2].adj[n1] = idx
+	n1_id, n2_id := g.nodeIdx[n1], g.nodeIdx[n2]
+	g.nodes[n1_id].adj[n2_id] = idx
+	g.nodes[n2_id].adj[n1_id] = idx
 }
 
 func (g *Graph) Print() {

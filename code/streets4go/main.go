@@ -12,10 +12,9 @@ import (
 
 const (
 	NODES = 10
-	EDGES = 15
+	EDGES = 16
 
-	MAX_INDEX_NODES = NODES - 1
-	MAX_WEIGTH      = 14
+	MAX_WEIGTH = 14
 )
 
 func main() {
@@ -84,9 +83,9 @@ func testGraphStructure() {
 		g.AddNode(&Node{osmID: int64(i * 5), adj: make(map[int]int)})
 	}
 	for i := 0; i < EDGES/2; i++ {
-		n1, n2, n3 := i%MAX_INDEX_NODES, (i+2)%MAX_INDEX_NODES, (i+5)%MAX_INDEX_NODES
-		g.AddEdge(n1, n2, &Edge{osmID: int64(i), drivingTime: uint((i % MAX_WEIGTH) + 1)})
-		g.AddEdge(n1, n3, &Edge{osmID: int64(i + EDGES), drivingTime: uint((i + 5%MAX_WEIGTH) + 1)})
+		n1, n2, n3 := (i * 5), ((i + 2) * 5), ((i + 5) * 5)
+		g.AddEdge(int64(n1), int64(n2), &Edge{osmID: int64(i), drivingTime: uint((i % MAX_WEIGTH) + 1)})
+		g.AddEdge(int64(n1), int64(n3), &Edge{osmID: int64(i + EDGES), drivingTime: uint((i + 5%MAX_WEIGTH) + 1)})
 	}
 
 	dg := FromGraph(g)
