@@ -31,7 +31,7 @@ All in all the setup in C is quite painless although manual. The only caveat are
 
 For Go the choice of buildtool is nonexistent. The language provides the \shinline{go} executable which is responsible for nearly the complete development cycle. It can compile your code, install arbitrary Go packages from various sources, run tests and format code just to name the most common features.
 
-This makes Go (the language) extremely convenient since everything you want to do is probably one commandline away. For example to get a depdendency one would invoke the tool like so:
+This makes Go (the language) extremely convenient since everything you want to do is probably one commandline away. For example to get a dependency one would invoke the tool like so:
 \mdinline{go get github.com/petar/GoLLRB/llrb}
 \\
 This will download the package in source form which can then be imported in any project on that machine via its fully qualified package name.
@@ -230,19 +230,21 @@ Milestones:
             - testability
  - Verify graph structure
     - Go:
-        - SLOC: 271 total
+        - SLOC: 268 total
         - dev-time: 9851 - 5242 = 4609 -> 01:16:49
-        - run-time: go run main.go graph.go util.go  0,26s user 0,04s system 100% cpu 0,296 total
-        - allocs: total heap usage: 530 allocs, 170 frees, 53,336 bytes allocated
+        - run-time: go run main.go graph.go util.go  0,26s user 0,04s system 99% cpu 0,296 total
+        - allocs: total heap usage: 545 allocs, 174 frees, 55,576 bytes allocated
         - notes:
             - new vs make, by value <-> by reference
     - C:
-        - SLOC:
-        - dev-time:
+        - SLOC: 488 (*.c), 139 (*.h) -> 627 total
+        - dev-time: 18920 - 12110 = 6810 -> 01:53:30
         - run-time:
-        - allocs:
+            - O0: ./streets4c  0,00s user 0,00s system 0% cpu 0,004 total
+            - O3: ./streets4c  0,00s user 0,00s system 0% cpu 0,003 total
+        - allocs: total heap usage: 108 allocs, 106 frees, 7,876 bytes allocated (in use at exit: 2,036 bytes in 2 blocks)
         - notes:
-            -
+            - pqueue problems, glib leaks, bad debugging experience
     - Rust:
         - SLOC:
         - dev-time:
