@@ -62,7 +62,9 @@ The first real milestone was to read a .osm.pbf file and count all nodes, ways a
 
 The next goal was to conceptionally build the graph and related structures the simulation would later operate on. This involved thinking about the relation between edges and nodes as well as the choice of various containers to store the objects efficiently while also keeping access simple. This milestone tested the language's standard libraries and ability to express functions in a compact way (lambda..)
 
-\subsection{Verifying the representation and algorithm}
-\label{subsec:Approach::Implementation::Verifiying}
+\subsection{Verifying structure and algorithm}
+\label{subsec:Approach::Implementation::Verification}
+
+// wording?!
 
 After the base structure to represent graphs and calculate shortest paths is in place it was time to validate the implementations. Unfortunately the OSM data used in the first phase~\ref{subsec:Approach::Implementation::Counting} contained too much nodes and ways to be able to efficiently verify any computed results. Therefore a small example graph was manually populated and fed to the algorithm. However unlike the final application the start and end nodes were fixed to allow for comparable results.

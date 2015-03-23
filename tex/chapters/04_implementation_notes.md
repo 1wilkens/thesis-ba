@@ -1,0 +1,72 @@
+## Milestones: ##
+- Count all nodes, ways and relations in hamburg-latest.osm.pbf
+    - Rust:
+        - SLOC: 36
+        - dev-time: 1989 -> 33:09 min
+        - run-time:
+            - -O0: target/streets4rust ../osm/hamburg-latest.osm.pbf  27,61s user 0,12s system 99% cpu 27,749 total
+            - -O3: target/release/streets4rust ../osm/hamburg-latest.osm.pbf  2,59s user 0,13s system 99% cpu 2,722 total
+        - allocs: total heap usage: 11,373,558 allocs, 11,373,557 frees, 2,186,107,072 bytes allocated
+        - counts: Found 2180418 nodes, 409424 ways and 7182 relations in ../osm/hamburg-latest.osm.pbf
+        - notes:
+            - easy dependency management, huuge optimization gains
+    - Go:
+        - SLOC: 55 (+ helper functions)
+        - dev-time: 1276 -> 21:16 min
+        - run-time:
+            - GOMAXPROCS=1: ./streets4go ../osm/hamburg-latest.osm.pbf  4,85s user 0,05s system 101% cpu 4,846 total
+            - GOMAXPROCS=8: ./streets4go ../osm/hamburg-latest.osm.pbf  9,00s user 0,28s system 672% cpu 1,381 total
+        - allocs: total heap usage: 11,164,068 allocs, 11,000,199 frees, 1,447,543,184 bytes allocated
+        - counts: Found 2180418 nodes, 409424 ways and 7182 relations in ../osm/hamburg-latest.osm.pbf
+        - notes:
+            - library parallelizeable, but singlethreaded slower
+    - C:
+        - SLOC: 55
+        - dev-time: 3078 -> 51:18 min
+        - run-time:
+            - -O0: ./streets4c ../osm/hamburg-latest.osm.pbf  0,95s user 0,07s system 99% cpu 1,017 total
+            - -O3: ./streets4c ../osm/hamburg-latest.osm.pbf  0,92s user 0,08s system 99% cpu 0,994 total
+        - allocs: total heap usage: 2,390,566 allocs, 2,390,566 frees, 372,758,206 bytes allocated
+        - counts: Found 2180418 nodes, 409424 ways and 7182 relations in ../osm/hamburg-latest.osm.pbf
+        - notes:
+            - no library available, linking problems, freeing problems, fastest solution (run), slowest solution (dev)
+- Write basic graph structure
+    - C:
+        - SLOC: 385 (\*.c), 136 (\*.h) -> 521 total
+        - dev-time: 12110 - 3078 = 9032 -> 02:30:32
+        - notes:
+            - glib verbosity, missing generics / typesafety
+    - Rust:
+        - SLOC: 170 total
+        - dev-time: 6457 - 1989 = 4468 -> 01:14:28
+        - notes:
+            - lifetime gotchas (explicit readonly of dg.g etc.)
+    - Go:
+        - SLOC: 196 total (including util (priorityqueue) but excluding test)
+        - dev-time: 5242 - 1276 = 3966 -> 01:06:06
+        - notes:
+            - testability
+ - Verify graph structure
+    - Go:
+        - SLOC: 268 total
+        - dev-time: 9851 - 5242 = 4609 -> 01:16:49
+        - run-time: go run main.go graph.go util.go  0,26s user 0,04s system 99% cpu 0,296 total
+        - allocs: total heap usage: 545 allocs, 174 frees, 55,576 bytes allocated
+        - notes:
+            - new vs make, by value <-> by reference
+    - C:
+        - SLOC: 488 (*.c), 139 (*.h) -> 627 total
+        - dev-time: 18920 - 12110 = 6810 -> 01:53:30
+        - run-time:
+            - O0: ./streets4c  0,00s user 0,00s system 0% cpu 0,004 total
+            - O3: ./streets4c  0,00s user 0,00s system 0% cpu 0,003 total
+        - allocs: total heap usage: 108 allocs, 106 frees, 7,876 bytes allocated (in use at exit: 2,036 bytes in 2 blocks)
+        - notes:
+            - pqueue problems, glib leaks, bad debugging experience
+    - Rust:
+        - SLOC:
+        - dev-time:
+        - run-time:
+        - allocs:
+        - notes:
+            -
