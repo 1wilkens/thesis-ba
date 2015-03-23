@@ -29,7 +29,7 @@ dependencies = [
 
 [[package]]
 name = "gcc"
-version = "0.3.1"
+version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
@@ -42,7 +42,7 @@ name = "miniz-sys"
 version = "0.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "gcc 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gcc 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "libc 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -59,5 +59,5 @@ dependencies = [
 [[package]]
 name = "protobuf"
 version = "0.0.9"
-source = "git+https://github.com/stepancheg/rust-protobuf.git#1578f31740418e6844dbea3ac2bbef135f648a01"
+source = "git+https://github.com/stepancheg/rust-protobuf.git#0654303c22e10e20f3547c6d3b0faea7b4553b83"
 

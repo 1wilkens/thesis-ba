@@ -12,9 +12,12 @@ mod graph;
 fn main() {
     println!("This is streets4rust\n");
 
-    let args: Vec<String> = env::args().collect();
-    let osm_path = Path::new(&args[1]);
+    //let args: Vec<String> = env::args().collect();
+    //count_osm(Path::new(&args[1]));
 
+}
+
+fn count_osm(osm_path: Path) {
     println!("Opening osm file: {}", osm_path.display());
     let osm_file = File::open(&Path::new(&args[1])).unwrap();
     let mut pbf_reader = OsmPbfReader::with_reader(osm_file);
