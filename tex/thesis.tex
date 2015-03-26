@@ -41,19 +41,17 @@
 }}}%
 
 \addto\captionsenglish{% Replace "english" with the language you use
-\renewcommand{\contentsname}%
-	{Table of Contents}%
+	\renewcommand{\contentsname}{Table of Contents}
 }
-
 
 % Modern latin font
 \usepackage{lmodern}
 
 % Various useful packages
 \usepackage[footnote]{acronym}
-\usepackage[page,toc]{appendix}
+\usepackage[page]{appendix}
 \usepackage{booktabs}
-\usepackage[autostyle, babel, strict]{csquotes}
+\usepackage[autostyle,babel,strict]{csquotes}
 %\usepackage{float} % Don't need that for now?
 \usepackage{graphicx}
 \usepackage[htt]{hyphenat}
@@ -76,6 +74,16 @@
 
 % Use hyperref last to make sure it can define all necessary commands
 \usepackage[pdfborder={0 0 0}]{hyperref}
+
+% Use glossaries/xindy after hyperref to make it use links
+\usepackage[nonumberlist,nopostdot,numberedsection=autolabel,toc,xindy]{glossaries}
+\usepackage[xindy]{imakeidx}
+
+% Setup glossaries
+\loadglsentries[main]{misc/glossary}
+\makeglossaries
+\makeindex
+\renewcommand*{\glsautoprefix}{ap:gl_}
 
 % Limit ToC depth
 \setcounter{tocdepth}{1}

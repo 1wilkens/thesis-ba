@@ -28,6 +28,11 @@ echo ""
 biber $file
 echo ""
 
+echo "Running 'makeglossaries -q $file'"
+echo ""
+makeglossaries -q $file
+echo ""
+
 echo "ReRunning '$latex $fileExt' twice"
 echo ""
 $latex $fileExt
@@ -49,6 +54,12 @@ rm $file.lol &> /dev/null
 rm $file.out &> /dev/null
 rm $file.run* &> /dev/null
 rm $file.toc &> /dev/null
+
+rm $file.ac* &> /dev/null
+rm $file.*lg &> /dev/null
+rm $file.gl* &> /dev/null
+rm $file.idx &> /dev/null
+rm $file.xdy &> /dev/null
 
 # Remove .aux files of the chapters
 rm -rf chapters/*.aux
