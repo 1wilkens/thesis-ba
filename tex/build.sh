@@ -54,7 +54,7 @@ rm $file.lol &> /dev/null
 rm $file.out &> /dev/null
 rm $file.run* &> /dev/null
 rm $file.toc &> /dev/null
-
+ 
 rm $file.ac* &> /dev/null
 rm $file.*lg &> /dev/null
 rm $file.gl* &> /dev/null
