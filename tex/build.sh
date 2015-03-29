@@ -29,7 +29,6 @@ biber $file
 echo ""
 
 echo "Running 'makeglossaries -q $file'"
-echo ""
 makeglossaries -q $file
 echo ""
 
