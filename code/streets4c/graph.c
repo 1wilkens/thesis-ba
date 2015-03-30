@@ -100,6 +100,13 @@ void add_node(graph g, node n)
 
 void add_edge(graph g, long n1_id, long n2_id, edge edge)
 {
+    if (!g_hash_table_contains(g->node_idx, GINT_TO_POINTER(n1_id))
+        || !g_hash_table_contains(g->node_idx, GINT_TO_POINTER(n2_id)))
+    {
+        free(edge);
+        return;
+    }
+
     // add edge to graph
     g->edges[g->n_edges] = edge;
     g_hash_table_insert(g->edge_idx, (void*)edge->osm_id, GINT_TO_POINTER(g->n_edges));

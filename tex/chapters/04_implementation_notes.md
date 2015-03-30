@@ -4,7 +4,7 @@
         - SLOC: 36
         - dev-time: 1989 -> 33:09 min
         - run-time:
-            - -O0: target/streets4rust ../osm/hamburg-latest.osm.pbf  27,61s user 0,12s system 99% cpu 27,749 total
+            - -O0: target/debug/streets4rust ../osm/hamburg-latest.osm.pbf  27,61s user 0,12s system 99% cpu 27,749 total
             - -O3: target/release/streets4rust ../osm/hamburg-latest.osm.pbf  2,59s user 0,13s system 99% cpu 2,722 total
         - allocs: total heap usage: 11,373,558 allocs, 11,373,557 frees, 2,186,107,072 bytes allocated
         - counts: Found 2180418 nodes, 409424 ways and 7182 relations in ../osm/hamburg-latest.osm.pbf
@@ -48,25 +48,30 @@
             - testability
  - Verify graph structure
     - Go:
-        - SLOC: 268 total
+        - SLOC: 275 total
+        - binary-size: 2,9M
         - dev-time: 9851 - 5242 = 4609 -> 01:16:49
-        - run-time: go run main.go graph.go util.go  0,26s user 0,04s system 99% cpu 0,296 total
-        - allocs: total heap usage: 545 allocs, 174 frees, 55,576 bytes allocated
+        - run-time: go run main.go graph.go util.go  0,61s user 0,07s system 99% cpu 0,686 total
+        - allocs: total heap usage: 519 allocs, 169 frees, 53016 bytes allocated
         - notes:
             - new vs make, by value <-> by reference
     - C:
-        - SLOC: 488 (*.c), 139 (*.h) -> 627 total
+        - SLOC: 494 (*.c), 139 (*.h) -> 633 total
+        - binary-size: 51K
         - dev-time: 18920 - 12110 = 6810 -> 01:53:30
         - run-time:
             - O0: ./streets4c  0,00s user 0,00s system 0% cpu 0,004 total
             - O3: ./streets4c  0,00s user 0,00s system 0% cpu 0,003 total
-        - allocs: total heap usage: 108 allocs, 106 frees, 7,876 bytes allocated (in use at exit: 2,036 bytes in 2 blocks)
+        - allocs: total heap usage: 107 allocs, 105 frees, 7,868 bytes allocated (in use at exit: 2,036 bytes in 2 blocks)
         - notes:
             - pqueue problems, glib leaks, bad debugging experience
     - Rust:
-        - SLOC:
-        - dev-time:
+        - SLOC: 235
+        - binary-size: 628K
+        - dev-time: 10335 - 6457 = 3878 -> 01:04:38
         - run-time:
-        - allocs:
+            - O0: target/debug/streets4rust  0,00s user 0,00s system 45% cpu 0,007 total
+            - O3: target/release/streets4rust  0,00s user 0,00s system 59% cpu 0,005 total
+        - allocs: total heap usage: 47 allocs, 47 frees, 22,792 bytes allocated
         - notes:
-            -
+            - excessive casting, showed error in other implementations (map.contains), weird vec init syntax, dependency breakage

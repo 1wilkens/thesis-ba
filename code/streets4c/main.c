@@ -60,7 +60,6 @@ static void test_graph_structure(void)
 	{
 		node n = new_node();
 		n->osm_id = i * 5;
-		printf("Adding node: %ld\n", n->osm_id);
 		add_node(g, n);
 	}
 	for (int i = 0; i < EDGES/2; i++)

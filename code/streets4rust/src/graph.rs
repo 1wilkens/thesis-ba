@@ -1,7 +1,9 @@
 use std::collections::hash_map::HashMap;
 use std::collections::binary_heap::BinaryHeap;
 
-struct Node {
+pub const INFINITY: u32 = ::std::u32::MAX;
+
+pub struct Node {
     pub osm_id: i64,
 
     pub lon: f64,
@@ -10,7 +12,7 @@ struct Node {
     pub adj: HashMap<usize, usize>
 }
 
-struct Edge {
+pub struct Edge {
     pub osm_id: i64,
 
     pub length: u32,
@@ -18,7 +20,7 @@ struct Edge {
     pub driving_time: u32
 }
 
-struct Graph {
+pub struct Graph {
     pub nodes: Vec<Node>,
     pub edges: Vec<Edge>,
 
@@ -43,6 +45,10 @@ impl Graph {
     }
 
     pub fn add_edge(&mut self, n1_id: i64, n2_id: i64, e: Edge) {
+        if !self.nodes_idx.contains_key(&n1_id) || !self.nodes_idx.contains_key(&n2_id) {
+            return;
+        }
+
         // add edge to graph
         let edge_idx = self.edges.len();
         self.edges_idx.insert(e.osm_id, edge_idx);
@@ -55,9 +61,23 @@ impl Graph {
         self.nodes[*n1_idx].adj.insert(*n2_idx, edge_idx);
         self.nodes[*n2_idx].adj.insert(*n1_idx, edge_idx);
     }
+
+    pub fn print(&self) {
+        println!("Nodes ({}):", self.nodes.len());
+    	for n in self.nodes.iter() {
+    		println!("(osm: {}, id: {})", n.osm_id, self.nodes_idx[&n.osm_id]);
+    	}
+    	println!("Edges ({}):\n", self.edges.len());
+    	for n in self.nodes.iter() {
+            for (to, edge) in n.adj.iter() {
+                println!("N{} -> N{} [label={}];", n.osm_id, self.nodes[*to].osm_id, self.edges[*edge].driving_time);
+            }
+    	}
+    	println!("");
+    }
 }
 
-struct DijkstraGraph<'a> {
+pub struct DijkstraGraph<'a> {
     pub graph: &'a Graph,
 
     pub queue: BinaryHeap<NodeState>,
@@ -73,17 +93,18 @@ impl <'a> DijkstraGraph<'a> {
 
             queue: BinaryHeap::new(),
 
-            dist: Vec::with_capacity(graph.nodes.len()),
-            parents: Vec::with_capacity(graph.nodes.len())
+            dist: (0..graph.nodes.len()).map(|_| 0u32).collect(),
+            parents: (0..graph.nodes.len()).map(|_| 0usize).collect()
         }
     }
 
     pub fn dijkstra(&mut self, start_node: usize) {
         for i in 0..self.graph.nodes.len() {
-            self.dist[i] = ::std::u32::MAX;
+            self.dist[i] = INFINITY;
             self.parents[i] = -1;
         }
 
+        self.dist[start_node] = 0;
         self.queue.clear(); // just to be sure
         self.queue.push(NodeState { idx: start_node, dist: 0});
 
@@ -112,7 +133,7 @@ impl <'a> DijkstraGraph<'a> {
 }
 
 #[derive(Copy, Eq, PartialEq)]
-struct NodeState {
+pub struct NodeState {
     idx: usize,
     dist: u32
 }

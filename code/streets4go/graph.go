@@ -59,6 +59,13 @@ func (g *Graph) AddNode(n *Node) {
 }
 
 func (g *Graph) AddEdge(n1, n2 int64, e *Edge) {
+	if _, ok := g.nodeIdx[n1]; !ok {
+		return
+	}
+	if _, ok := g.nodeIdx[n2]; !ok {
+		return
+	}
+
 	// add edge
 	idx := len(g.edges)
 	g.edges = append(g.edges, *e)
