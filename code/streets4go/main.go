@@ -20,12 +20,20 @@ const (
 func main() {
 	fmt.Println("This is streets4go")
 
-	//osmPath := os.Args[1]
+	osmPath := os.Args[1]
 	//countOsm(osmPath)
 
-	testGraphStructure()
+	//testGraphStructure()
+
+	benchmarkOsm(osmPath)
 
 	printPerformanceStatistics()
+}
+
+func printPerformanceStatistics() {
+	var m runtime.MemStats
+	runtime.ReadMemStats(&m)
+	fmt.Printf("total heap usage: %d allocs, %d frees, %d bytes allocated\n", m.Mallocs, m.Frees, m.TotalAlloc)
 }
 
 func countOsm(path string) {
@@ -71,12 +79,6 @@ func countOsm(path string) {
 	fmt.Printf("Found %d nodes, %d ways and %d relations in %s\n", nodes, ways, relations, path)
 }
 
-func printPerformanceStatistics() {
-	var m runtime.MemStats
-	runtime.ReadMemStats(&m)
-	fmt.Printf("total heap usage: %d allocs, %d frees, %d bytes allocated\n", m.Mallocs, m.Frees, m.TotalAlloc)
-}
-
 func testGraphStructure() {
 	g := NewGraph()
 	for i := 1; i <= NODES; i++ {
@@ -108,4 +110,72 @@ func testGraphStructure() {
 		fmt.Println("Finished!")
 	}
 
+}
+
+func benchmarkOsm(path string) {
+	osmFile, err := os.Open(path)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer osmFile.Close()
+
+	pbfReader := osmpbf.NewDecoder(osmFile)
+	//runtime.GOMAXPROCS(runtime.NumCPU())
+	fmt.Printf("Opening osm file: %s\n", path)
+	err = pbfReader.Start(runtime.GOMAXPROCS(-1)) // use several goroutines for faster decoding
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	g := NewGraph()
+
+	// edges cannot be directly added since the nodes might not have been discovered yet
+	edges := *new([]Edge)
+	n1, n2 := *new([]int64), *new([]int64)
+
+	for {
+		obj, err := pbfReader.Decode()
+
+		if err == io.EOF {
+			break
+		} else if err != nil {
+			log.Fatal(err)
+		} else {
+			switch obj := obj.(type) {
+			case *osmpbf.Node:
+				g.AddNode(&Node{osmID: obj.ID, lon: obj.Lon, lat: obj.Lat, adj: make(map[int]int)})
+				break
+			case *osmpbf.Way:
+				edges = append(edges, Edge{osmID: obj.ID, maxSpeed: 50})
+				n1 = append(n1, obj.NodeIDs[0])
+				n2 = append(n2, obj.NodeIDs[1])
+				break
+			case *osmpbf.Relation:
+				break
+			default:
+				log.Fatalf("Found unknow type: %T\n", obj)
+				break
+			}
+		}
+	}
+	fmt.Printf("Parsed and added %d nodes..\n", len(g.nodes))
+
+	for i := range edges {
+		e := edges[i]
+		e.length = int(HaversineLength(&g.nodes[g.nodeIdx[n1[i]]], &g.nodes[g.nodeIdx[n2[i]]]))
+		e.drivingTime = uint(e.length)
+		g.AddEdge(n1[i], n2[i], &e)
+	}
+	fmt.Printf("Added %d edges..\n", len(edges))
+
+	g.Print()
+
+	fmt.Println("Calculating shortest paths for all nodes..")
+	dg := FromGraph(g)
+	for i := range g.nodes {
+		dg.Dijkstra(i)
+		if i%100000 == 0 {
+			fmt.Printf("Finished node #%d\n", i)
+		}
+	}
 }

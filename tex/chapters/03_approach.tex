@@ -67,4 +67,9 @@ The next goal was to conceptionally build the graph and related structures the s
 
 // wording?!
 
-After the base structure to represent graphs and calculate shortest paths is in place it was time to validate the implementations. Unfortunately the OSM data used in the first phase~\ref{subsec:Approach::Implementation::Counting} contained too much nodes and ways to be able to efficiently verify any computed results. Therefore a small example graph was manually populated and fed to the algorithm. However unlike the final application the start and end nodes were fixed to allow for comparable results.
+After the base structure to represent graphs and calculate shortest paths was in place it was time to validate the implementations. Unfortunately the OSM data used in the first phase~\ref{subsec:Approach::Implementation::Counting} contained too much nodes and ways to be able to efficiently verify any computed results. Therefore a small example graph was manually populated and fed to the algorithm. However unlike the final application the start and end nodes were fixed to allow for comparable results.
+
+\subsection{Benchmarking \gls{osm} graph performance}
+\label{subsec:Approach::Implementation::Benchmark}
+
+The fourth milestone was preliminary benchmark of the implementations. The basic idea was to parse the \gls{osm} data used in phase one and build the representing graph. After that the shortest path algorithm is executed once for each node. The total execution time as well as the time taken for each step (building the graph and calculating shortest paths) should be measured and compared as well as the usual memory statistics from previous phases.

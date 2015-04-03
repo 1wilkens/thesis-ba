@@ -1,6 +1,7 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+// typedefs
 typedef struct pqueue_t *pqueue;
 typedef struct q_elem_t *q_elem;
 

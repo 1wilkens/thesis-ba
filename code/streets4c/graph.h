@@ -2,10 +2,9 @@
 #define GRAPH_H
 
 #include <glib.h>
-
 #include "util.h"
 
-#define INFINITY INT_MAX
+#define INFINITY INT_MAX // redefine infinity to something useful
 
 // typedefs
 typedef struct node_t *node;
@@ -35,6 +34,11 @@ dgraph new_dgraph(graph);
 void free_dgraph();
 
 void dijkstra(dgraph, int);
+
+// other util functions/macros
+#define RAD(r) (r * 3.14159265358979323846 / 180.0) // M_PI is dropped in C99...
+
+double haversine_length(node, node);
 
 // structs
 struct node_t

@@ -1,7 +1,9 @@
 #include "graph.h"
 
 #include <glib.h>
+
 #include <limits.h>
+#include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -204,4 +206,16 @@ void dijkstra(dgraph dg, int start)
         g_hash_table_foreach(cur->adj, (GHFunc)relax_edge, dg);
         free(tmp);
     }
+}
+
+double haversine_length(node n1, node n2) {
+    double lat1 = RAD(n1->lat);
+    double lon1 = RAD(n1->lon);
+    double lat2 = RAD(n2->lat);
+    double lon2 = RAD(n2->lon);
+    double dlat = lat2 - lat1;
+    double dlon = lon2 - lon1;
+    double a = pow(sin(dlat/2), 2) + cos(lat1) * cos(lat2) * pow(sin(dlon/2), 2);
+    double c = 2 * asin(sqrt(a));
+    return 6367000 * c;  // distance in m
 }

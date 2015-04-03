@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "osmpbfreader.h"
 #include "graph.h"
@@ -101,6 +102,82 @@ static void test_graph_structure(void)
 	}
 
 	free_dgraph(dg);
+	free_graph(g);
+}
+
+static void benchmark_osm(char* path)
+{
+	printf("Opening file %s\n", path);
+	int n_nodes = 0, n_ways = 0;
+
+	osmpbf_reader_t *reader = osmpbf_init(path);
+	OSMPBF__PrimitiveBlock *pb;
+	while((pb = get_next_primitive(reader)) != NULL)
+	{
+		for (size_t i = 0; i < pb->n_primitivegroup; i++)
+		{
+			n_nodes += pb->primitivegroup[i]->n_nodes;
+			if (pb->primitivegroup[i]->dense != NULL)
+			{
+				n_nodes += pb->primitivegroup[i]->dense->n_id;
+			}
+			n_ways += pb->primitivegroup[i]->n_ways;
+		}
+
+		osmpbf__primitive_block__free_unpacked(pb, NULL);
+	}
+	osmpbf_free(reader);
+
+	graph g = new_graph(n_nodes, n_ways);
+	edge *edges = malloc(sizeof(*edges) * n_ways);
+	long *n1 = malloc(sizeof(*n1) * n_ways);
+	long *n2 = malloc(sizeof(*n2) * n_ways);
+	n_ways = 0;
+
+	reader = osmpbf_init(path);
+	while((pb = get_next_primitive(reader)) != NULL)
+	{
+		for (size_t i = 0; i < pb->n_primitivegroup; i++)
+		{
+			OSMPBF__PrimitiveGroup *pg = pb->primitivegroup[i];
+			for (size_t j = 0; j < pg->n_nodes; j++)
+			{
+				node n = new_node();
+				n->osm_id = pg->nodes[i]->id;
+				n->lat = pg->nodes[i]->lat;
+				n->lon = pg->nodes[i]->lon;
+				add_node(g, n);
+			}
+			if (pg->dense != NULL)
+			{
+				OSMPBF__DenseNodes *dn = pg->dense;
+				for (size_t k = 0; k < dn->n_id; k++)
+				{
+					// todo: handle densenodes
+					// node n = new_node();
+					// n->osm_id = pg->nodes[i]->id;
+					// n->lat = pg->nodes[i]->lat;
+					// n->lon = pg->nodes[i]->lon;
+					// add_node(g, n);
+				}
+			}
+			for (size_t j = 0; j < pg->n_ways; j++)
+			{
+				edges[n_ways] = new_edge();
+				edges[n_ways]->osm_id = pg->ways[j]->id;
+				// todo: handle way refs
+				n_ways++;
+			}
+		}
+
+		osmpbf__primitive_block__free_unpacked(pb, NULL);
+	}
+	osmpbf_free(reader);
+
+	free(n1);
+	free(n2);
+	free(edges);
+
 	free_graph(g);
 }
 
