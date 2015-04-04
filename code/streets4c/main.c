@@ -38,6 +38,7 @@ static void count_osm(char* path)
 			for (size_t j = 0; j < pg->n_ways; j++)
 			{
 				OSMPBF__Way *w = pg->ways[j];
+				printf("w.n_refs: %d\n", w->n_refs);
 				ways++;
 			}
 			for (size_t j = 0; j < pg->n_relations; j++)
@@ -144,8 +145,8 @@ static void benchmark_osm(char* path)
 			{
 				node n = new_node();
 				n->osm_id = pg->nodes[i]->id;
-				n->lat = pg->nodes[i]->lat;
-				n->lon = pg->nodes[i]->lon;
+				n->lat = CALC_LAT(pg->nodes[i]->lat, pb);
+				n->lon = CALC_LON(pg->nodes[i]->lon, pb);
 				add_node(g, n);
 			}
 			if (pg->dense != NULL)
@@ -165,7 +166,12 @@ static void benchmark_osm(char* path)
 			{
 				edges[n_ways] = new_edge();
 				edges[n_ways]->osm_id = pg->ways[j]->id;
-				// todo: handle way refs
+
+				long ref = 0;
+				for (size_t k = 0; k < pg->ways[j]->n_refs; k++)
+				{
+
+				}
 				n_ways++;
 			}
 		}
@@ -185,8 +191,9 @@ int main(int argc, char** argv)
 {
 	printf("This is streets4c\n");
 
-	//count_osm(argsv[1]);
-	test_graph_structure();
+	count_osm(argv[1]);
+	//test_graph_structure();
+	//benchmark_osm(argv[1]);
 
 	return 0;
 }

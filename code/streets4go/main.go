@@ -109,7 +109,6 @@ func testGraphStructure() {
 		}
 		fmt.Println("Finished!")
 	}
-
 }
 
 func benchmarkOsm(path string) {
