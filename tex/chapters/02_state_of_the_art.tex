@@ -15,21 +15,24 @@ This chapter describes the current state of the art in high-performance computin
 \section{Programming paradigms in Fortran and C} % change name?
 \label{sec:State_of_the_art::Paradigms}
 
-As stated in~\autoref{sec:Introduction::Motivation} high-performance computing is largely dominated by C and Fortran and although their trademark is mostly performance these two languages achieve this in very different ways.
+As stated in~\autoref{sec:Introduction::Motivation} high-performance computing is largely dominated by C and Fortran and although their trademark is mostly performance these two languages achieve this in very different ways. Unfortunately both approaches are not completely safisfying and could be improved.
 
+Fortran is the traditional choice for \gls{hpc} applications and it's typesystem is very much accustomed to that area. As the name suggests~\fnote{FORTRAN is an acronym for FORmula TRANslation} it was originally developed to allow for easy computation of mathematical formulae on computers. In spite of Fortran beeing one of the oldest programming languages it is actually fairly high-level. It provides \gls{intrinsic} functions for many common mathematical operations such as matrix multiplication or trigonometric functions and a builtin datatype for complex numbers. In addition memory management is nearly nonexistent. In earlier versions of Fortran it was not possible to explicitly allocate data and even in programs writtine in newer revisions of the language allocation and memory sharing often only account for a small fraction of the source code.
 
-To understand why a new language is needed it is essential to understand the shortcomings of these programming veterans. (//language?)
+While this high-level paradigm of scientific programming is certainly well suited for a lot of applications, especially for scientists with mathematical backgrounds, it can also be insufficient in some edge cases. Notably in performance critical sections the \gls{intrinsic} functions sometimes are just not good enough and the programmer has to fall back to manual solutions or external libraries. Because Fortran does not offer fine grained control over memory or other resources some algorithms cannot be fully optimized which can limit performance. Of course this is not the general case and normally the compiler can generate efficient code but in machine dependant regions like caches or loop unrolling Fortran simply does not give the programmer enough control to finetune every last bit.
+
+C on the other hand approaches performance totally different. Developed as a general purpose language it provides the tools to build efficient mathematical functions and datatypes which in turn require a lot more micromanagent than their equivalents from Fortran. 
+
 
 // remove or rephrase this (maybe as the last aragraph of this section?)
 The main drawback of both languages is their age. Although new revisions are regularly aproves Fortran and C strive to be backwards compatible for the most part. This has some very serious consequences especially in their respective syntax. A lot of features of newer standards are integrated suboptimally to preserve backwards compatability.
 
-\subsection*{}
 
 // Candidates here for now might need another chapter for those
 \section{Language candidates}
 \label{sec:State_of_the_art::Candidates}
 
-As previously stated Go and Rust were chosen to be evaluated in the context of \gls{hpc}. This section aims to provide a rough overview of all possible language candidates that were considered for further evaluation in this thesis.
+As previously stated Go and Rust were chosen to be evaluated in the context of \gls{hpc}. This section aims to provide a rough overview of all language candidates that were considered for further evaluation in this thesis.
 
 \subsection*{Python}
 \label{subsec:State_of_the_art::Candidates::Python}
