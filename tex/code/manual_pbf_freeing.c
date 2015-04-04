@@ -19,4 +19,4 @@ while((pb = get_next_primitive(reader)) != NULL)
 
 // regular free function provided by library
 osmpbf_free(reader);
-/* rest of the function */
+/* remaining part of the function */

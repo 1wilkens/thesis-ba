@@ -154,8 +154,10 @@ Considering this fact the \gls{sloc} count is still decent. With the help of a c
 \label{subsec:Implementation::Counting::Go}
 
 To parse the .osm.pbf files \textit{streets4Go} uses an existing library simply called \shinline{osmpbf}~\fnote{\url{https://github.com/qedus/osmpbf}}. The library follows common Go ``best practices'' which makes it easy to use. Internally goroutines are used to decode data in parallel which can then be retrieved through a \shinline{Decoder} struct. The naming of the struct and the corresponding methods follow the conventions of the official Decoder types of the Go standard library. This directly shows in the development time which is the shortes amongst the candidates for this first phase.
+\\
+\lstinputlisting[caption={Dependency management in Go}, label={lst:dependency_management.go}, style=go]{code/dependency_management.go}
 
-Dependency management was very easy and intuitive. As mentioned in the \hyperref[subsec:State_of_the_art::Candidates::Go]{candidate introduction} \mdinline{go get} was used to download the library and a simple import statement was enough to pull in the necessary code. One caveat here is once again Go stricts compilation rules. Since an unused import is a compiler error an/my (//wording?) editor plugin kept deleting the prematurely inserted import statement as part of the saving process. While the auto fix style of tools like \shinline{gofmt} and \shinline{goimports} is certainly helpful for fixing common formatting errors, the loss of control for the developer takes some time to get used to. (//really include that?)
+Dependency management was very easy and intuitive. As mentioned in the \hyperref[subsec:State_of_the_art::Candidates::Go]{candidate introduction} \mdinline{go get} was used to download the library and a simple import statement was enough to pull in the necessary code (see \autoref{lst:dependency_management.go}). One caveat here is once again Go stricts compilation rules. Since an unused import is a compiler error an/my (//wording?) editor plugin kept deleting the prematurely inserted import statement as part of the saving process. While the auto fix style of tools like \shinline{gofmt} and \shinline{goimports} is certainly helpful for fixing common formatting errors, the loss of control for the developer takes some time to get used to. (//really include that?)
 
 Another interesting recorded statistic is the count of \acrlong{sloc}. This count exposes one of the criticisms commonly directed at Go - verbose error handling. Although the code is semantically simpler (no manual memory management, higher level language constructs) the \gls{sloc} count is in fact identical to that of \textit{streets4C}. This is the result of the common four line idiom to handle errors which is used three times in this simple code alone which results in 12 lines.
 \\
@@ -166,7 +168,11 @@ Considering the aforementioned simplicity \textit{streets4Go}'s performance char
 \subsection{Rust}
 \label{subsec:Implementation::Counting::Rust}
 
-\textit{streets4Rust} also had the advantage of an existing library to use to \gls{osm} decoding which is called \textit{osmpbfreader-rs}~\fnote{\url{https://github.com/TeXitoi/osmpbfreader-rs}}.
+\textit{streets4Rust} also had the advantage of an existing library to use for \gls{osm} decoding which is called \textit{osmpbfreader-rs}~\fnote{\url{https://github.com/texitoi/osmpbfreader-rs}}. Similar to Go the dependency management was extremely convenient and simple. The only changes necessary were an added line in the Cargo manifest (Cargo.toml) and an \shinline{extern crate osmpbfreader;} in the crate root \shinline{main.rs}. After that \mdinline{cargo build} downloaded the dependency (which in this case meant cloning the \shinine{git} repository) and integrated it into the compilation process.
+
+Compared to C and Go \textit{streets4Rust} required a medium amount of development time and had the lowest \gls{sloc} count in this phase. This can mainly be attributed to the library's use of common Rust idioms and structures like \shinline{iterators} and \shinline{enums}. Unlike C enums, which are basically named integer constants, the Rust variant provides a lot more features like beeing useable in pattern matching expressions. The next listing shows the complete decode part of this stage which is very compact and easy to understand.  //add implementation details of the lib? (chained interators)
+\\
+\lstinputlisting[caption={\gls{osm} decoding in Rust}, label={lst:osm_decoding.rs}, style=rust]{code/osm_decoding.rs}
 
 \subsection{Comparison}
 \label{subsec:Implementation::Counting::Comparison}

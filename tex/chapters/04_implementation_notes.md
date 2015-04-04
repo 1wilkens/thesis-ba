@@ -46,7 +46,7 @@
         - dev-time: 5242 - 1276 = 3966 -> 01:06:06
         - notes:
             - testability
- - Verify graph structure
+- Verify graph structure
     - Go:
         - SLOC: 275 total
         - binary-size: 2,9M
@@ -75,3 +75,26 @@
         - allocs: total heap usage: 47 allocs, 47 frees, 22,792 bytes allocated
         - notes:
             - excessive casting, showed error in other implementations (map.contains), weird vec init syntax, dependency breakage
+- Benchmark graph structure
+    - Go
+        - SLOC: 361 total
+        - binary-size: 3,2M
+        - dev-time: 12787 - 9851 = 2936 -> 00:48:56
+        - run-time: ./streets4go ../osm/hamburg-latest.osm.pbf 20008,89s user 56,99s system 100% cpu 5:32:59,51 total
+        - allocs: total heap usage: 33962650 allocs, 30991755 frees, 2700293728 bytes allocated
+        - notes:
+            - no RAD in math
+    - C
+        - SLOC:
+        - binary-size:
+        - dev-time:
+        - run-time:
+        - allocs:
+        - notes:
+    - Rust
+        - SLOC:
+        - binary-size:
+        - dev-time:
+        - run-time:
+        - allocs:
+        - notes:
