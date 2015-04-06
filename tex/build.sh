@@ -23,13 +23,18 @@ echo ""
 $latex -draftmode $fileExt
 echo ""
 
+echo "Running 'makeglossaries -q $file'"
+makeglossaries -q $file
+echo ""
+
+echo "ReRunning '$latex -draftmode $fileExt' to generate references in the glossary"
+echo ""
+$latex -draftmode $fileExt
+echo ""
+
 echo "Running 'biber $file'"
 echo ""
 biber $file
-echo ""
-
-echo "Running 'makeglossaries -q $file'"
-makeglossaries -q $file
 echo ""
 
 echo "ReRunning '$latex $fileExt' twice"
@@ -53,7 +58,7 @@ rm $file.lol &> /dev/null
 rm $file.out &> /dev/null
 rm $file.run* &> /dev/null
 rm $file.toc &> /dev/null
- 
+
 rm $file.ac* &> /dev/null
 rm $file.*lg &> /dev/null
 rm $file.gl* &> /dev/null

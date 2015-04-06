@@ -1,18 +1,38 @@
 % acronyms
-\newacronym{beam}{BEAM}{Bogdan/Bj\"orn's Erlang Abstract Machine}
-\newacronym{hpc}{HPC}{high performance computing}
-\newacronym{llvm_ir}{LLVM IR}{LLVM Intermediate Representation}
-\newacronym{mpi}{MPI}{Message Passing Interface}
-\newacronym{osm}{OSM}{OpenStreetMap}
+\newacronym{hpc}{HPC}{high-performance computing}
 \newacronym{sloc}{SLOC}{source lines of code}
 \newacronym{tdd}{TDD}{test-driven development}
 \newacronym{xml}{XML}{Extensible Markup Language}
 
 % regular terms
-\newglossaryentry{Linux}
-{
-  name=Linux,
-  description={is a generic term referring to the family of Unix-like
-               computer operating systems that use the Linux kernel},
-  plural=Linuces
+\newglossaryentry{goroutine}{
+    name={goroutine},
+    description={A lightweigth concurrently executing function which gets multiplexed into OS threads by the Go runtime~\cite{effective_go}},
+    plural={goroutines}
 }
+\newglossaryentry{llvm}{
+    name={LLVM},
+    description={The LLVM Compiler Infrastructure Project (formerly short for Low Level Virtual Machine) is an umbrella project for various compiler and other low-level tools. LLVM Core is the primary subproject and a set of libraries for code generation and optimization for various platforms.~\cite{llvm_main}}
+}
+
+% dual entries
+\newdualentry
+{beam}
+{BEAM}
+{Bogdan/Bj\"orn's Erlang Abstract Machine}
+{The virtual machine which runs Erlang. It loads bytecode which is converted directly to threaded native code and executed.}
+\newdualentry
+{llvm_ir}
+{LLVM IR}
+{LLVM Intermediate Representation}
+{A low level programming language similar to assembly. It is the code representation LLVM uses in its Core libraries. LLVM IR is platform-agnostic with the ``capability of representing `all` high-level languages cleanly.''~\cite{llvm_ir_ref}}
+\newdualentry
+{mpi}
+{MPI}
+{Message Passing Interface}
+{The Message Passing Interface standard is a library specification developed by a committee of vendors, implementors and users. It is the current cominant model used in high-performance computing and implementations for many platforms (both commercial and free) are available including bindings for various programming languages.~\cite{mpi_main, mpi_infiniband}}
+\newdualentry
+{osm}
+{OSM}
+{OpenStreetMap}
+{OpenStreetMap is a collaborative project which aims collect and maintain geographical data about roads, trails, railways stations and more. As the name suggests the data is provided openly under the Open Data Commons Open Database License~\fnote{\url{http://opendatacommons.org/licenses/odbl/}}
