@@ -63,6 +63,7 @@
 \usepackage{textcomp}
 \usepackage[subfigure,titles]{tocloft}
 \usepackage{units}
+\usepackage{xparse}
 
 % Need to add footnote after xcolor to avoid conflict
 \usepackage[usenames, dvipsnames]{xcolor}
@@ -76,8 +77,16 @@
 \usepackage[pdfborder={0 0 0}]{hyperref}
 
 % Use glossaries/xindy after hyperref to make it use links
-\usepackage[nonumberlist,nopostdot,numberedsection=autolabel,toc,xindy]{glossaries}
+\usepackage[nonumberlist,nopostdot,numberedsection=autolabel,style=altlist,toc,xindy]{glossaries}
 \usepackage[xindy]{imakeidx}
+
+% Command to create dual entries (acronyms with description)
+\DeclareDocumentCommand{\newdualentry}{ O{} O{} m m m m } {
+  \newglossaryentry{gls-#3}{name={#5},text={#5\glsadd{#3}},
+    description={#6},#1
+  }
+  \newacronym[see={[Glossary:]{gls-#3}},#2]{#3}{#4}{#5\glsadd{gls-#3}}
+}
 
 % Setup glossaries
 \loadglsentries[main]{misc/glossary}

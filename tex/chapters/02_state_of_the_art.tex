@@ -21,7 +21,7 @@ Fortran is the traditional choice for \gls{hpc} applications and it's typesystem
 
 While this high-level paradigm of scientific programming is certainly well suited for a lot of applications, especially for scientists with mathematical backgrounds, it can also be insufficient in some edge cases. Notably in performance critical sections the \gls{intrinsic} functions sometimes are just not good enough and the programmer has to fall back to manual solutions or external libraries. Because Fortran does not offer fine grained control over memory or other resources some algorithms cannot be fully optimized which can limit performance. Of course this is not the general case and normally the compiler can generate efficient code but in machine dependant regions like caches or loop unrolling Fortran simply does not give the programmer enough control to finetune every last bit.
 
-C on the other hand approaches performance totally different. Developed as a general purpose language it provides the tools to build efficient mathematical functions and datatypes which in turn require a lot more micromanagent than their equivalents from Fortran. 
+C on the other hand approaches performance totally different. Developed as a general purpose language it provides the tools to build efficient mathematical functions and datatypes which in turn require a lot more micromanagent than their equivalents from Fortran.
 
 
 // remove or rephrase this (maybe as the last aragraph of this section?)
@@ -172,4 +172,4 @@ From the here presented candidates Go in particular has been compared to other a
 // needs more work
 
 // really mention this here without \refs?
-Rut on the other hand has not been seriously evaluated in the HPC environment.
+Rust on the other hand has not been seriously evaluated in the HPC environment mostly due to its 
