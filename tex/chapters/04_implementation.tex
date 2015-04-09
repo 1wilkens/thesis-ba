@@ -70,7 +70,7 @@ Thanks to the one command all the initial files and directories are created with
     \item{a sample file inside \shinline{src} which is either called \shinline{main.rs} for binaries or \shinline{lib.rs} for libraries containing some sample code
     \item{and optionally an empty initialized version control repository (\shinline{git} or \shinline{mercurial} if the corresponding command line option has been passed)}
 \end{itemize}
-The resulting application is already runnable via \mdinline{cargo run}\footnote{which is executable anywhere inside the project directory} and produces some output in \shinline{stdout}. This process is extremely convenient and error proof since \shinline{cargo} validates all input before executing any task. The \shninline{man} pages and help texts are quite thin at the moment but as with everything in the Rust world \shinline{cargo} is still beeing developed.
+The resulting application is already runnable via \mdinline{cargo run}\footnote{which is executable anywhere inside the project directory} and produces some output in \shinline{stdout}. This process is extremely convenient and error proof since \shinline{cargo} validates all input before executing any task. The \shinline{man} pages and help texts are quite thin at the moment but as with everything in the Rust world \shinline{cargo} is still beeing developed.
 
 The overall greated advantage however is that the Rust process does not involve any manual text editing. What might sound trivial at first, is actually quite important for newcomers to the language. You do not have to know any syntax to get started with Rust since the generated code already compiles and does something interesting. In the other languages you have to write a valid, minimal program manually to even test the project setup while Rust is ready to go after just one command.
 
@@ -185,6 +185,10 @@ Nontheless the release build shows the power of \gls{llvm}'s various optimizatio
 \section{Building a basic graph representation for the simulation}
 \label{sec:Implementation::Graph_Representation}
 
+The second milestone was to develop a graph structure to represent the street network in memory. Like \textit{streets4MPI} random nodes from this data would then be fed to Dijkstra's SSP algorithm to simulate trips. Since all applications should be parallelized later on the immutable data (such as the edge lengths, \gls{osm} IDs and adjecency lists) needed to be stored separately from the changing data the algorithm required (such as distance and parent arrays). To achieve this all implementations have a \shinline{graph} structure holding the immutable data and a \shinline{dijkstagraph} strcuture to store volatile data alongside some kind of reference (or pointer) to a graph object.
+
+Since this milestone included a preliminary implementation of the actual algorithm it required the use of a priority queue which tests the languages libraries. //TODO: remove this?
+
 \begin{table}[htb]
     \centering
     \begin{tabular}{llll}
@@ -213,13 +217,29 @@ Nontheless the release build shows the power of \gls{llvm}'s various optimizatio
 \subsection{C}
 \label{subsec:Implementation::Graph_Representation::C}
 
+As seen in \autoref{tb:milestone2} this stage resulted in a much higher \gls{sloc} count for C. This is due to the fact that development took place in another source files. To encapsulate graph functionality properly a new file called \shinline{graph.c} was created. Following established conventions this meant also creating a matching header (\shinline{graph.h}) to be able to use the code in the main application. While this separation is decently useful to not have to clobber you source file with ``uninteresting'' structure definitions it also introduces a fair bit of redundancy. Functions are declared in the header and implemented in the source files which means the signature appears twice. In addition C had the unfortunate problem of not having a proper implementation of a priority queue easily available which required the addition of another source file / header combination (\shinline{util.c/h}). This increased the \gls{sloc} count even further and added some additional development time as well.
+
+Implementation wise the graph representation was very straight forward. Similar to the mathematical representation a \shinline{graph} consists of an array of \shinline{node}s and \shinline{edge}s. To be able to map from \gls{osm} IDs to array indices two hash tables were added which map from \lstinline[style=c]{long} to \lstinline[style=c]{int}. The \shinline{dgraph} structure can be created with a pointer to an existing \shinline{graph} and is then able to execute Dijkstra's SSP algorithm.
+\\
+\lstinputlisting[caption={Graph representation in C}, label={lst:graph_representation.c}, style=c]{code/graph_representation.c}
+
+//TODO: add paragraph about the choice of glib
+
+All structures contain the expected data. Only the \shinline{cur} field in \shinline{dgraph} seems a little inconvenient. It needed to be added since \shinline{glib}'s \shinline{GHashTable} only support operations on all key-value-pairs via a function pointer with a single extra argument. Since the algorithm at on particular required access to the currently explored node's index as well as the distance and parent arrays the index needed to be stored in the struct itself.
+
+While the additional field was a minor inconvenience other problematic aspects were the verbose access and missing typesafety of the used \shinline{GHashTable}s. Since C naturally is not typesafe and does not allow for true generic programming via type parameters nearly all generic code is written using \lstinline[style=c]{void*}
 
 \subsection{Go}
 \label{subsec:Implementation::Graph_Representation::Go}
 
+\\
+\lstinputlisting[caption={Graph representation in Go}, label={lst:graph_representation.go}, style=go]{code/graph_representation.go}
 
 \subsection{Rust}
 \label{subsec:Implementation::Graph_Representation::Rust}
+
+\\
+\lstinputlisting[caption={Graph representation in Rust}, label={lst:graph_representation.rs}, style=rust]{code/graph_representation.rs}
 
 
 \subsection{Comparison}

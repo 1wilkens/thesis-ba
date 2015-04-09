@@ -58,9 +58,11 @@
 \usepackage{listings}
 \usepackage{microtype}
 \usepackage{pdflscape}
+\usepackage{pgfplots}
 \usepackage{scrlayer-scrpage}
 \usepackage{subfig}
 \usepackage{textcomp}
+\usepackage{tikz}
 \usepackage[subfigure,titles]{tocloft}
 \usepackage{units}
 \usepackage{xparse}
@@ -92,7 +94,7 @@
 \loadglsentries[main]{misc/glossary}
 \makeglossaries
 \makeindex
-\renewcommand*{\glsautoprefix}{ap:gl_}
+% \renewcommand*{\glsautoprefix}{ap:gl_}
 
 % Limit ToC depth
 \setcounter{tocdepth}{1}
@@ -153,13 +155,14 @@
 \lstdefinestyle{go}{
 	language=C,
 	style=base,
-	morekeywords={func, import, go, make, package}
+	morekeywords={func, type, import, go, make, package, uint, int8, uint8, int16, uint16, int32, uint32, int64, uint64, float32, float64}
 }
 
 \lstdefinestyle{rust}{
 	language=C,
 	style=base,
-	morekeywords={fn, match, mut, in}
+	morekeywords={fn, match, mut, in, use, i8, u8, i16, u16, i32, u32, i64, u64, isize, usize, f32, f64, Vec},
+	stringstyle=\color{black}
 }
 
 \lstdefinestyle{python}{

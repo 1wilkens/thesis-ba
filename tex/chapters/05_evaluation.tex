@@ -5,3 +5,39 @@
 In diesem Kapitel ...
 }
 \bigskip
+
+\begin{tikzpicture}
+    \begin{axis}[
+        xlabel=$Milestone$,
+        ylabel=$SLOC$,
+        xtick={1,2,3},
+        legend pos=north west
+    ]
+
+    \addplot[smooth,red] plot coordinates {
+        (1,55)
+        (2,385)
+        (3,494)
+        (4,600) % estimation
+    };
+    \addlegendentry{C}
+
+    \addplot[smooth,color=blue]
+        plot coordinates {
+            (1,55)
+            (2,196)
+            (3,275)
+            (4,361)
+        };
+    \addlegendentry{Go}
+
+    \addplot[smooth,color=green]
+        plot coordinates {
+            (1,36)
+            (2,170)
+            (3,235)
+            (4,330) % estimation
+        };
+    \addlegendentry{Rust}
+    \end{axis}
+\end{tikzpicture}
