@@ -51,5 +51,5 @@ dependencies = [
 [[package]]
 name = "protobuf"
 version = "0.0.9"
-source = "git+https://github.com/stepancheg/rust-protobuf.git#7b24fa29466e29046c8d0d19a1d2ab14ac23143f"
+source = "git+https://github.com/stepancheg/rust-protobuf.git#a0db737a931e08e4a81b3850fc7c92c8acd30a6a"
 

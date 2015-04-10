@@ -132,7 +132,7 @@ impl <'a> DijkstraGraph<'a> {
     }
 }
 
-#[derive(Copy, Eq, PartialEq)]
+#[derive(Clone, Copy, Eq, PartialEq)]
 pub struct NodeState {
     idx: usize,
     dist: u32
