@@ -9,9 +9,6 @@
 
 #include "util.h"
 
-#define N_ID_TO_IDX(g, id) GPOINTER_TO_INT(g_hash_table_lookup(g->node_idx, (void*)id))
-#define E_ID_TO_IDX(g, id) GPOINTER_TO_INT(g_hash_table_lookup(g->edge_idx, (void*)id))
-
 #define ADD_ADJ_NODE(n1, n2_idx, edge_idx) g_hash_table_insert(n1->adj, GINT_TO_POINTER(n2_idx), GINT_TO_POINTER(edge_idx))
 
 node new_node()
@@ -106,6 +103,7 @@ void add_edge(graph g, long n1_id, long n2_id, edge edge)
         || !g_hash_table_contains(g->node_idx, GINT_TO_POINTER(n2_id)))
     {
         free(edge);
+        printf("f it: n1=%ld, n2=%ld!\n", n1_id, n2_id);
         return;
     }
 

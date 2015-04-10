@@ -77,9 +77,9 @@
             - excessive casting, showed error in other implementations (map.contains), weird vec init syntax, dependency breakage
 - Benchmark graph structure
     - Go
-        - SLOC: 361 total
+        - SLOC: 359 total
         - binary-size: 3,2M
-        - dev-time: 12787 - 9851 = 2936 -> 00:48:56
+        - dev-time: 13227 - 9851 = 3376 -> 00:56:16
         - run-time: ./streets4go ../osm/hamburg-latest.osm.pbf 20008,89s user 56,99s system 100% cpu 5:32:59,51 total
         - allocs: total heap usage: 33962650 allocs, 30991755 frees, 2700293728 bytes allocated
         - notes:

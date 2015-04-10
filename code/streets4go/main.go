@@ -145,9 +145,11 @@ func benchmarkOsm(path string) {
 				g.AddNode(&Node{osmID: obj.ID, lon: obj.Lon, lat: obj.Lat, adj: make(map[int]int)})
 				break
 			case *osmpbf.Way:
-				edges = append(edges, Edge{osmID: obj.ID, maxSpeed: 50})
-				n1 = append(n1, obj.NodeIDs[0])
-				n2 = append(n2, obj.NodeIDs[1])
+				for i := 0; i < len(obj.NodeIDs) - 1; i++ {
+					edges = append(edges, Edge{osmID: obj.ID})
+					n1 = append(n1, obj.NodeIDs[i])
+					n2 = append(n2, obj.NodeIDs[i+1])
+				}
 				break
 			case *osmpbf.Relation:
 				break
@@ -162,18 +164,15 @@ func benchmarkOsm(path string) {
 	for i := range edges {
 		e := edges[i]
 		e.length = int(HaversineLength(&g.nodes[g.nodeIdx[n1[i]]], &g.nodes[g.nodeIdx[n2[i]]]))
-		e.drivingTime = uint(e.length)
 		g.AddEdge(n1[i], n2[i], &e)
 	}
-	fmt.Printf("Added %d edges..\n", len(edges))
-
-	g.Print()
+	fmt.Printf("Added %d edges..\n", len(g.edges))
 
 	fmt.Println("Calculating shortest paths for all nodes..")
 	dg := FromGraph(g)
 	for i := range g.nodes {
 		dg.Dijkstra(i)
-		if i%100000 == 0 {
+		if i+1%100000 == 0 {
 			fmt.Printf("Finished node #%d\n", i)
 		}
 	}

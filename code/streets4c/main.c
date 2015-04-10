@@ -38,7 +38,6 @@ static void count_osm(char* path)
 			for (size_t j = 0; j < pg->n_ways; j++)
 			{
 				OSMPBF__Way *w = pg->ways[j];
-				printf("w.n_refs: %d\n", w->n_refs);
 				ways++;
 			}
 			for (size_t j = 0; j < pg->n_relations; j++)
@@ -109,33 +108,14 @@ static void test_graph_structure(void)
 static void benchmark_osm(char* path)
 {
 	printf("Opening file %s\n", path);
-	int n_nodes = 0, n_ways = 0;
+
+	GPtrArray *nodes = g_ptr_array_new();
+	GPtrArray *edges = g_ptr_array_new();
+	GArray *n1 = g_array_new(TRUE, TRUE, sizeof(long));
+	GArray *n2 = g_array_new(TRUE, TRUE, sizeof(long));
 
 	osmpbf_reader_t *reader = osmpbf_init(path);
 	OSMPBF__PrimitiveBlock *pb;
-	while((pb = get_next_primitive(reader)) != NULL)
-	{
-		for (size_t i = 0; i < pb->n_primitivegroup; i++)
-		{
-			n_nodes += pb->primitivegroup[i]->n_nodes;
-			if (pb->primitivegroup[i]->dense != NULL)
-			{
-				n_nodes += pb->primitivegroup[i]->dense->n_id;
-			}
-			n_ways += pb->primitivegroup[i]->n_ways;
-		}
-
-		osmpbf__primitive_block__free_unpacked(pb, NULL);
-	}
-	osmpbf_free(reader);
-
-	graph g = new_graph(n_nodes, n_ways);
-	edge *edges = malloc(sizeof(*edges) * n_ways);
-	long *n1 = malloc(sizeof(*n1) * n_ways);
-	long *n2 = malloc(sizeof(*n2) * n_ways);
-	n_ways = 0;
-
-	reader = osmpbf_init(path);
 	while((pb = get_next_primitive(reader)) != NULL)
 	{
 		for (size_t i = 0; i < pb->n_primitivegroup; i++)
@@ -147,42 +127,68 @@ static void benchmark_osm(char* path)
 				n->osm_id = pg->nodes[i]->id;
 				n->lat = CALC_LAT(pg->nodes[i]->lat, pb);
 				n->lon = CALC_LON(pg->nodes[i]->lon, pb);
-				add_node(g, n);
+				g_ptr_array_add(nodes, n);
 			}
 			if (pg->dense != NULL)
 			{
 				OSMPBF__DenseNodes *dn = pg->dense;
+				long id = 0;
+				float lat = 0.0, lon = 0.0; // DenseNodes are delta coded
 				for (size_t k = 0; k < dn->n_id; k++)
 				{
-					// todo: handle densenodes
-					// node n = new_node();
-					// n->osm_id = pg->nodes[i]->id;
-					// n->lat = pg->nodes[i]->lat;
-					// n->lon = pg->nodes[i]->lon;
-					// add_node(g, n);
+					id += dn->id[k];
+					lat += dn->lat[k];
+					lon += dn->lon[k];
+
+					node n = new_node();
+					n->osm_id = id;
+					n->lat = CALC_LAT(lat, pb);
+					n->lon = CALC_LON(lon, pb);
+					g_ptr_array_add(nodes, n);
 				}
 			}
 			for (size_t j = 0; j < pg->n_ways; j++)
 			{
-				edges[n_ways] = new_edge();
-				edges[n_ways]->osm_id = pg->ways[j]->id;
-
-				long ref = 0;
-				for (size_t k = 0; k < pg->ways[j]->n_refs; k++)
+				long id = 0;	// refs are delta coded
+				for (size_t k = 0; k < pg->ways[j]->n_refs - 1; k++)
 				{
+					id += pg->ways[j]->refs[k];
+					long id2 = id + pg->ways[j]->refs[k+1]; // need variable for append_val
+					g_array_append_val(n1, id);
+					g_array_append_val(n2, id2);
 
+					edge e = new_edge();
+					e->osm_id = pg->ways[j]->id;
+					g_ptr_array_add(edges, e);
 				}
-				n_ways++;
 			}
 		}
-
 		osmpbf__primitive_block__free_unpacked(pb, NULL);
 	}
 	osmpbf_free(reader);
 
-	free(n1);
-	free(n2);
-	free(edges);
+	graph g = new_graph(nodes->len, edges->len);
+	for (size_t i = 0; i < nodes->len; i++)
+	{
+		// add nodes
+		add_node(g, g_ptr_array_index(nodes, i));
+	}
+	g_ptr_array_free(nodes, TRUE);
+	printf("Parsed and added %d nodes..\n", g->n_nodes);
+
+	for (size_t i = 0; i < edges->len; i++)
+	{
+		// add edges
+		long n_1 = g_array_index(n1, long, i);
+		long n_2 = g_array_index(n2, long, i);
+		edge e = g_ptr_array_index(edges, i);
+		e->length = haversine_length(g->nodes[N_ID_TO_IDX(g, n_1)], g->nodes[N_ID_TO_IDX(g, n_2)]);
+		add_edge(g, n_1, n_2, e);
+	}
+	g_array_free(n1, TRUE);
+	g_array_free(n2, TRUE);
+	g_ptr_array_free(edges, TRUE);
+	printf("Added %d edges..\n", g->n_edges);
 
 	free_graph(g);
 }
@@ -191,9 +197,9 @@ int main(int argc, char** argv)
 {
 	printf("This is streets4c\n");
 
-	count_osm(argv[1]);
+	//count_osm(argv[1]);
 	//test_graph_structure();
-	//benchmark_osm(argv[1]);
+	benchmark_osm(argv[1]);
 
 	return 0;
 }

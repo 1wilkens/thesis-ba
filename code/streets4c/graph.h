@@ -6,6 +6,9 @@
 
 #define INFINITY INT_MAX // redefine infinity to something useful
 
+#define N_ID_TO_IDX(g, id) GPOINTER_TO_INT(g_hash_table_lookup(g->node_idx, (void*)id)) // useful coversion macros
+#define E_ID_TO_IDX(g, id) GPOINTER_TO_INT(g_hash_table_lookup(g->edge_idx, (void*)id))
+
 // typedefs
 typedef struct node_t *node;
 typedef struct edge_t *edge;
