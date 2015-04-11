@@ -52,7 +52,7 @@
         - binary-size: 2,9M
         - dev-time: 9851 - 5242 = 4609 -> 01:16:49
         - run-time: ./streets4go 0,61s user 0,07s system 99% cpu 0,686 total
-        - allocs: total heap usage: 519 allocs, 169 frees, 53016 bytes allocated
+        - allocs: total heap usage: 519 allocs, 169 frees, 53,016 bytes allocated
         - notes:
             - new vs make, by value <-> by reference
     - C:
@@ -66,7 +66,7 @@
         - notes:
             - pqueue problems, glib leaks, bad debugging experience
     - Rust:
-        - SLOC: 235
+        - SLOC: 232
         - binary-size: 628K
         - dev-time: 10335 - 6457 = 3878 -> 01:04:38
         - run-time:

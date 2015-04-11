@@ -114,11 +114,11 @@ This probably does not apply to seasoned C developers and one could make the arg
             & 33:09 \\
 
         Execution time (sec)
-            & 1,017 (-O0)
-            & 4,846 (GOMAXPROCS=1)
-            & 27,749 (-O0) \\
-            & 0,994 (-O3)
-            & 1,381 (GOMAXPROCS=8)
+            & 1.017 (-O0)
+            & 4.846 (GOMAXPROCS=1)
+            & 27.749 (-O0) \\
+            & 0.994 (-O3)
+            & 1.381 (GOMAXPROCS=8)
             & \hspace{6pt}2,722 (-O3) \\
 
         Allocation count
@@ -262,30 +262,35 @@ While the additional field was a minor inconvenience other problematic aspects w
         SLOC (total)
             & 637
             & 268
-            & xxx \\
+            & 232 \\
 
         Development time (hours)
             & 01:53:30
             & 01:16:49
-            & xx:xx:xx \\
+            & 01:04:38 \\
 
-        Execution time (sec)
-            & 0,004 (-O0)
-            & 0,296
-            & x,xxx (-O0) \\
-            & 0,003 (-O3)
+        Execution time (seconds)
+            & 0.004 (-O0)
+            & 0.296
+            & 0.007 (-O0) \\
+            & 0.003 (-O3)
             & % itentionally blank since no parallel version was build
-            & x,xxx (-O3) \\
+            & 0.005 (-O3) \\
 
         Allocation count
             & 108
-            & 545\fnote{See footnote 3}
-            & xxx \\
+            & 519\fnote{See footnote 3}
+            &  47 \\
 
         Free count
             & 106\fnote{Due to the use of GLib some global state remains reachable after exiting. This is likely intended behaviour and not a memory leak. \\add link?}
-            & 174\fnote{See footnote 3}
-            & xxx \\
+            & 169\fnote{See footnote 3}
+            &  47 \\
+
+        Allocation amount (bytes)
+            & 7,868\fnote{2,036 bytes were in use at exit see footnote xx}
+            & 53,016
+            & 22,792
         \bottomrule
     \end{tabular}
     \caption{Milestone 3: Verifying the implementation}
