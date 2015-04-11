@@ -1,3 +1,5 @@
+#![feature(collections)]
+
 extern crate osmpbfreader;
 
 #[allow(dead_code)]
@@ -19,9 +21,10 @@ const MAX_WEIGTH: i64 = 14;
 fn main() {
     println!("This is streets4rust\n");
 
-    //let args: Vec<String> = env::args().collect();
+    let args: Vec<String> = env::args().collect();
     //count_osm(Path::new(&args[1]));
-    test_graph_structure();
+    //test_graph_structure();
+    benchmark_osm(Path::new(&args[1]));
 }
 
 fn count_osm(osm_path: &Path) {
@@ -50,15 +53,12 @@ fn count_osm(osm_path: &Path) {
 fn test_graph_structure() {
     let mut g = Graph::new();
 	for i in 1i64..NODES+1 {
-		let n = Node{ osm_id: i * 5, lat: 0f64, lon: 0f64, adj: HashMap::new() };
-		g.add_node(n);
+		g.add_node(Node{ osm_id: i * 5, lat: 0f64, lon: 0f64, adj: HashMap::new() });
 	}
 	for i in 0i64..(EDGES/2) {
 		let (n1, n2, n3): (i64, i64, i64) = (i * 5, (i + 2) * 5, (i + 5) * 5);
-		let e = Edge{ osm_id: i, length: 0, max_speed: 0, driving_time: ((i % MAX_WEIGTH) + 1) as u32 };
-		g.add_edge(n1, n2, e);
-		let e = Edge{ osm_id: i + EDGES, length: 0, max_speed: 0, driving_time: ((i + 5%MAX_WEIGTH) + 1) as u32 };
-		g.add_edge(n1, n3, e);
+		g.add_edge(n1, n2, Edge{ osm_id: i, length: 0, max_speed: 0, driving_time: ((i % MAX_WEIGTH) + 1) as u32 });
+		g.add_edge(n1, n3, Edge{ osm_id: i + EDGES, length: 0, max_speed: 0, driving_time: ((i + 5%MAX_WEIGTH) + 1) as u32 });
 	}
 
 	g.print();
@@ -80,4 +80,35 @@ fn test_graph_structure() {
 		}
 		println!("Finished!");
 	}
+}
+
+fn benchmark_osm(osm_path: &Path) {
+    println!("Opening osm file: {}", osm_path.display());
+    let osm_file = File::open(osm_path).unwrap();
+    let mut pbf_reader = OsmPbfReader::with_reader(osm_file);
+
+    let mut g = Graph::new();
+    let mut edges = Vec::new();
+    let mut indices = Vec::new();
+
+    for block in pbf_reader.primitive_blocks().map(|b| b.unwrap()) {
+        for obj in blocks::iter(&block) {
+            match obj {
+                objects::OsmObj::Node(ref n) =>
+                    g.add_node(Node{ osm_id: n.id, lat: n.lat, lon: n.lon, adj: HashMap::new()}),
+                objects::OsmObj::Way(ref w)  => {
+                    for i in 0..(w.nodes.len()-1) {
+                        edges.push(Edge{ osm_id: w.id, length: 0, max_speed: 0, driving_time: 0 });
+                        indices.push((w.nodes[i], w.nodes[i+1]));
+                    }
+                }
+                objects::OsmObj::Relation(_) => ()
+                //_                                   => println!("Found unknown object")
+            }
+        }
+    }
+    for (mut e, (n1, n2)) in edges.drain().zip(indices.drain()) {
+        e.length = graph::haversine_length(&g.nodes[g.nodes_idx[&n1]], &g.nodes[g.nodes_idx[&n2]]) as u32;
+        g.add_edge(n1, n2, e);
+    }
 }
