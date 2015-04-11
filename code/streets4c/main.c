@@ -176,6 +176,7 @@ static void benchmark_osm(char* path)
 	g_ptr_array_free(nodes, TRUE);
 	printf("Parsed and added %d nodes..\n", g->n_nodes);
 
+	int c = 0;
 	for (size_t i = 0; i < edges->len; i++)
 	{
 		// add edges
@@ -183,6 +184,8 @@ static void benchmark_osm(char* path)
 		long n_2 = g_array_index(n2, long, i);
 		edge e = g_ptr_array_index(edges, i);
 		e->length = haversine_length(g->nodes[N_ID_TO_IDX(g, n_1)], g->nodes[N_ID_TO_IDX(g, n_2)]);
+		if (e->length == 0)
+			printf("length %d\n", c++);
 		add_edge(g, n_1, n_2, e);
 	}
 	g_array_free(n1, TRUE);
@@ -190,6 +193,19 @@ static void benchmark_osm(char* path)
 	g_ptr_array_free(edges, TRUE);
 	printf("Added %d edges..\n", g->n_edges);
 
+	printf("Calculating shortest paths for all nodes..\n");
+	dgraph dg = new_dgraph(g);
+	for (size_t i = 0; i < g->n_nodes; i++)
+	{
+		printf("Starting node #%d\n", i);
+		dijkstra(dg, i);
+		printf("Finished node #%d\n", i);
+		if (i+1%100000 == 0)
+		{
+			printf("Finished node #%d\n", i);
+		}
+	}
+	free_dgraph(dg);
 	free_graph(g);
 }
 

@@ -151,6 +151,7 @@ void free_dgraph(dgraph dg)
 
 static void relax_edge(gpointer key, gpointer value, gpointer user_data)
 {
+    //printf("relaxing edges\n");
     dgraph dg = (dgraph)user_data;
 
     int to_idx = GPOINTER_TO_INT(key);
@@ -158,6 +159,13 @@ static void relax_edge(gpointer key, gpointer value, gpointer user_data)
 
     int w_cur = dg->dist[to_idx];
     int w_new = dg->dist[dg->cur] + via->driving_time;
+
+    if (w_new == 0 || w_cur == 0)
+    {
+        printf("that is wrong w_new=%d, w_cur=%d, to_idx=%d, osm_id=%ld\n", w_new, w_cur, to_idx, dg->g->nodes[to_idx]->osm_id);
+        int i = *(int*)0;
+        printf("%d", i);
+    }
 
     if (w_new > 0 && w_new < w_cur)
     {
@@ -198,6 +206,7 @@ void dijkstra(dgraph dg, int start)
     q_elem tmp;
     while((tmp = pqueue_pop(dg->pq)))
     {
+        //printf("popped elem\n");
         // relax adjecent edges
         dg->cur = tmp->idx;
         node cur = dg->g->nodes[dg->cur];
