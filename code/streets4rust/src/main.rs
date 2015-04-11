@@ -19,7 +19,7 @@ const EDGES: i64 = 16;
 const MAX_WEIGTH: i64 = 14;
 
 fn main() {
-    println!("This is streets4rust\n");
+    println!("This is streets4rust");
 
     let args: Vec<String> = env::args().collect();
     //count_osm(Path::new(&args[1]));
@@ -103,12 +103,23 @@ fn benchmark_osm(osm_path: &Path) {
                     }
                 }
                 objects::OsmObj::Relation(_) => ()
-                //_                                   => println!("Found unknown object")
             }
         }
     }
+    println!("Parsed and added {} nodes..", g.nodes.len());
+
     for (mut e, (n1, n2)) in edges.drain().zip(indices.drain()) {
         e.length = graph::haversine_length(&g.nodes[g.nodes_idx[&n1]], &g.nodes[g.nodes_idx[&n2]]) as u32;
         g.add_edge(n1, n2, e);
+    }
+    println!("Added {} edges..", g.edges.len());
+
+    println!("Calculating shortest paths for all nodes..");
+    let mut dg = DijkstraGraph::from_graph(&g);
+    for i in 0..1_000_000 {
+        dg.dijkstra(i);
+        if i+1%10000 == 0 {
+            println!("Finished node #{}", i);
+        }
     }
 }
