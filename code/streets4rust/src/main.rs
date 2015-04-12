@@ -116,10 +116,10 @@ fn benchmark_osm(osm_path: &Path) {
 
     println!("Calculating shortest paths for all nodes..");
     let mut dg = DijkstraGraph::from_graph(&g);
-    for i in 0..1_000_000 {
+    for i in 0..100_000 {
         dg.dijkstra(i);
-        if i+1%10000 == 0 {
-            println!("Finished node #{}", i);
+        if (i+1)%1000 == 0 {
+            println!("Finished node #{}", i+1);
         }
     }
 }
