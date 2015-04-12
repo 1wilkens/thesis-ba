@@ -92,9 +92,9 @@
         - allocs:
         - notes:
     - Rust
-        - SLOC:
-        - binary-size:
-        - dev-time:
-        - run-time:
+        - SLOC: 286
+        - binary-size: 741K
+        - dev-time: 13055 - 10335 = 2720 -> 00:45:20
+        - run-time: target/release/streets4rust ../osm/hamburg-latest.osm.pbf  27066,70s user 21,27s system 99% cpu 7:31:36,61 total
         - allocs:
         - notes:
