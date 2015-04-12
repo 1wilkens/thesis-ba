@@ -195,14 +195,14 @@ static void benchmark_osm(char* path)
 
 	printf("Calculating shortest paths for all nodes..\n");
 	dgraph dg = new_dgraph(g);
-	for (size_t i = 0; i < g->n_nodes; i++)
+	for (size_t i = 0; i < 100000; i++)
 	{
 		printf("Starting node #%d\n", i);
 		dijkstra(dg, i);
 		printf("Finished node #%d\n", i);
-		if (i+1%100000 == 0)
+		if ((i+1)%10000 == 0)
 		{
-			printf("Finished node #%d\n", i);
+			printf("Finished node #%d\n", i+1);
 		}
 	}
 	free_dgraph(dg);

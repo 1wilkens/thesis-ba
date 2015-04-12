@@ -170,10 +170,10 @@ func benchmarkOsm(path string) {
 
 	fmt.Println("Calculating shortest paths for all nodes..")
 	dg := FromGraph(g)
-	for i := range g.nodes {
+	for i := 0; i < 100000; i++ {
 		dg.Dijkstra(i)
-		if i+1%100000 == 0 {
-			fmt.Printf("Finished node #%d\n", i)
+		if (i+1)%10000 == 0 {
+			fmt.Printf("Finished node #%d\n", i+1)
 		}
 	}
 }
