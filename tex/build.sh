@@ -9,7 +9,7 @@ mode=${1:-"default"}
 
 if [ $mode == "full" ]; then
 	echo "Performing a full build inluding software configuration.."
-	echo ""
+	echo
 	uname -a > misc/uname.cfg
 	lscpu > misc/lscpu.cfg
 	gcc --version > misc/gcc.version
@@ -19,32 +19,32 @@ if [ $mode == "full" ]; then
 fi
 
 echo "Running '$latex -draftmode $fileExt'"
-echo ""
+echo
 $latex -draftmode $fileExt
-echo ""
+echo
 
 echo "Running 'makeglossaries -q $file'"
 makeglossaries -q $file
-echo ""
+echo
 
 echo "ReRunning '$latex -draftmode $fileExt' to generate references in the glossary"
-echo ""
+echo
 $latex -draftmode $fileExt
-echo ""
+echo
 
 echo "Running 'biber $file'"
-echo ""
+echo
 biber $file
-echo ""
+echo
 
 echo "ReRunning '$latex $fileExt' twice"
-echo ""
+echo
 $latex $fileExt
 $latex $fileExt
 
-echo ""
+echo
 echo "Cleaning up.."
-echo ""
+echo
 
 rm $file.aux &> /dev/null
 
