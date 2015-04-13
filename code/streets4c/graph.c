@@ -50,18 +50,18 @@ static void print_adj(gpointer key, gpointer value, gpointer user_data)
 void print_graph(graph g)
 {
     printf("Nodes (%d):\n", g->n_nodes);
-	for (int i = 0; i < g->n_nodes; i++)
+    for (int i = 0; i < g->n_nodes; i++)
     {
-		node n = g->nodes[i];
-		printf("(osm: %ld, id: %d)\n", n->osm_id, N_ID_TO_IDX(g, n->osm_id));
-	}
-	printf("\nEdges (%d):\n", g->n_edges);
-	for (int i = 0; i < g->n_nodes; i++)
+        node n = g->nodes[i];
+        printf("(osm: %ld, id: %d)\n", n->osm_id, N_ID_TO_IDX(g, n->osm_id));
+    }
+    printf("\nEdges (%d):\n", g->n_edges);
+    for (int i = 0; i < g->n_nodes; i++)
     {
-		current = g->nodes[i];
-		g_hash_table_foreach(current->adj, (GHFunc)print_adj, g);
-	}
-	printf("\n");
+        current = g->nodes[i];
+        g_hash_table_foreach(current->adj, (GHFunc)print_adj, g);
+    }
+    printf("\n");
 }
 
 graph new_graph(int nodes, int edges)

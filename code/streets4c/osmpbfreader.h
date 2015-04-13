@@ -11,9 +11,9 @@ typedef struct osmpbf_reader_t osmpbf_reader_t;
 
 struct osmpbf_reader_t
 {
-	FILE *file;
-	uint8_t *buf;
-	uint8_t *unpack_buf;
+    FILE *file;
+    uint8_t *buf;
+    uint8_t *unpack_buf;
 };
 
 osmpbf_reader_t *osmpbf_init(const char*);

@@ -64,16 +64,16 @@ impl Graph {
 
     pub fn print(&self) {
         println!("Nodes ({}):", self.nodes.len());
-    	for n in self.nodes.iter() {
-    		println!("(osm: {}, id: {})", n.osm_id, self.nodes_idx[&n.osm_id]);
-    	}
-    	println!("Edges ({}):\n", self.edges.len());
-    	for n in self.nodes.iter() {
+        for n in self.nodes.iter() {
+            println!("(osm: {}, id: {})", n.osm_id, self.nodes_idx[&n.osm_id]);
+        }
+        println!("Edges ({}):\n", self.edges.len());
+        for n in self.nodes.iter() {
             for (to, edge) in n.adj.iter() {
                 println!("N{} -> N{} [label={}];", n.osm_id, self.nodes[*to].osm_id, self.edges[*edge].driving_time);
             }
-    	}
-    	println!("");
+        }
+        println!("");
     }
 }
 
@@ -135,10 +135,10 @@ impl <'a> DijkstraGraph<'a> {
 pub fn haversine_length(n1: &Node, n2: &Node) -> f64 {
     let (lat1, lon1) = (n1.lat.to_radians(), n1.lon.to_radians());
     let (lat2, lon2) = (n2.lat.to_radians(), n2.lon.to_radians());
-	let (dlat, dlon) = (lat2 - lat1, lon2 - lon1);
-	let a = (dlat/2_f64).sin().powi(2) + lat1.cos() * lat2.cos() * (dlon/2_f64).sin().powi(2);
-	let c = 2_f64 * a.sqrt().asin();
-	c * 6367000_f64 // distance in m
+    let (dlat, dlon) = (lat2 - lat1, lon2 - lon1);
+    let a = (dlat/2_f64).sin().powi(2) + lat1.cos() * lat2.cos() * (dlon/2_f64).sin().powi(2);
+    let c = 2_f64 * a.sqrt().asin();
+    c * 6367000_f64 // distance in m
 }
 
 #[derive(Clone, Copy, Eq, PartialEq)]

@@ -52,34 +52,34 @@ fn count_osm(osm_path: &Path) {
 
 fn test_graph_structure() {
     let mut g = Graph::new();
-	for i in 1i64..NODES+1 {
-		g.add_node(Node{ osm_id: i * 5, lat: 0f64, lon: 0f64, adj: HashMap::new() });
-	}
-	for i in 0i64..(EDGES/2) {
-		let (n1, n2, n3): (i64, i64, i64) = (i * 5, (i + 2) * 5, (i + 5) * 5);
-		g.add_edge(n1, n2, Edge{ osm_id: i, length: 0, max_speed: 0, driving_time: ((i % MAX_WEIGTH) + 1) as u32 });
-		g.add_edge(n1, n3, Edge{ osm_id: i + EDGES, length: 0, max_speed: 0, driving_time: ((i + 5%MAX_WEIGTH) + 1) as u32 });
-	}
+    for i in 1i64..NODES+1 {
+        g.add_node(Node{ osm_id: i * 5, lat: 0f64, lon: 0f64, adj: HashMap::new() });
+    }
+    for i in 0i64..(EDGES/2) {
+        let (n1, n2, n3): (i64, i64, i64) = (i * 5, (i + 2) * 5, (i + 5) * 5);
+        g.add_edge(n1, n2, Edge{ osm_id: i, length: 0, max_speed: 0, driving_time: ((i % MAX_WEIGTH) + 1) as u32 });
+        g.add_edge(n1, n3, Edge{ osm_id: i + EDGES, length: 0, max_speed: 0, driving_time: ((i + 5%MAX_WEIGTH) + 1) as u32 });
+    }
 
-	g.print();
-	let mut dg = DijkstraGraph::from_graph(&g);
+    g.print();
+    let mut dg = DijkstraGraph::from_graph(&g);
 
-	dg.dijkstra(0);
-	let s = &dg.graph.nodes[0];
+    dg.dijkstra(0);
+    let s = &dg.graph.nodes[0];
 
-	for i in 1..10 {
+    for i in 1..10 {
         let mut p = &dg.graph.nodes[i];
-		if dg.dist[i] == INFINITY {
-			println!("Skipping {} since its unreachable!", p.osm_id);
-			continue;
-		}
-		println!("Started @ {} with distance: {}", p.osm_id, dg.dist[i]);
-		while s.osm_id != p.osm_id {
-			p = &dg.graph.nodes[dg.parents[dg.graph.nodes_idx[&p.osm_id]]];
-			println!("Discovered {}", p.osm_id);
-		}
-		println!("Finished!");
-	}
+        if dg.dist[i] == INFINITY {
+            println!("Skipping {} since its unreachable!", p.osm_id);
+            continue;
+        }
+        println!("Started @ {} with distance: {}", p.osm_id, dg.dist[i]);
+        while s.osm_id != p.osm_id {
+            p = &dg.graph.nodes[dg.parents[dg.graph.nodes_idx[&p.osm_id]]];
+            println!("Discovered {}", p.osm_id);
+        }
+        println!("Finished!");
+    }
 }
 
 fn benchmark_osm(osm_path: &Path) {
