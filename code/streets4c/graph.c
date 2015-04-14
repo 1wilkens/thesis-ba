@@ -103,7 +103,6 @@ void add_edge(graph g, long n1_id, long n2_id, edge edge)
         || !g_hash_table_contains(g->node_idx, GINT_TO_POINTER(n2_id)))
     {
         free(edge);
-        printf("f it: n1=%ld, n2=%ld!\n", n1_id, n2_id);
         return;
     }
 
@@ -151,21 +150,13 @@ void free_dgraph(dgraph dg)
 
 static void relax_edge(gpointer key, gpointer value, gpointer user_data)
 {
-    //printf("relaxing edges\n");
     dgraph dg = (dgraph)user_data;
 
     int to_idx = GPOINTER_TO_INT(key);
     edge via = dg->g->edges[GPOINTER_TO_INT(value)];
 
     int w_cur = dg->dist[to_idx];
-    int w_new = dg->dist[dg->cur] + via->driving_time;
-
-    if (w_new == 0 || w_cur == 0)
-    {
-        printf("that is wrong w_new=%d, w_cur=%d, to_idx=%d, osm_id=%ld\n", w_new, w_cur, to_idx, dg->g->nodes[to_idx]->osm_id);
-        int i = *(int*)0;
-        printf("%d", i);
-    }
+    int w_new = dg->dist[dg->cur] + via->length;
 
     if (w_new > 0 && w_new < w_cur)
     {
@@ -188,7 +179,7 @@ void dijkstra(dgraph dg, int start)
     // reset distances and parents
     for (size_t i = 0; i < nn; i++)
     {
-        dg->dist[i] = INFINITY;
+        dg->dist[i] = INT_MAX;
         dg->parents[i] = -1;
     }
 
@@ -206,7 +197,6 @@ void dijkstra(dgraph dg, int start)
     q_elem tmp;
     while((tmp = pqueue_pop(dg->pq)))
     {
-        //printf("popped elem\n");
         // relax adjecent edges
         dg->cur = tmp->idx;
         node cur = dg->g->nodes[dg->cur];

@@ -21,7 +21,10 @@ void osmpbf_free(osmpbf_reader_t*);
 
 OSMPBF__PrimitiveBlock *get_next_primitive(osmpbf_reader_t *r);
 
-#define CALC_LAT(lat, pb) (exp(-9) * (pb->lat_offset + (pb->granularity * lat)))
-#define CALC_LON(lon, pb) (exp(-9) * (pb->lon_offset + (pb->granularity * lon)))
+//#define CALC_LAT(lat, pb) (exp(-9) * (pb->lat_offset + (pb->granularity * lat)))
+//#define CALC_LON(lon, pb) (exp(-9) * (pb->lon_offset + (pb->granularity * lon)))
+
+#define CALC_LAT(lat, pb) lat/10000000.00   // What the actual hell? above formula should be correct..
+#define CALC_LON(lon, pb) lon/10000000.00
 
 #endif

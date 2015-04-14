@@ -132,8 +132,7 @@ static void benchmark_osm(char* path)
             if (pg->dense != NULL)
             {
                 OSMPBF__DenseNodes *dn = pg->dense;
-                long id = 0;
-                float lat = 0.0, lon = 0.0; // DenseNodes are delta coded
+                long id = 0, lat = 0.0, lon = 0.0; // DenseNodes are delta coded
                 for (size_t k = 0; k < dn->n_id; k++)
                 {
                     id += dn->id[k];
@@ -176,7 +175,6 @@ static void benchmark_osm(char* path)
     g_ptr_array_free(nodes, TRUE);
     printf("Parsed and added %d nodes..\n", g->n_nodes);
 
-    int c = 0;
     for (size_t i = 0; i < edges->len; i++)
     {
         // add edges
@@ -184,8 +182,6 @@ static void benchmark_osm(char* path)
         long n_2 = g_array_index(n2, long, i);
         edge e = g_ptr_array_index(edges, i);
         e->length = haversine_length(g->nodes[N_ID_TO_IDX(g, n_1)], g->nodes[N_ID_TO_IDX(g, n_2)]);
-        if (e->length == 0)
-            printf("length %d\n", c++);
         add_edge(g, n_1, n_2, e);
     }
     g_array_free(n1, TRUE);
@@ -197,12 +193,10 @@ static void benchmark_osm(char* path)
     dgraph dg = new_dgraph(g);
     for (size_t i = 0; i < 100000; i++)
     {
-        printf("Starting node #%d\n", i);
         dijkstra(dg, i);
-        printf("Finished node #%d\n", i);
-        if ((i+1)%10000 == 0)
+        if ((i+1)%1000 == 0)
         {
-            printf("Finished node #%d\n", i+1);
+            printf("Finished node #%zu\n", i+1);
         }
     }
     free_dgraph(dg);
