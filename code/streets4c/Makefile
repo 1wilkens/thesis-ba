@@ -9,14 +9,10 @@ OBJ       = osmpbfreader.o graph.o util.o
 all: streets4c
 
 streets4c: main.o $(OBJ)
-    $(CC) $(CFLAGS) -o streets4c main.o $(OBJ) $(LDLIBS)
-
-test: test.o $(OBJ)
-    $(CC) $(CFLAGS) -o test test.o $(OBJ) $(LDLIBS)
-    ./test
+	$(CC) $(CFLAGS) -o streets4c main.o $(OBJ) $(LDLIBS)
 
 %.o: %.c
-    $(CC) $(CFLAGS) -c $<
+	$(CC) $(CFLAGS) -c $<
 
 clean:
-    rm -rf *.o streets4c test
+	rm -rf *.o streets4c test
