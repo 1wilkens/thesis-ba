@@ -82,19 +82,24 @@
         - dev-time: 13227 - 9851 = 3376 -> 00:56:16
         - run-time: ./streets4go ../osm/hamburg-latest.osm.pbf 20008,89s user 56,99s system 100% cpu 5:32:59,51 total
         - allocs: total heap usage: 33962650 allocs, 30991755 frees, 2700293728 bytes allocated
+        - avg RAM usage: 1551M
         - notes:
             - no RAD in math
     - C
-        - SLOC:
-        - binary-size:
-        - dev-time:
+        - SLOC: 757 total
+        - binary-size: 89K
+        - dev-time: 22492 - 18920 =
         - run-time:
         - allocs:
+        - avg RAM usage: 994M
         - notes:
+            - implementation problems, low memory footprint
     - Rust
-        - SLOC: 286
-        - binary-size: 741K
+        - SLOC: 292 total
+        - binary-size: 747K
         - dev-time: 13055 - 10335 = 2720 -> 00:45:20
         - run-time: target/release/streets4rust ../osm/hamburg-latest.osm.pbf  27066,70s user 21,27s system 99% cpu 7:31:36,61 total
         - allocs:
+        - avg RAM usage:
         - notes:
+            - high ram usage?

@@ -113,6 +113,7 @@ fn benchmark_osm(osm_path: &Path) {
         g.add_edge(n1, n2, e);
     }
     println!("Added {} edges..", g.edges.len());
+    g.finalize();
 
     println!("Calculating shortest paths for all nodes..");
     let mut dg = DijkstraGraph::from_graph(&g);

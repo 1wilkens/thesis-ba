@@ -172,7 +172,7 @@ func benchmarkOsm(path string) {
     dg := FromGraph(g)
     for i := 0; i < 100000; i++ {
         dg.Dijkstra(i)
-        if (i+1)%10000 == 0 {
+        if (i+1)%1000 == 0 {
             fmt.Printf("Finished node #%d\n", i+1)
         }
     }

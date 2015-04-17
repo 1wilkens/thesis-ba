@@ -62,6 +62,11 @@ impl Graph {
         self.nodes[*n2_idx].adj.insert(*n1_idx, edge_idx);
     }
 
+    pub fn finalize(&mut self) {
+        self.nodes.shrink_to_fit();
+        self.edges.shrink_to_fit();
+    }
+
     pub fn print(&self) {
         println!("Nodes ({}):", self.nodes.len());
         for n in self.nodes.iter() {
