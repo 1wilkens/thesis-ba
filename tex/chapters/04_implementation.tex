@@ -182,12 +182,12 @@ Nontheless the release build shows the power of \gls{llvm}'s various optimizatio
 \subsection{Comparison}
 \label{subsec:Implementation::Counting::Comparison}
 
-\section{Building a basic graph representation for the simulation}
+\section{Building a basic graph representation}
 \label{sec:Implementation::Graph_Representation}
 
-The second milestone was to develop a graph structure to represent the street network in memory. Like \textit{streets4MPI} random nodes from this data would then be fed to Dijkstra's SSP algorithm to simulate trips. Since all applications should be parallelized later on the immutable data (such as the edge lengths, \gls{osm} IDs and adjecency lists) needed to be stored separately from the changing data the algorithm required (such as distance and parent arrays). To achieve this all implementations have a \shinline{graph} structure holding the immutable data and a \shinline{dijkstagraph} strcuture to store volatile data alongside some kind of reference (or pointer) to a graph object.
+The second milestone was to develop a graph structure to represent the street network in memory. Like in \textit{streets4MPI} random nodes from this data would then be fed to Dijkstra's shortest path algorithm to simulate trips. Since all applications should be parallelized later on the immutable data (such as the edge lengths, \gls{osm} IDs and adjecency lists) needed to be stored separately from the changing data the algorithm required (such as distance and parent arrays). To achieve this all implementations have a \shinline{graph} structure holding the immutable data and a \shinline{dijkstragraph} structure to store volatile data for the algorithm alongside some kind of reference (or pointer) to a graph object.
 
-Since this milestone included a preliminary implementation of the actual algorithm it required the use of a priority queue which tests the languages libraries. //TODO: remove this?
+Since this milestone included a preliminary implementation of the actual algorithm it required the use of a priority queue which was not directly available in all languages. Considering this fact the third milestone already highlighted some differences in comprehensiveness of the different standard libraries.
 
 \begin{table}[htb]
     \centering
@@ -217,26 +217,43 @@ Since this milestone included a preliminary implementation of the actual algorit
 \subsection{C}
 \label{subsec:Implementation::Graph_Representation::C}
 
-As seen in \autoref{tb:milestone2} this stage resulted in a much higher \gls{sloc} count for C. This is due to the fact that development took place in another source files. To encapsulate graph functionality properly a new file called \shinline{graph.c} was created. Following established conventions this meant also creating a matching header (\shinline{graph.h}) to be able to use the code in the main application. While this separation is decently useful to not have to clobber you source file with ``uninteresting'' structure definitions it also introduces a fair bit of redundancy. Functions are declared in the header and implemented in the source files which means the signature appears twice. In addition C had the unfortunate problem of not having a proper implementation of a priority queue easily available which required the addition of another source file / header combination (\shinline{util.c/h}). This increased the \gls{sloc} count even further and added some additional development time as well.
+As seen in \autoref{tb:milestone2} this stage resulted in a much higher \gls{sloc} count for C. This is due to the fact that development took place in another source files. To encapsulate graph functionality properly a new file called \shinline{graph.c} was created. Following established conventions this meant also creating a matching header (\shinline{graph.h}) to be able to use the newly written code in the main application. While this separation is decently useful to not have to clobber you source file with structure definitions it also introduces a fair bit of redundancy. Functions are declared in the header and implemented in the source files which means the signature appears twice. In addition C had the unfortunate problem of not having a proper implementation of a priority queue easily available which required the addition of another source file / header combination (\shinline{util.c/h}). This increased the \gls{sloc} count even further and added some additional development time as well.
 
-Implementation wise the graph representation was very straight forward. Similar to the mathematical representation a \shinline{graph} consists of an array of \shinline{node}s and \shinline{edge}s. To be able to map from \gls{osm} IDs to array indices two hash tables were added which map from \lstinline[style=c]{long} to \lstinline[style=c]{int}. The \shinline{dgraph} structure can be created with a pointer to an existing \shinline{graph} and is then able to execute Dijkstra's SSP algorithm.
+At this point it became clear the C version would not be created dependency free. Advanced data structures such as hash tables or growing arrays are essential when properly modelling a graph and the choice was made to use the popular \textit{GLib}~\fnote{\url{https://developer.gnome.org/glib/stable/}} to provide these types. It is a commonly used library containing data structures, threading routines, conversion functions or macros and much more. Since both Rust and Go's standard library are mch more comprehensive then C's the addition of GLib to the project is easily justified.
+
+Implementing the graph representation itself was very straight forward. Similar to the mathematical representation a \shinline{graph} in \textit{streets4C} consists of an array of \shinline{node}s and \shinline{edge}s. To be able to map from \gls{osm} IDs to array indices two hash tables were added using \lstinline[style=c]{long}s as keys and \lstinline[style=c]{int}s as values. The \shinline{dgraph} structure can be created with a pointer to an existing \shinline{graph} and is then able to execute Dijkstra's \acrshort{sssp} algorithm.
 \\
 \lstinputlisting[caption={Graph representation in C}, label={lst:graph_representation.c}, style=c]{code/graph_representation.c}
 
-//TODO: add paragraph about the choice of glib
+All structures contain the expected data. Only the \shinline{cur} field in \shinline{dgraph} seems a little inconvenient. It needed to be added since Glib's \shinline{GHashTable} only support operations on all key-value-pairs via a function pointer with a single extra argument. Since the algorithm at on particular required access to the currently explored node's index as well as the distance and parent arrays the index needed to be stored in the struct itself.
 
-All structures contain the expected data. Only the \shinline{cur} field in \shinline{dgraph} seems a little inconvenient. It needed to be added since \shinline{glib}'s \shinline{GHashTable} only support operations on all key-value-pairs via a function pointer with a single extra argument. Since the algorithm at on particular required access to the currently explored node's index as well as the distance and parent arrays the index needed to be stored in the struct itself.
+While the additional field was a minor inconvenience other problematic aspects were the verbose access and missing typesafety of the used \shinline{GHashTable}s\fnote{The hash table implementation provided by GLib}. Since C is not typesafe by design and does not allow for true generic programming via type parameters nearly all generic code is written using \lstinline[style=c]{void*}. This leads to very verbose code because of the high amount of casts involved when accessing or storing values inside the data structures mentioned earlier.
 
-While the additional field was a minor inconvenience other problematic aspects were the verbose access and missing typesafety of the used \shinline{GHashTable}s. Since C naturally is not typesafe and does not allow for true generic programming via type parameters nearly all generic code is written using \lstinline[style=c]{void*}
+Another complication was the use of integers as keys in \shinline{GHashTable}. It requires both key an value to be a gpointer (which is a platform independant \lstinline{void} pointer) which forces the programmer to either allocate the integer key on the heap or explicitly cast it to the correct type. This works well using a macro provided by GLib until the number zero appears as a value because it represent the \shinline{NULL} pointer which GHashTable also uses to indicate a key was not found in the hash table.
+
+//TODO: short description of the algorithm (add listing?)
+
+All in all the experience was very poor compared to the other languages. Handling various corner cases with low to no real support from the compiler takes time which could be spent implementing actual functionality.
 
 \subsection{Go}
 \label{subsec:Implementation::Graph_Representation::Go}
 
+For Go a similar approach was chosen. The graph is again mostly composed of two arrays holding all nodes and edges. However unlike the native C variants Go's \shinline{slices} and \shinline{maps} are dynamically growing which means the constructor function of the graph does not require capacity parameters. In general the development process was once again very smooth and simple which shows in the short time spent and the low \gls{sloc} count.
 \\
 \lstinputlisting[caption={Graph representation in Go}, label={lst:graph_representation.go}, style=go]{code/graph_representation.go}
 
+As the listing shows the structures are nearly identical to their C counterparts. Only the current node index in DijkstraGraph was not required since Go allows for much better iteration through maps. It is also interesting to note that Go supports (and even encourages) the declaration of multiple fields of the same type on the same line. Although this was used only two times in the snippet it shrinks the line count while keeping the code understandable since two fields with identical types are often related anyway.
+
+As stated in the introductory part the Dijkstra's algorithm depedends on a priority queue. Despite the fact that Go's standard library does not directly provide a ready to use implementation thereof the required steps were minimal. The package \shinline{container\textbackslash heap}\fnote{\url{http://golang.org/pkg/container/heap/}} offers a convenient way to work with any kind of heap. The only restriction is that the underlying data structure implements a special interface containing common operations used to \textit{heapify} the stored data. Since interfaces are implicitly implemented on all structures which present the necessary methods it was a simple task to create a full featured priority queue on top of a slice by writing just four trivial methods.
+\\
+\lstinputlisting[caption={Priority queue in Go}, label={lst:priority_queue.go}, style=go]{code/priority_queue.go}
+
+While the heap implementation was provided by the standard library (which is likely to be correct) it required the custom methods of \autoref{lst:priority_queue.go} to be correct. At this point Go's builtin test functionality came in handy. All it took to test the custom implementation was to create another file called \shinline{util_test.go} (adding the suffix ``_test'' to my already existing \shinline{util.go}) and write a simple test. No import besides the \textit{testing} package were needed since the code resided in the same package as the main application and all test got executed with a single call of \mdinline{go test} from the commandline. In contrast the C implementation of the queue required the setup of an additional source file including a regular main function which then had to manually compiled and run. In addition some basic error formatting and output\fnote{Which potentially could also contain errors(!)} had to be written to properly locate potential errors in the implementation. While all test related statistics are not counted in either language, Go's testing workflow is clearly superior to the manual C approach.
+
 \subsection{Rust}
 \label{subsec:Implementation::Graph_Representation::Rust}
+
+As expected \textit{streets4Rust} uses once again the same structures to model the graph data.
 
 \\
 \lstinputlisting[caption={Graph representation in Rust}, label={lst:graph_representation.rs}, style=rust]{code/graph_representation.rs}
@@ -263,6 +280,11 @@ While the additional field was a minor inconvenience other problematic aspects w
             & 637
             & 268
             & 232 \\
+
+        Binary size
+            & 51 KB
+            & 2.9 MB
+            & 628 KB \\
 
         Development time (hours)
             & 01:53:30
@@ -311,3 +333,63 @@ While the additional field was a minor inconvenience other problematic aspects w
 
 \subsection{Comparison}
 \label{subsec:Implementation::Verification::Comparison}
+
+
+\section{Sequential benchmark}
+\label{sec:Implementation::SequentialBenchmark}
+
+\begin{table}[htb]
+    \centering
+    \begin{tabular}{llll}
+        \toprule
+        % Header
+            & C
+            & Go
+            & Rust \\
+        \midrule
+
+        SLOC (total)
+            & 757
+            & 359
+            & 292 \\
+
+        Binary size
+            & 89 KB
+            & 3.2 MB
+            & 747 KB \\
+
+        Development time (hours)
+            & 01:14:32
+            & 00:56:16
+            & 00:45:20 \\
+
+        Execution time (hours)
+            & 08:34:01 (-O3)
+            & 09:08:19
+            & 07:31:37 (-O3) \\
+
+        Memory usage (MB)
+            & 994
+            & 1551
+            & 2235 \\
+
+        \bottomrule
+    \end{tabular}
+    \caption{Milestone 4: Sequential benchmark}
+    \label{tb:milestone4}
+\end{table}
+
+\subsection{C}
+\label{subsec:Implementation::SequentialBenchmark::C}
+
+
+\subsection{Go}
+\label{subsec:Implementation::SequentialBenchmark::Go}
+
+
+\subsection{Rust}
+\label{subsec:Implementation::SequentialBenchmark::Rust}
+
+
+\subsection{Comparison}
+\label{subsec:Implementation::SequentialBenchmark::Comparison}

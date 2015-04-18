@@ -64,7 +64,7 @@ The first stage of development was to create project skeletons and infrastructur
 
 The first real milestone was to read a .osm.pbf file and count all nodes, ways and relations in it. This was done to get familiar with the required libraries and the file format in general. The time recorded began from the initial project created in stage 0 and finished after the milestone was reached. As this is the most input and output intensive stage it already showed some key differences between the candidates both in speed as well as memory consumption.
 
-\subsection{Building a basic graph representation for the simulation}
+\subsection{Building a basic graph representation}
 \label{subsec:Approach::Implementation::Graph_Representation}
 
 The next goal was to conceptionally build the graph and related structures the simulation would later operate on. This involved thinking about the relation between edges and nodes as well as the choice of various containers to store the objects efficiently while also keeping access simple. This milestone tested the language's standard libraries and ability to express functions in a compact way (lambda..)
@@ -74,9 +74,14 @@ The next goal was to conceptionally build the graph and related structures the s
 
 // wording?!
 
-After the base structure to represent graphs and calculate shortest paths was in place it was time to validate the implementations. Unfortunately the OSM data used in the first phase~\ref{subsec:Approach::Implementation::Counting} contained too much nodes and ways to be able to efficiently verify any computed results. Therefore a small example graph was manually populated and fed to the algorithm. However unlike the final application the start and end nodes were fixed to allow for comparable results.
+After the base structure to represent graphs and calculate shortest paths was in place it was time to validate the implementations. Unfortunately the OSM data used in the first phase~\ref{subsec:Approach::Implementation::Counting} contained too much nodes and ways to be able to efficiently verify any computed results. Therefore a small example graph was manually populated and fed to the algorithm.
 
-\subsection{Benchmarking \gls{osm} graph performance}
-\label{subsec:Approach::Implementation::Benchmark}
+\subsection{Benchmarking graph performance}
+\label{subsec:Approach::Implementation::SequentialBenchmark}
 
 The fourth milestone was preliminary benchmark of the implementations. The basic idea was to parse the \gls{osm} data used in phase one and build the representing graph. After that the shortest path algorithm is executed once for each node. The total execution time as well as the time taken for each step (building the graph and calculating shortest paths) should be measured and compared as well as the usual memory statistics from previous phases.
+
+\subsection{Benchmarking parallel execution}
+\label{subsec:Approach::Implementation::ParallelBenchmark}
+
+The fifth and final stage consisted of modifying the existing benchmark to operate in parallel via threading and benchmarking the results for various configurations. While all the development and previous benchmarks were performed on a personal laptop the final benchmarks were taken on a cluster(??) of the DKRZ to gather relevant results in high concurrency situations.
