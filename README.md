@@ -5,7 +5,7 @@ My bachelor's thesis titled "Evaluation of performance and productivity metrics 
 
 ### Building instructions
 
-The thesis is written in LaTex so you will need a working Tex installation (usually TexLive on *nix systems) to compile it successfully. For convenience there is a script bash script in the tex folder `build.sh` which will compile everything (including sources) and output a single file `thesis.pdf`.
+The thesis is written in LaTex so you will need a working Tex installation (usually TexLive on *nix systems) to compile it successfully. For convenience there is a shell script in the tex folder `build.sh` which will compile everything (including sources) and output a single file `thesis.pdf`.
 
 Currently this file is also checked into git but that may change once the work is finished.
 
