@@ -4,6 +4,7 @@ import (
     "fmt"
     "io"
     "log"
+    "strconv"
     "sync"
     "os"
     "runtime"
@@ -12,126 +13,28 @@ import (
 )
 
 const (
-    NODES = 10
-    EDGES = 16
-
-    MAX_WEIGTH = 14
-
     NUM_NODES = 100000
     NUM_THREADS = 4
 )
 
 func main() {
+    path := os.Args[1]
+    num_threads := NUM_THREADS;
+    if len(os.Args) > 2 {
+        num_threads, _ = strconv.Atoi(os.Args[2])
+    }
     fmt.Println("This is streets4go")
+    fmt.Printf("Starting with NUM_THREADS=%d, NUM_NODES=%d\n", num_threads, NUM_NODES);
 
-    osmPath := os.Args[1]
-    //countOsm(osmPath)
-
-    //testGraphStructure()
-
-    benchmarkOsm(osmPath)
-
-    printPerformanceStatistics()
-}
-
-func printPerformanceStatistics() {
-    var m runtime.MemStats
-    runtime.ReadMemStats(&m)
-    fmt.Printf("total heap usage: %d allocs, %d frees, %d bytes allocated\n", m.Mallocs, m.Frees, m.TotalAlloc)
-}
-
-func countOsm(path string) {
-    osmFile, err := os.Open(path)
-    if err != nil {
-        log.Fatal(err)
-    }
+    osmFile, _ := os.Open(path)
     defer osmFile.Close()
 
     pbfReader := osmpbf.NewDecoder(osmFile)
-    //runtime.GOMAXPROCS(runtime.NumCPU())
+    runtime.GOMAXPROCS(runtime.NumCPU())
     fmt.Printf("Opening osm file: %s\n", path)
-    err = pbfReader.Start(runtime.GOMAXPROCS(-1)) // use several goroutines for faster decoding
-    if err != nil {
-        log.Fatal(err)
-    }
-
-    var nodes, ways, relations uint64
-    for {
-        obj, err := pbfReader.Decode()
-
-        if err == io.EOF {
-            break
-        } else if err != nil {
-            log.Fatal(err)
-        } else {
-            switch obj := obj.(type) {
-            case *osmpbf.Node:
-                nodes++
-                break
-            case *osmpbf.Way:
-                ways++
-                break
-            case *osmpbf.Relation:
-                relations++
-                break
-            default:
-                log.Fatalf("Found unknow type: %T\n", obj)
-                break
-            }
-        }
-    }
-    fmt.Printf("Found %d nodes, %d ways and %d relations in %s\n", nodes, ways, relations, path)
-}
-
-func testGraphStructure() {
-    g := NewGraph()
-    for i := 1; i <= NODES; i++ {
-        g.AddNode(&Node{osmID: int64(i * 5), adj: make(map[int]int)})
-    }
-    for i := 0; i < EDGES/2; i++ {
-        n1, n2, n3 := i*5, (i+2)*5, (i+5)*5
-        g.AddEdge(int64(n1), int64(n2), &Edge{osmID: int64(i), drivingTime: uint((i % MAX_WEIGTH) + 1)})
-        g.AddEdge(int64(n1), int64(n3), &Edge{osmID: int64(i + EDGES), drivingTime: uint((i + 5%MAX_WEIGTH) + 1)})
-    }
-
-    dg := FromGraph(g)
-    dg.g.Print()
-
-    dg.Dijkstra(0)
-    s := &dg.g.nodes[0]
-
-    for i := 1; i < 10; i++ {
-        p := &dg.g.nodes[i]
-        if dg.dist[i] == INFINITY {
-            fmt.Printf("Skipping %d since its unreachable!\n", p.osmID)
-            continue
-        }
-        fmt.Printf("Started @ %d with distance: %d\n", p.osmID, dg.dist[i])
-        for s != p {
-            p = &dg.g.nodes[dg.parents[dg.g.nodeIdx[p.osmID]]]
-            fmt.Printf("Discovered %d\n", p.osmID)
-        }
-        fmt.Println("Finished!")
-    }
-}
-
-func benchmarkOsm(path string) {
-    osmFile, err := os.Open(path)
-    if err != nil {
-        log.Fatal(err)
-    }
-    defer osmFile.Close()
-
-    pbfReader := osmpbf.NewDecoder(osmFile)
-    //runtime.GOMAXPROCS(runtime.NumCPU())
-    fmt.Printf("Opening osm file: %s\n", path)
-    err = pbfReader.Start(runtime.GOMAXPROCS(-1)) // use several goroutines for faster decoding
-    if err != nil {
-        log.Fatal(err)
-    }
+    _ = pbfReader.Start(runtime.GOMAXPROCS(-1)) // use several goroutines for faster decoding
 
     g := NewGraph()
-
     // edges cannot be directly added since the nodes might not have been discovered yet
     edges := *new([]Edge)
     n1, n2 := *new([]int64), *new([]int64)
@@ -172,14 +75,14 @@ func benchmarkOsm(path string) {
     }
     fmt.Printf("Added %d edges..\n", len(g.edges))
 
-    fmt.Println("Calculating shortest paths for all nodes..")
-    nodes_per_thread := NUM_NODES / NUM_THREADS
+    fmt.Printf("Calculating shortest paths for the first %d nodes..\n", NUM_NODES)
+    nodes_per_thread := NUM_NODES / num_threads;
 
     // To wait goroutines later on
     var wg sync.WaitGroup
-    runtime.GOMAXPROCS(NUM_THREADS)
+    runtime.GOMAXPROCS(num_threads)
 
-    for i := 0; i < NUM_THREADS; i++ {
+    for i := 0; i < num_threads; i++ {
         wg.Add(1)   // Increase WaitGroup counter
         go func(id int) {
             defer wg.Done() // Decrease counter when the goroutine exits
@@ -198,4 +101,5 @@ func benchmarkOsm(path string) {
     }
 
     wg.Wait()
+    fmt.Println("Finished all calculations!")
 }
