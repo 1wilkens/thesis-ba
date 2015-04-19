@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <omp.h>
+
 #include "osmpbfreader.h"
 #include "graph.h"
 
@@ -8,6 +10,9 @@
 #define EDGES 16
 
 #define MAX_WEIGTH 14
+
+#define NUM_NODES 100000
+#define NUM_THREADS 4
 
 static void count_osm(char* path)
 {
@@ -190,16 +195,31 @@ static void benchmark_osm(char* path)
     printf("Added %d edges..\n", g->n_edges);
 
     printf("Calculating shortest paths for all nodes..\n");
-    dgraph dg = new_dgraph(g);
-    for (size_t i = 0; i < 100000; i++)
+    int nodes_per_thread = NUM_NODES / NUM_THREADS;
+
+    // Setup OpenMP
+    omp_set_dynamic(0);
+    omp_set_num_threads(NUM_THREADS);
+
+    #pragma omp parallel    // This block runs in each of the NUM_THREADS worker threads
     {
-        dijkstra(dg, i);
-        if ((i+1)%1000 == 0)
+        int id = omp_get_thread_num();
+        int first = id * nodes_per_thread;
+        int last = first + nodes_per_thread;
+
+        dgraph dg = new_dgraph(g);
+        printf("[Thread #%d] Starting calculation from %d to %d\n", id, first, last);
+        for (int i = first; i < last; i++)
         {
-            printf("Finished node #%zu\n", i+1);
+            dijkstra(dg, i);
+            if ((i+1)%1000 == 0)
+            {
+                printf("[Thread #%d] Finished node #%d\n", id, i+1);
+            }
         }
+        free_dgraph(dg);
     }
-    free_dgraph(dg);
+
     free_graph(g);
 }
 

@@ -20,8 +20,8 @@ const NODES: i64 = 10;
 const EDGES: i64 = 16;
 const MAX_WEIGTH: i64 = 14;
 
-const NODES_TO_CALCULATE: usize = 100_000;
-const THREADS: usize = 4;
+const NUM_NODES: usize = 100_000;
+const NUM_THREADS: usize = 4;
 
 fn main() {
     println!("This is streets4rust");
@@ -122,11 +122,11 @@ fn benchmark_osm(osm_path: &Path) {
     let graph = &g; // immutable reference to copy into the closures below
 
     println!("Calculating shortest paths for all nodes..");
-    let num_nodes = NODES_TO_CALCULATE / THREADS;
-    let mut guards = Vec::with_capacity(THREADS);
+    let num_nodes = NUM_NODES / NUM_THREADS;
+    let mut guards = Vec::with_capacity(NUM_THREADS);
 
-    // Spawn THREADS amount of worker threads to calculate in parallel
-    for id in 0..THREADS {
+    // Spawn NUM_THREADS amount of worker threads to calculate in parallel
+    for id in 0..NUM_THREADS {
         guards.push(thread::scoped(move || {
             let first = id * num_nodes;
             let last = first + num_nodes;
