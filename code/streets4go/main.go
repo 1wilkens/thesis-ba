@@ -4,6 +4,7 @@ import (
     "fmt"
     "io"
     "log"
+    "sync"
     "os"
     "runtime"
 
@@ -15,6 +16,9 @@ const (
     EDGES = 16
 
     MAX_WEIGTH = 14
+
+    NUM_NODES = 100000
+    NUM_THREADS = 4
 )
 
 func main() {
@@ -169,11 +173,29 @@ func benchmarkOsm(path string) {
     fmt.Printf("Added %d edges..\n", len(g.edges))
 
     fmt.Println("Calculating shortest paths for all nodes..")
-    dg := FromGraph(g)
-    for i := 0; i < 100000; i++ {
-        dg.Dijkstra(i)
-        if (i+1)%1000 == 0 {
-            fmt.Printf("Finished node #%d\n", i+1)
-        }
+    nodes_per_thread := NUM_NODES / NUM_THREADS
+
+    // To wait goroutines later on
+    var wg sync.WaitGroup
+    runtime.GOMAXPROCS(NUM_THREADS)
+
+    for i := 0; i < NUM_THREADS; i++ {
+        wg.Add(1)   // Increase WaitGroup counter
+        go func(id int) {
+            defer wg.Done() // Decrease counter when the goroutine exits
+
+            dg := FromGraph(g)
+            first := id * nodes_per_thread
+            last := first + nodes_per_thread
+            fmt.Printf("[Goroutine #%d] Starting calculation from %d to %d\n", id, first, last)
+            for n := first; n < last; n++ {
+                dg.Dijkstra(n)
+                if (n+1)%1000 == 0 {
+                    fmt.Printf("[Goroutine #%d] Finished node #%d\n", id, n+1)
+                }
+            }
+        }(i)
     }
+
+    wg.Wait()
 }
