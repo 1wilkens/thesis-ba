@@ -108,8 +108,9 @@
         - SLOC: 314
         - binary-size: 755K
         - dev-time: 14698 - 13055 = 1643 -> 00:27:23
-        - run-time:
-        - avg RAM usage: 2501M
+        - run-time (x4):
+            target/release/streets4rust ../osm/hamburg-latest.osm.pbf  32560,59s user 14,31s system 356% cpu 2:32:06,21 total
+        - avg RAM usage (x4): 2501M
         - notes:
             - some lifetime weirdness, high memory footprint
     - C
@@ -117,6 +118,14 @@
         - binary-size: 91K
         - dev-time: 23883 - 23392 = 491 -> 00:08:11
         - run-time:
-        - avg RAM usage: 1213M
+        - avg RAM usage (x4): 1213M
         - notes:
             - dev-time below 10 minutes!, low ram usage
+    - Go
+        - SLOC: 381
+        - binary-size: 3,2M
+        - dev-time: 13703 - 13227 = 476 -> 00:07:56
+        - run-time:
+        - avg RAM usage (x4): 1693M
+        - notes:
+            -
