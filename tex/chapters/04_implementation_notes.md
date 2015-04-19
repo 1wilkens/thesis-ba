@@ -103,3 +103,11 @@
         - avg RAM usage: 2235M
         - notes:
             - high ram usage?, lowest runtime?!
+- Parallel benchmark
+    - Rust
+        - SLOC: 314
+        - binary-size: 755K
+        - dev-time: 14698 - 13055 = 1643 -> 00:27:23
+        - run-time:
+        - notes:
+            - some lifetime weirdness
