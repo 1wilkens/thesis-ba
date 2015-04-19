@@ -1,4 +1,4 @@
-#![feature(collections)]
+#![feature(scoped)]
 
 extern crate osmpbfreader;
 
@@ -9,6 +9,8 @@ use std::env;
 use std::collections::hash_map::HashMap;
 use std::fs::File;
 use std::path::Path;
+use std::sync::Arc;
+use std::thread;
 
 use osmpbfreader::{OsmPbfReader, blocks, objects};
 
@@ -17,6 +19,9 @@ use graph::{DijkstraGraph, Edge, Graph, Node, INFINITY};
 const NODES: i64 = 10;
 const EDGES: i64 = 16;
 const MAX_WEIGTH: i64 = 14;
+
+const NODES_TO_CALCULATE: usize = 100_000;
+const THREADS: usize = 4;
 
 fn main() {
     println!("This is streets4rust");
@@ -108,19 +113,36 @@ fn benchmark_osm(osm_path: &Path) {
     }
     println!("Parsed and added {} nodes..", g.nodes.len());
 
-    for (mut e, (n1, n2)) in edges.drain().zip(indices.drain()) {
+    for (mut e, (n1, n2)) in edges.into_iter().zip(indices.into_iter()) {
         e.length = graph::haversine_length(&g.nodes[g.nodes_idx[&n1]], &g.nodes[g.nodes_idx[&n2]]) as u32;
         g.add_edge(n1, n2, e);
     }
     println!("Added {} edges..", g.edges.len());
     g.finalize();
+    let graph = &g; // immutable reference to copy into the closures below
 
     println!("Calculating shortest paths for all nodes..");
-    let mut dg = DijkstraGraph::from_graph(&g);
-    for i in 0..100_000 {
-        dg.dijkstra(i);
-        if (i+1)%1000 == 0 {
-            println!("Finished node #{}", i+1);
-        }
+    let num_nodes = NODES_TO_CALCULATE / THREADS;
+    let mut guards = Vec::with_capacity(THREADS);
+
+    // Spawn THREADS amount of worker threads to calculate in parallel
+    for id in 0..THREADS {
+        guards.push(thread::scoped(move || {
+            let first = id * num_nodes;
+            let last = first + num_nodes;
+            let mut dg = DijkstraGraph::from_graph(graph);
+            println!("[Thread #{}] Starting calculation from {} to {}", id, first, last);
+            for n in first..last {
+                dg.dijkstra(n);
+                if (n+1)%1000 == 0 {
+                    println!("[Thread #{}] Finished node #{}", id, n+1);
+                }
+            }
+        }));
+    }
+
+    // Join all threads before exiting
+    for g in guards {
+        g.join();
     }
 }
