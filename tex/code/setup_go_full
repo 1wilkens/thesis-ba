@@ -1,5 +1,0 @@
-$ export GOPATH=$(pwd)
-$ mkdir -p src/github.com/<user>/<project>
-$ cd src/github.com/<user>/<project>
-$ vim main.go
-$ go run main.go
