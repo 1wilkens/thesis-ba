@@ -104,7 +104,7 @@ This probably does not apply to seasoned C developers and one could make the arg
         \midrule
 
         SLOC
-            & 55
+            & 163
             & 55
             & 36 \\
 
@@ -139,7 +139,7 @@ This probably does not apply to seasoned C developers and one could make the arg
 \subsection{C}
 \label{subsec:Implementation::Counting::C}
 
-Preface: For the first real milestone \textit{streets4C} had an important disadvantage. There was no library to conveniently process OpenStreetMap data. Therefore a small abstraction over the offical Protobuf definitions had to be written. The development time for this code located in \shinline{osmpbfreader.c/h} was not counted towards the total time of the phase to avoid unfair bias just because of a missing library and similarly the \gls{sloc} count does not include this code.
+Preface: For the first real milestone \textit{streets4C} had an important disadvantage. There was no library to conveniently process OpenStreetMap data. Therefore a small abstraction over the offical Protobuf definitions had to be written. The development time for this code located in \shinline{osmpbfreader.c/h} was not counted towards the total time of the phase to avoid unfair bias just because of a missing library however the \gls{sloc} count includes the additional code since it was essential to this stage.
 
 The first phase of development already highlighted many of the common problems encountered when programming in the C language. After finishing the aforementioned library it had to be invluded in the development process which in return meant the \shinline{Makefile} had to be extended to also compile \shinline{osmpbfreader.c} and include the resulting object file in assembling the executable binary. This proved harder than expected which can partly be attributed to my lacking expertise with the C compilation process but also confirms the unneeded complexity of such a simple task. In the end the problem was the order in which the sorce files and libraries where passed to the compiler. The libraries were included too early which resulted in ``undefined reference to method'' error messages. In times where compilers are smart enough to basically rewrite and change code for performance reasons it is completely inexcusable that the order of source arguments to process is still that relevant. The time spent solving these complication errors shows in the statistics for C which is considerably larger than its competitors in this stage.
 

@@ -21,7 +21,7 @@
         - notes:
             - library parallelizeable, but singlethreaded slower
     - C:
-        - SLOC: 55
+        - SLOC: 163
         - dev-time: 3078 -> 51:18 min
         - run-time:
             - -O0: ./streets4c ../osm/hamburg-latest.osm.pbf  0,95s user 0,07s system 99% cpu 1,017 total
@@ -109,5 +109,14 @@
         - binary-size: 755K
         - dev-time: 14698 - 13055 = 1643 -> 00:27:23
         - run-time:
+        - avg RAM usage: 2501M
         - notes:
-            - some lifetime weirdness
+            - some lifetime weirdness, high memory footprint
+    - C
+        - SLOC: 777
+        - binary-size: 91K
+        - dev-time: 23883 - 23392 = 491 -> 00:08:11
+        - run-time:
+        - avg RAM usage: 1213M
+        - notes:
+            - dev-time below 10 minutes!, low ram usage
