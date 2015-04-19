@@ -125,7 +125,7 @@
         - SLOC: 381
         - binary-size: 3,2M
         - dev-time: 13703 - 13227 = 476 -> 00:07:56
-        - run-time (x4):
+        - run-time (x4): ./streets4go ../osm/hamburg-latest.osm.pbf  49620,47s user 95,47s system 364% cpu 3:47:30,24 total
         - avg RAM usage (x4): 1693M
         - notes:
             -
