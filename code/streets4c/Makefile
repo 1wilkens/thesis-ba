@@ -1,6 +1,6 @@
 CC        = gcc
 CFLAGS    = -std=c99 -O3 -g -fopenmp -Wall -Wextra -pedantic $(shell pkg-config --cflags glib-2.0)
-LDLIBS    = -losmpbf -lm -lz -lpthread $(shell pkg-config --libs glib-2.0) /usr/lib/libprotobuf-c.a
+LDLIBS    = -lm -lz -lpthread $(shell pkg-config --libs glib-2.0) ./lib/libosmpbf.a ./lib/libprotobuf-c.a
 
 OBJ       = osmpbfreader.o graph.o util.o
 
