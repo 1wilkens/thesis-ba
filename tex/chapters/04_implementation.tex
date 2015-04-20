@@ -225,15 +225,15 @@ Implementing the graph representation itself was very straight forward. Similar 
 \\
 \lstinputlisting[caption={Graph representation in C}, label={lst:graph_representation.c}, style=c]{code/graph_representation.c}
 
-All structures contain the expected data. Only the \shinline{cur} field in \shinline{dgraph} seems a little inconvenient. It needed to be added since Glib's \shinline{GHashTable} only support operations on all key-value-pairs via a function pointer with a single extra argument. Since the algorithm at on particular required access to the currently explored node's index as well as the distance and parent arrays the index needed to be stored in the struct itself.
+All structures contain little more than the expected data bseides the \shinline{cur} field in \shinline{dgraph}. It needed to be added since Glib's \shinline{GHashTable} only support operations on all key-value-pairs via a function pointer with a single extra argument. Since the algorithm at on particular required access to the currently explored node's index as well as the distance and parent arrays the index needed to be stored in the struct itself.
 
 While the additional field was a minor inconvenience other problematic aspects were the code bloat and added unsafety intrduced by the use of \shinline{GHashTable}s\fnote{The hash table implementation provided by GLib}. Since C is not typesafe by design and does not allow for true generic programming via type parameters nearly all generic code is written using \lstinline[style=c]{void*}. This leads to very verbose code because of the high amount of casts involved when accessing or storing values inside the data structures mentioned earlier.
 
 Another complication was the use of integers as keys in \shinline{GHashTable}. It requires both key an value to be a gpointer (which is a platform independant \lstinline{void} pointer) which forces the programmer to either allocate the integer key on the heap or explicitly cast it to the correct type. This works well using a macro provided by GLib until the number zero appears as a value because it represent the \shinline{NULL} pointer which GHashTable also uses to indicate a key was not found in the hash table.
 
-//TODO: short description of the algorithm (add listing?)
+The implementation of Dijkstra's algorithm was not particularly hard only more verbose than expected. As mentioned the GHashTable only provides iterative access through an extra function. As a consequence the step commonly referred to as \textit{relax edge} is contained in a separate function that get passed to \shinline{g\_hash\_table\_foreach}. In combination with the conversion macros and temporary variables the code bloats up.
 
-All in all the experience was very poor compared to the other languages. Handling various corner cases with low to no real support from the compiler takes time which could be spent implementing actual functionality.
+All in all the experience was poor compared to the other languages. The verboseness and missing safety lead to the highest development time and \gls{sloc} count by far. The time was spent debugging some obscure errors introduced by the excessive casting which might have been avoided by a more sophisticated typesystem.
 
 \subsection{Go}
 \label{subsec:Implementation::Graph_Representation::Go}
@@ -244,23 +244,24 @@ For Go a similar approach was chosen. The graph is again mostly composed of two 
 
 As the listing shows the structures are nearly identical to their C counterparts. Only the current node index in DijkstraGraph was not required since Go allows for much better iteration through maps. It is also interesting to note that Go supports (and even encourages) the declaration of multiple fields of the same type on the same line. Although this was used only two times in the snippet it shrinks the line count while keeping the code understandable since two fields with identical types are often related anyway.
 
-As stated in the introductory part the Dijkstra's algorithm depedends on a priority queue. Despite the fact that Go's standard library does not directly provide a ready to use implementation thereof the required steps were minimal. The package \shinline{container\textbackslash heap}\fnote{\url{http://golang.org/pkg/container/heap/}} offers a convenient way to work with any kind of heap. The only restriction is that the underlying data structure implements a special interface containing common operations used to \textit{heapify} the stored data. Since interfaces are implicitly implemented on all structures which present the necessary methods it was a simple task to create a full featured priority queue on top of a slice by writing just four trivial methods.
+As stated in the introductory part Dijkstra's algorithm depedends on a priority queue. Despite the fact that Go's standard library does not directly provide a ready-to-use implementation thereof the required steps to achieve this were minimal. The package \shinline{container\textbackslash heap}\fnote{\url{http://golang.org/pkg/container/heap/}} offers a convenient way to work with any kind of heap. The only restriction is that the underlying data structure implements a special interface containing common operations used to \textit{heapify} the stored data. Since interfaces are implicitly implemented on all structures which present the necessary methods it was a simple task to create a full featured priority queue on top of a slice by writing just four trivial methods.
 \\
 \lstinputlisting[caption={Priority queue in Go}, label={lst:priority_queue.go}, style=go]{code/priority_queue.go}
 
-While the heap implementation was provided by the standard library (which is likely to be correct) it required the custom methods of \autoref{lst:priority_queue.go} to be correct. At this point Go's builtin test functionality came in handy. All it took to test the custom implementation was to create another file called \shinline{util\_test.go} (adding the suffix ``\_test'' to my already existing \shinline{util.go}) and write a simple test. No import besides the \textit{testing} package were needed since the code resided in the same package as the main application and all test got executed with a single call of \mdinline{go test} from the commandline. In contrast the C implementation of the queue required the setup of an additional source file including a regular main function which then had to manually compiled and run. In addition some basic error formatting and output\fnote{Which potentially could also contain errors(!)} had to be written to properly locate potential errors in the implementation. While all test related statistics are not counted in either language, Go's testing workflow is clearly superior to the manual C approach.
+While the heap implementation was provided by the standard library (which is likely to be correct) it required the custom methods of \autoref{lst:priority_queue.go} to be correct. At this point Go's builtin test functionality came in handy. All it took to test the custom implementation was to create another file called \shinline{util\_test.go} (adding the suffix ``\_test'' to the already existing file \shinline{util.go}) and write a simple test. No import besides the \textit{testing} package were needed since the code resided in the same package as the main application and all test got executed with a single call of \mdinline{go test} from the commandline. In contrast the C implementation of the queue required the setup of an additional source file including a regular main function which then had to manually compiled and run. In addition some basic error formatting and output\fnote{Which potentially could also contain errors(!)} had to be written to properly locate potential errors in the implementation. While all test related statistics are not counted in either language, Go's testing workflow is clearly superior to the manual C approach.
 
 \subsection{Rust}
 \label{subsec:Implementation::Graph_Representation::Rust}
 
-As expected \textit{streets4Rust} uses once again the same structures to model the graph data.
-
+The Rust structures are similar to the Go variant as expected. The interesting differences are located in \shinline{DijkstraGraph}. The \shinline{queue} field has the type \shinline{BinaryHeap} which is located in the standard library. This already shows that Rust is the only language out of the candidates which contains a complete implementation of this datastructure as part of the core libraries. While a priority queue is certainly not an essential component of every program it was required for this algorithm and having it available right from the start was beneficial to the development.
 \\
-\lstinputlisting[caption={Graph representation in Rust}, label={lst:graph_representation.rs}, style=rust]{code/graph_representation.rs}
+\lstinputlisting[caption={DijkstraGraph in Rust}, label={lst:graph_representation.rs}, firstline=24, style=rust]{code/graph_representation.rs}
 
+The other interesting part is the type of the \shinline{graph} field. As mentioned earlier the struct calculating the shortest paths needs a reference to the immutable graph data. Ideally one would like to encode this immutability in the type itself. This is where Rust's typesystem shines. As mentioned in the \hyperref[subsec:State_of_the_art::Candidates::Rust]{language introduction} regular references only allow read access. This means DijkstraGraph cannot (accidentally or intentionally) modify the referenced Graph instance or any of its fields just because the reference does not allow this.
 
 \subsection{Comparison}
 \label{subsec:Implementation::Graph_Representation::Comparison}
+
 
 
 \section{Verifying structure and algorithm}
@@ -393,3 +394,25 @@ As expected \textit{streets4Rust} uses once again the same structures to model t
 
 \subsection{Comparison}
 \label{subsec:Implementation::SequentialBenchmark::Comparison}
+
+
+
+\section{Parallel benchmark}
+\label{sec:Implementation::ParallelBenchmark}
+
+
+
+\subsection{C}
+\label{subsec:Implementation::ParallelBenchmark::C}
+
+
+\subsection{Go}
+\label{subsec:Implementation::ParallelBenchmark::Go}
+
+
+\subsection{Rust}
+\label{subsec:Implementation::ParallelBenchmark::Rust}
+
+
+\subsection{Comparison}
+\label{subsec:Implementation::ParallelBenchmark::Comparison}
