@@ -1,13 +1,24 @@
 \chapter{Conclusion}
 \label{ch:Conclusion}
 
-\abstract{%
-In diesem Kapitel ...
+\abstract{In diesem Kapitel ...
 }
 
 \section{Improvements and future work}
 \label{sec:Conclusion::Improvements}
 
-- Only evaluated shared memory
-    -> Multi process implementations
-    -> C: MPI, Rust: MPI via C FFI \& opaque pointer, Go: MPI via wrapper? (less idiomatic code)
+Although this evaluation already yielded some interesting results regarding new programming languages in \gls{hpc} there are still lots of potential research topics in this area. Also there are some missed opportunities for a more complete result which were just not considered or skipped due to time constraints. This section addresses both of these points and.. //TODO: end this sentence
+
+\subsection{Code remarks to \textit{streets4x}}
+\label{subsec:Conclusion::Improvements::CodeRemarks}
+
+
+
+\subsection{Limitation to shared memory}
+\label{subsec:Conclusion::Improvements::SharedMemory}
+
+While thread based concurrency is certainly an important aspect in \gls{hpc} the dominant model is distributed memory communicating via message passing. This technique was not evaluated in this thesis because of missing library support but the general performance of the languages should still be applicable. As both Rust and Go have good capabilities to link to native C libraries it might be possible to use a standard \gls{mpi} implementation today. A complete library written in the target language should be preferred whenever available though because interfacing with C often restricts the types which can be used. When these libraries have matured enough (if ever) it might be very valuable to reassess the candidates in the \gls{hpc} context.
+
+%- Only evaluated shared memory
+%    -> Multi process implementations
+%    -> C: MPI, Rust: MPI via C FFI \& opaque pointer, Go: MPI via wrapper? (less idiomatic code)
