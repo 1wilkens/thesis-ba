@@ -80,7 +80,7 @@ int main(int argc, char** argv)
         // add nodes
         add_node(g, g_ptr_array_index(nodes, i));
     }
-    g_ptr_array_free(nodes, TRUE);
+    g_ptr_array_free(nodes, TRUE);  // free as earl as possible
     printf("Parsed and added %d nodes..\n", g->n_nodes);
 
     for (size_t i = 0; i < edges->len; i++)
