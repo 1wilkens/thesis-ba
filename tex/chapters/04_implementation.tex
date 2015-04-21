@@ -108,10 +108,10 @@ This probably does not apply to seasoned C developers and one could make the arg
             & 55
             & 36 \\
 
-        Development time (min)
-            & 51:18
-            & 21:16
-            & 33:09 \\
+        Development time (hours)
+            & 00:51:18
+            & 00:21:16
+            & 00:33:09 \\
 
         Execution time (sec)
             & 1.017 (-O0)
@@ -177,7 +177,7 @@ The function \mdinline{blocks::iter} returns an enum value which gets pattern ma
 
 The execution time highlights another important factor in regards to Rust's matureness as a language. The optimized version is more than ten times faster then the binary produced by default options. This is mostly due to the fact that the Rust \gls{llvm} frontend produces bloated byte code which does not get optimized on regular builds. That is also the reason release builds take substanstially longer. It simply takes more time to optimize (and therefore often shrink) \gls{llvm_ir} instead of emitting less code in the first place. Although the code generation gets improved steadily it is not a big focus until version \shinline{1.0} is released but the Rust core team knows about the issue and it is a high priority after said release.
 
-Nontheless the release build shows the power of \gls{llvm}'s various optimization passes. \textit{streets4Rust} achieves the second best single threaded performance after C with a run time of 2.72 seconds which is impressive considering the vastly shorter development time and lowest \gls{sloc} count across all candidates.
+Nonetheless the release build shows the power of \gls{llvm}'s various optimization passes. \textit{streets4Rust} achieves the second best single threaded performance after C with a run time of 2.72 seconds which is impressive considering the vastly shorter development time and lowest \gls{sloc} count across all candidates.
 
 \subsection{Comparison}
 \label{subsec:Implementation::Counting::Comparison}
@@ -264,19 +264,19 @@ The interesting differences in contrast to the previously introduced structures 
 
 The other interesting part is the type of the \shinline{graph} field. As mentioned earlier the struct calculating the shortest paths needs a reference to the immutable graph data. Ideally one would like to encode this immutability in the type itself. This is where Rust's typesystem shines. As mentioned in the \hyperref[subsec:State_of_the_art::Candidates::Rust]{language introduction} regular references only allow read access. This means DijkstraGraph cannot (accidentally or intentionally) modify the referenced Graph instance or any of its fields just because the reference does not allow this. This comes in handy later in a parallel scenario where multiple threads are reading data from the graph while calculating shortest paths. The readonly reference (in Rust terms ``a shared borrow'') ensures no data races can happen when accessing the graph concurrently.
 
-From a statistics standpoint Rust is evenly matched with Go. While \textit{streets4Go} took a little less time to write, \textit{streets4Rust} has a few less lines. This mostly came down to the heap implementations beeing available in the standard library (which means less code had to be written) and the mentioned deviation from the original implemention plan, adding some additional development time.
+From a statistics standpoint Rust is evenly matched with Go. While \textit{streets4Go} took a little less time to write, \textit{streets4Rust} has a few less lines. This mostly came down to the heap implementations being available in the standard library (which means less code had to be written) and the mentioned deviation from the original implementation plan, adding some additional development time.
 
 \subsection{Comparison}
 \label{subsec:Implementation::Graph_Representation::Comparison}
 
-Although this milestone did not contain any performance measurements it clearly highlighted and emphasized the original argument for a new language in \acrlong{hpc}. In scenarios where complex datastructures beyond a simple array are required C fails to deliver an easy development experience. This was mostly due to the lack of ``true'' generic programming limiting the expressiveness of the implemented structures and algorithms. Since all casts in C are unsafe anyway but required to enable genericity, one slight type error, which a rigid typesystem might have been prevented from even compiling, can cause segmentation faults which are hard to trace and correct. This clearly underlines that C is not the optimal choice for developing complex high performance applications.
+Although this milestone did not contain any performance measurements it clearly highlighted and emphasized the original argument for a new language in \acrlong{hpc}. In scenarios where complex data structures beyond a simple array are required C fails to deliver an easy development experience. This was mostly due to the lack of ``true'' generic programming limiting the expressiveness of the implemented structures and algorithms. Since all casts in C are unsafe anyway but required to enable genericity, one slight type error, which a rigid typesystem might have been prevented from even compiling, can cause segmentation faults which are hard to trace and correct. This clearly underlines that C is not the optimal choice for developing complex high performance applications.
 
-Go and Rust performed equally well in this stage. Both include a typesystem suited to safely use generic containers and provide a sufficient standard library for a decent implementation of a shortest path algorithm. Although Go's generics are limited to builtin types like slices and maps this was not an issue in this stage since no generic methods had to be written. Rust had the unique advantage to be able to express application semantics (graph data is immutable to the algorithm) in the typesystem. Altough that did not solve any immediate problems in the implementation it can help to prevent a whole class of defects as described in the previous section.
+Go and Rust performed equally well in this stage. Both include a typesystem suited to safely use generic containers and provide a sufficient standard library for a decent implementation of a shortest path algorithm. Although Go's generics are limited to builtin types like slices and maps this was not an issue in this stage since no generic methods had to be written. Rust had the unique advantage to be able to express application semantics (graph data is immutable to the algorithm) in the typesystem. Although that did not solve any immediate problems in the implementation it can help to prevent a whole class of defects as described in the previous section.
 
 \section{Verifying structure and algorithm}
 \label{sec:Implementation::Verification}
 
-The next goal was to verify the implemented algorithms on some sample data. To achieve this a sample graph with ten nodes and about 15 edges was constructed followed by a shortest path calculation for each node. Although performance was measured it was not the core focus of this stage since the input data was very small and not representative of the \gls{osm} data. Nontheless the execution time reveals some insteresting differences between the cometitors.
+The next goal was to verify the implemented algorithms on some sample data. To achieve this a sample graph with ten nodes and about 15 edges was constructed followed by a shortest path calculation for each node. Although performance was measured it was not the core focus of this stage since the input data was very small and not representative of the \gls{osm} data. Nonetheless the execution time reveals some interesting differences between the competitors.
 
 \begin{table}[htb]
     \centering
@@ -292,11 +292,6 @@ The next goal was to verify the implemented algorithms on some sample data. To a
             & 637
             & 268
             & 232 \\
-
-        Binary size
-            & 51 KB
-            & 2.9 MB
-            & 628 KB \\
 
         Development time (hours)
             & 01:53:30
@@ -368,11 +363,6 @@ In this milestone runtime performance came back into focus. Since the algorithms
             & 359
             & 292 \\
 
-        Binary size
-            & 89 KB
-            & 3.2 MB
-            & 747 KB \\
-
         Development time (hours)
             & 01:14:32
             & 00:56:16
@@ -397,6 +387,11 @@ In this milestone runtime performance came back into focus. Since the algorithms
 \subsection{C}
 \label{subsec:Implementation::SequentialBenchmark::C}
 
+For \textit{streets4C} the most time was spent on dealing with the edges. As mentioned in the introductory part they need to be saved and added later. This either required knowing the amount of edges beforehand (to be able to preallocate an array large enough to store all information) or to use a dynamically growing array to store them as they get processed. Since the amount of edges is not stored in the \gls{osm} file, the first approach would have to read the whole input file twice to count edges (and ideally nodes too) first and then parse the actual data in the second run. To prevent this the second design as implemented.
+
+Of course reallocating arrays are not part of the C language or standard library and the application had to rely on GLib once again. The used types were \shinline{GPtrArray} to store pointers to the heap allocated \textit{node} and \textit{edge} structures and the regular \shinline{GArray} to store the \gls{osm} ids of the constructed edges. With this implementation the file only needed to get read once creating the actual values and counts (useful to pass to the graph creation method as capacities later) in the process.
+
+Another option would have been to rewrite part of the graph structure to use GArrays internally for storing edges and nodes in the first place. This idea was not realized to keep the number of external datastructures in the graph reresentation minimal. However that change would have simplified this milestone considerably.
 
 
 \subsection{Go}
@@ -415,7 +410,48 @@ In this milestone runtime performance came back into focus. Since the algorithms
 \section{Parallel benchmark}
 \label{sec:Implementation::ParallelBenchmark}
 
+Last but not least it was time to parallelize the calculations.
 
+\begin{table}[htb]
+    \centering
+    \begin{tabular}{llll}
+        \toprule
+        % Header
+            & C
+            & Go
+            & Rust \\
+        \midrule
+
+        SLOC (added)
+            & 777
+            & 381
+            & 314 \\
+
+        SLOC (final)
+            &
+            &
+            & \\
+
+        Development time (hours)
+            & 00:08:11
+            & 00:07:56
+            & 00:27:23 \\
+
+        Execution time (4 threads) (hours)
+            & 03:22:21 (-O3)
+            & 03:47:30
+            & 02:32:06 (-O3) \\
+
+        Memory usage (MB)~\fnote{Obtained via htop (\url{http://hisham.hm/htop/}) at the time of shortest path calculation}
+            & 994
+            & 1551
+            & 2235 \\
+
+        \bottomrule
+    \end{tabular}
+    \caption{Milestone 5: Parallel benchmark}
+    \label{tb:milestone5}
+\end{table}
 
 \subsection{C}
 \label{subsec:Implementation::ParallelBenchmark::C}
