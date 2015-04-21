@@ -1,8 +1,7 @@
 \chapter{Approach}
 \label{ch:Approach}
 
-\abstract{%
-The first section of the third chapter describes the existing application the evaluation is based on. In addition the various stages of the development process of the programs to compare are illustrated.
+\abstract{The first section of the third chapter describes the existing application this evaluation is based on. In addition the various stages of the development process are roughly illustrated.
 }
 
 \section{Overview: \textit{streets4MPI}}
@@ -16,7 +15,7 @@ As mentioned the applications written in scope of this thesis perform only the g
 
 %The original project contained the main simulation as well as a visualization script.~\cite[p.~3]{streets_report} For the purpose of this thesis the visualization was omitted and the evaluation is only based on software quality metrics as well as the result's correctness.
 
-\section{Differences to the base implementation}
+\section{Differences to \texit{streets4MPI}}
 \label{sec:Approach::Differences}
 
 Although the evaluated implementations are based on the original \textit{streets4MPI}, there are some key implementational differences. This section gives a brief overview over the most important aspects that have been changed and describes both the original application's functionality as well as the derived implementations.
@@ -67,7 +66,7 @@ The first real milestone was to read a .osm.pbf file and count all nodes, ways a
 \subsection{Building a basic graph representation}
 \label{subsec:Approach::Implementation::Graph_Representation}
 
-The next goal was to conceptionally build the graph and related structures the simulation would later operate on. This involved thinking about the relation between edges and nodes as well as the choice of various containers to store the objects efficiently while also keeping access simple. This milestone tested the language's standard libraries and ability to express functions in a compact way (lambda..)
+The next goal was to conceptionally build the graph and related structures the simulation would later operate on. This involved thinking about the relation between edges and nodes as well as the choice of various containers to store the objects efficiently while also keeping access simple. This milestone tested the language's standard libraries and expressiveness in terms of typed containers.
 
 \subsection{Verifying structure and algorithm}
 \label{subsec:Approach::Implementation::Verification}

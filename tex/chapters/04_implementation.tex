@@ -8,7 +8,7 @@
 \section{Project setup}
 \label{sec:Implementation::Setup}
 
-As all applications written for this thesis have been developed on Linux the setup instructions are for this operating system. They \textbf{should} work on *nix as well but there is no definite guarantee this is the case. Also each section assumes the toolchains for the various languages are installed as this is largely different based on what operating system and on Linux which distribution is used. It is therefore not covered in this thesis.
+All applications written for this thesis have been developed on Linux thus the setup instructions are for this operating system. They \textbf{should} work on *nix as well but there is no definite guarantee this is the case. Also each section assumes the toolchains for the various languages are installed as this is largely different based on what operating system and on Linux which distribution is used. It is therefore not covered in this thesis.
 
 \subsection{C}
 \label{subsec:Implementation::Setup::C}
@@ -129,7 +129,7 @@ This probably does not apply to seasoned C developers and one could make the arg
         Free count
             & 2,390,566
             & 11,000,199\fnote{See footnote 3 //todo: verify footnote nr in final draft}
-            & 11,373,557\fnote{This is due to a bug in the osmpbf library used. In safe Rust code it is impossible to leak memory} \\
+            & 11,373,557\fnote{This is due to a bug in the osmpbf library used. In safe Rust code it is very hard to leak memory (usually involving reference cycles or something similar).} \\
         \bottomrule
     \end{tabular}
     \caption{Milestone 1: Counting nodes, ways and relations}
@@ -216,6 +216,7 @@ Since this milestone included a preliminary implementation of the actual algorit
 
 \subsection{C}
 \label{subsec:Implementation::Graph_Representation::C}
+// TODO: shorten this? other sections are shorter
 
 As seen in \autoref{tb:milestone2} this stage resulted in a much higher \gls{sloc} count for C. This is due to the fact that development took place in another source files. To encapsulate graph functionality properly a new file called \shinline{graph.c} was created. Following established conventions this meant also creating a matching header (\shinline{graph.h}) to be able to use the newly written code in the main application. While this separation is decently useful to not have to clobber you source file with structure definitions it also introduces a fair bit of redundancy. Functions are declared in the header and implemented in the source files which means the signature appears twice. In addition C had the unfortunate problem of not having a proper implementation of a priority queue easily available which required the addition of another source file / header combination (\shinline{util.c/h}). This increased the \gls{sloc} count even further and added some additional development time as well.
 
@@ -248,24 +249,34 @@ As stated in the introductory part Dijkstra's algorithm depedends on a priority 
 \\
 \lstinputlisting[caption={Priority queue in Go}, label={lst:priority_queue.go}, style=go]{code/priority_queue.go}
 
-While the heap implementation was provided by the standard library (which is likely to be correct) it required the custom methods of \autoref{lst:priority_queue.go} to be correct. At this point Go's builtin test functionality came in handy. All it took to test the custom implementation was to create another file called \shinline{util\_test.go} (adding the suffix ``\_test'' to the already existing file \shinline{util.go}) and write a simple test. No import besides the \textit{testing} package were needed since the code resided in the same package as the main application and all test got executed with a single call of \mdinline{go test} from the commandline. In contrast the C implementation of the queue required the setup of an additional source file including a regular main function which then had to manually compiled and run. In addition some basic error formatting and output\fnote{Which potentially could also contain errors(!)} had to be written to properly locate potential errors in the implementation. While all test related statistics are not counted in either language, Go's testing workflow is clearly superior to the manual C approach.
+While the heap implementation was provided by the standard library (which is likely to be correct) it required the custom methods of \autoref{lst:priority_queue.go} to be correct. At this point Go's builtin test functionality came in handy. All it took to test the custom implementation was to create another file called \shinline{util\_test.go} (adding the suffix ``\_test'' to the already existing file \shinline{util.go}) and write a simple test. No import besides the \textit{testing} package were needed since the code resided in the same package as the main application and all test got executed with a single call of \mdinline{go test} from the commandline. In contrast the C implementation of the queue required the setup of an additional source file including a regular main function which then had to manually compiled and run. In addition some basic error formatting and output\fnote{Which potentially could also contain errors(!)} had to be written to properly locate potential errors in the implementation. Although all test related statistics are not counted in either language, Go's testing workflow is clearly superior to the manual, errorprone C approach.
+
+All things considered this milestone was easily implemented in Go. The builtin container datastructures simplified the structure definitions while the provided heap implementation had a very low entry barrier and produced quick results. This reflect in the statistics which are on par with the Rust version discussed in the next section. \\technically a subsection?
 
 \subsection{Rust}
 \label{subsec:Implementation::Graph_Representation::Rust}
 
-The Rust structures are similar to the Go variant as expected. The interesting differences are located in \shinline{DijkstraGraph}. The \shinline{queue} field has the type \shinline{BinaryHeap} which is located in the standard library. This already shows that Rust is the only language out of the candidates which contains a complete implementation of this datastructure as part of the core libraries. While a priority queue is certainly not an essential component of every program it was required for this algorithm and having it available right from the start was beneficial to the development.
+The original plan for the Rust implementation was to use direct references between nodes and edges of the graph to allow for easy navigation during the algorithm. Combined with the guarantees the typesystem offers it seemed to be a unique approach offering both convenient access and memory safety. Unfortunately this approach was quickly dismissed since it would have essentially created circular datastructures. While those are definitely possible to implement, it takes some \shinline{unsafe} marked code and a lot of careful interface design to retain the aforementioned safety. Due to once again time restrictions a architecture to the Go and C variant was implemented
+
+The interesting differences in contrast to the previously introduced structures are located in \shinline{DijkstraGraph}. The \shinline{queue} field has the type \shinline{BinaryHeap} which is located in the standard library. This already shows that Rust is the only language out of the candidates which contains a complete implementation of this datastructure as part of the core libraries. While a priority queue is certainly not an essential component of every program it was required for this algorithm and having it available right from the start was beneficial to the development.
 \\
 \lstinputlisting[caption={DijkstraGraph in Rust}, label={lst:graph_representation.rs}, firstline=24, style=rust]{code/graph_representation.rs}
 
-The other interesting part is the type of the \shinline{graph} field. As mentioned earlier the struct calculating the shortest paths needs a reference to the immutable graph data. Ideally one would like to encode this immutability in the type itself. This is where Rust's typesystem shines. As mentioned in the \hyperref[subsec:State_of_the_art::Candidates::Rust]{language introduction} regular references only allow read access. This means DijkstraGraph cannot (accidentally or intentionally) modify the referenced Graph instance or any of its fields just because the reference does not allow this.
+The other interesting part is the type of the \shinline{graph} field. As mentioned earlier the struct calculating the shortest paths needs a reference to the immutable graph data. Ideally one would like to encode this immutability in the type itself. This is where Rust's typesystem shines. As mentioned in the \hyperref[subsec:State_of_the_art::Candidates::Rust]{language introduction} regular references only allow read access. This means DijkstraGraph cannot (accidentally or intentionally) modify the referenced Graph instance or any of its fields just because the reference does not allow this. This comes in handy later in a parallel scenario where multiple threads are reading data from the graph while calculating shortest paths. The readonly reference (in Rust terms ``a shared borrow'') ensures no data races can happen when accessing the graph concurrently.
+
+From a statistics standpoint Rust is evenly matched with Go. While \textit{streets4Go} took a little less time to write, \textit{streets4Rust} has a few less lines. This mostly came down to the heap implementations beeing available in the standard library (which means less code had to be written) and the mentioned deviation from the original implemention plan, adding some additional development time.
 
 \subsection{Comparison}
 \label{subsec:Implementation::Graph_Representation::Comparison}
 
+Although this milestone did not contain any performance measurements it clearly highlighted and emphasized the original argument for a new language in \acrlong{hpc}. In scenarios where complex datastructures beyond a simple array are required C fails to deliver an easy development experience. This was mostly due to the lack of ``true'' generic programming limiting the expressiveness of the implemented structures and algorithms. Since all casts in C are unsafe anyway but required to enable genericity, one slight type error, which a rigid typesystem might have been prevented from even compiling, can cause segmentation faults which are hard to trace and correct. This clearly underlines that C is not the optimal choice for developing complex high performance applications.
 
+Go and Rust performed equally well in this stage. Both include a typesystem suited to safely use generic containers and provide a sufficient standard library for a decent implementation of a shortest path algorithm. Although Go's generics are limited to builtin types like slices and maps this was not an issue in this stage since no generic methods had to be written. Rust had the unique advantage to be able to express application semantics (graph data is immutable to the algorithm) in the typesystem. Altough that did not solve any immediate problems in the implementation it can help to prevent a whole class of defects as described in the previous section.
 
 \section{Verifying structure and algorithm}
 \label{sec:Implementation::Verification}
+
+The next goal was to verify the implemented algorithms on some sample data. To achieve this a sample graph with ten nodes and about 15 edges was constructed followed by a shortest path calculation for each node. Although performance was measured it was not the core focus of this stage since the input data was very small and not representative of the \gls{osm} data. Nontheless the execution time reveals some insteresting differences between the cometitors.
 
 \begin{table}[htb]
     \centering
@@ -306,12 +317,12 @@ The other interesting part is the type of the \shinline{graph} field. As mention
             &  47 \\
 
         Free count
-            & 106\fnote{Due to the use of GLib some global state remains reachable after exiting. This is likely intended behaviour and not a memory leak. \\add link?}
+            & 106\fnote{Due to the use of GLib some global state remains reachable after exiting. This is likely intended behaviour and not a memory leak (see: \url{http://stackoverflow.com/a/4256967}).}
             & 169\fnote{See footnote 3}
             &  47 \\
 
         Allocation amount (bytes)
-            & 7,868\fnote{2,036 bytes were in use at exit see footnote xx}
+            & 7,868\fnote{2,036 bytes were in use at exit see footnote 14}
             & 53,016
             & 22,792
         \bottomrule
@@ -323,6 +334,7 @@ The other interesting part is the type of the \shinline{graph} field. As mention
 \subsection{C}
 \label{subsec:Implementation::Verification::C}
 
+Unsurprisingly the C implementation has the lowest execution time among the compared languages. Unfortunately the performance was once again paid with a high development time following the trend from previous milestones.
 
 \subsection{Go}
 \label{subsec:Implementation::Verification::Go}
@@ -338,6 +350,8 @@ The other interesting part is the type of the \shinline{graph} field. As mention
 
 \section{Sequential benchmark}
 \label{sec:Implementation::SequentialBenchmark}
+
+In this milestone runtime performance came back into focus. Since the algorithms at this point were proven to work correctly it could now be applied to real geographical data. The main technical challenge here was to efficiently process the input file while ideally directly filling the graph with the accumulated data. The caveat was the handling of \gls{osm} \shinline{ways} which are later represented by one or more edges in the graph. The input format lists all ids of the nodes which are part of the way but these nodes might not have been processed and added to the graph yet. This forced the implementations to retain the ways' data in some way and construct edges from that data in a second step.
 
 \begin{table}[htb]
     \centering
@@ -369,7 +383,7 @@ The other interesting part is the type of the \shinline{graph} field. As mention
             & 09:08:19
             & 07:31:37 (-O3) \\
 
-        Memory usage (MB)
+        Memory usage (MB)~\fnote{Obtained via htop (\url{http://hisham.hm/htop/}) at the time of shortest path calculation}
             & 994
             & 1551
             & 2235 \\
@@ -382,6 +396,7 @@ The other interesting part is the type of the \shinline{graph} field. As mention
 
 \subsection{C}
 \label{subsec:Implementation::SequentialBenchmark::C}
+
 
 
 \subsection{Go}
