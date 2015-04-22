@@ -114,11 +114,12 @@ Another core aspect of Rust are \textit{lifetimes}. As many other programming la
 \\
 \lstinputlisting[caption={Rust example}, lable={lst:example.rs}, style=rust]{code/example.rs}
 
-Although Rust focusses on performance and safety it also adopted some functional concepts like \textit{pattern matching} and the \mdinline{Option} type. Combined with \mdinline{range} expressions and macros which operate on syntax level coding in Rust often feels like in a scripting language which is just very performant. This was also the main reason it was chosen to be further evaluated. Rust focusses on safety while not sacrificing any performnce in the process. Most of the checks happen at compile time making the resulting binary often close or on par with equivalent C programs. It also has the advantage of beeing still in development\fnote{current version beeing \textsc{1.0.0-alpha-2} at the time of this writing} so concepts which did not work out can be quickly changed or completely dropped.
-But Rust's immatureness is also its greatest weakness. The
+Although Rust focusses on performance and safety it also adopted some functional concepts like \textit{pattern matching} and the \mdinline{Option} type. Combined with \mdinline{range} expressions and macros which operate on syntax level coding in Rust often feels like in a scripting language which is just very performant. This was also the main reason it was chosen to be further evaluated. Rust focusses on safety while not sacrificing any performnce in the process. Most of the checks happen at compile time making the resulting binary often close or on par with equivalent C programs. It also has the advantage of beeing still in development\fnote{current version beeing \textsc{1.0.0-beta.2} at the time of this writing} so concepts which did not work out can be quickly changed or completely dropped.
 
-% - mention cargo
-%
+But Rust's immatureness is also its greatest weakness. The language is still changing every day which means code written today might not compile tomorrow. However the breaking changes are getting less as the first stable release is scheduled to be issued on 15.05.2015. Rust 1.0.0 is guaranteed to be backwards compatible for all later versions so he language should soon be ready for production use. Meanwhile the toolchain is already quite impressive. In addition to the compiler the default installation also contains a package manager called \shinline{cargo}. It is able to fetch dependencies from git repositories or the central package repository located on \url{https://crates.io} and can build complex projects including linkin to native C libraries. It os obviously still in development same as the language but the feature set is already very broad.
+
+Rust was chosen to be evaluated further because it should be able to match C's execution speed while providing additional memory safety and modern language features. Even if the performance is not completely on par the productivity gains should still be substantial.
+
 % - Prediction Implementation
 %     - Moderatly quick PoC without concurrency at first
 %     - Nearly only otimization afterwards since compilation secures memory safety
