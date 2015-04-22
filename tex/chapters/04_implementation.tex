@@ -15,7 +15,7 @@ All applications written for this thesis have been developed on Linux thus the s
 
 //TODO: Add footnotes/links
 
-The buildtool for streets4C is GNU \textit{make} with a simple handcrafted \shinline{Makefile}. It was chosen to strike a balance between full blown build systems like \textit{Autotools} or \textit{CMake} and manual compilation. The setup steps required for this configuration are relatively straight forward and listed below.
+The buildtool for \textit{streets4C} is GNU \textit{make} with a simple handcrafted \shinline{Makefile}. It was chosen to strike a balance between full blown build systems like \textit{Autotools} or \textit{CMake} and manual compilation. The setup steps required for this configuration are relatively straight forward and listed below.
 \\
 \lstinputlisting[caption={Project setup: streets4C}, label={lst:setup_c.sh}, style=shell]{code/setup_c}
 
@@ -40,7 +40,7 @@ To achieve this convenience the \shinline{go} tool requires some setup work befo
 \\
 \lstinputlisting[caption={Project setup: streets4Go}, label={lst:setup_go.sh}, style=shell]{code/setup_go}
 
-Listing \ref{lst:setup_go.sh} describes the steps that were taken to create the streets4go project inside the thesis' repository. It is pretty similiar to the C version. A directory gets creates then a source file containing a \shinline{main} function is created which can be build and run with a single command.
+Listing \ref{lst:setup_go.sh} describes the steps that were taken to create the \textit{streets4Go} project inside the thesis' repository. It is pretty similiar to the C version. A directory gets creates then a source file containing a \shinline{main} function is created which can be build and run with a single command.
 
 One thing to remind here is the fact, that this code does not live inside a globally set drectory called \shinline{GOPATH}. To be able to download packages only once \shinline{go} assumes an environment variable called \shinline{GOPATH} to be set to a directory which it has full control over. This directory contains all source files as well a the compiled binaries all stored through a consistent naming scheme. Normally it is assumed that all Go project live inside their own subdirectories of the \shinline{GOPATH} but it is possible to avoid this at the cost of some convenience.
 
@@ -289,8 +289,8 @@ The next goal was to verify the implemented algorithms on some sample data. To a
         \midrule
 
         SLOC (total)
-            & 637
-            & 268
+            & 633
+            & 275
             & 232 \\
 
         Development time (hours)
@@ -300,10 +300,10 @@ The next goal was to verify the implemented algorithms on some sample data. To a
 
         Execution time (seconds)
             & 0.004 (-O0)
-            & 0.296
+            & 0.686
             & 0.007 (-O0) \\
             & 0.003 (-O3)
-            & % itentionally blank since no parallel version was build
+            & % intentionally blank since no parallel version was build
             & 0.005 (-O3) \\
 
         Allocation count
@@ -329,15 +329,25 @@ The next goal was to verify the implemented algorithms on some sample data. To a
 \subsection{C}
 \label{subsec:Implementation::Verification::C}
 
-Unsurprisingly the C implementation has the lowest execution time among the compared languages. Unfortunately the performance was once again paid with a high development time following the trend from previous milestones.
+Unsurprisingly the C implementation has the lowest execution time among the compared languages. Unfortunately the performance was once again paid with a high development time following the trend from previous milestones. In this phase a lot of time was invested into debugging the custom priority queue implementation. Although the there was a simple test performed in the last stage the real data revealed a bug when queuing zero indices. Similar to the GHashTable the zero index was casted to a void pointer and treated as null which caused errors during the pop operation later on. Unfortunately the defect manifested in the typical C style with a nondescriptive segmentation fault.
+
+Performancewise C proves once again why it is one of the two major players in \gls{hpc}. The execution time is unbeaten (even unoptimized) and the allocation amount is the lowest among the contestants by far. As explained in the annotation the mismatch in \shinline{malloc} and \shinline{free} calls
 
 \subsection{Go}
 \label{subsec:Implementation::Verification::Go}
 
+The verification in Go took a little bit longer than expected. Although the implementation itself was quickly completed it exposed some errors in the original graph structure. The main problem was the initialization of the graph slices. The previous implementation used the builtin function \shinline{make} to create a slice with an initial capacity. When adding nodes to the slice later another builtin function \shinline{append} was used under the assumption the slice would be empty initially. This was not the case since Go had just filled the whole slice with empty node objects. This caused errors later down the line when these empty objects were used in Dijkstra's algorithm. The problem was later solved by changing the creation function from \shinline{make} to \shinline{new}. This method just creates a new array and lets the slice point into it reallocating later if neccessary.
+
+While the actual change in code was minimal the origin of this defect are interesting. As mentioned above all three functions interacting with the slice are built into the language itself. This approach was explicitly chose to make common operations (like creating, retrieving the length or capacity) on common types (like slices, arrays and maps) more accessible. Unfortunately these functions obviously have slightly different meanings on different types resulting in some unexpected behaviour. This is certainly something which can be picked up when using Go for extended periods of time but for newcomers especially if can cause some confusion and while the new variant with \shinline{new} works it is unclear whether this is the ideomatic way to create growing slices.
+
+From a performance standpoint \textit{streets4go} falls short compared to the other implementations. This can mostly be explained by the Go runtime. It needs some initial setup time and memory which increases the allocation amount and prolongs execution time. Since this was a very small benchmark only used to validate the implementations these little ``static costs'' make up a much higher percentage of the total statistics.
 
 \subsection{Rust}
 \label{subsec:Implementation::Verification::Rust}
 
+During the implementation an effort was made to randomize the order of languages between milestones. It just happened that Rust was the last candidate in this phase since an update in the nightly version of the compiler broke the \gls{protobuf} package on which the \gls{osm} library depended on. Although the author was quick to update the code to the changes there was a downtime of about three to four days where the development could not continue since the other versions were finished but \textit{streets4Rust} did not build. Although this was the only case where the code was majorly broken for larger timespan it still effectively halted the whole process. Luckily the first stable release is scheduled for shortly after the deadline of this thesis so this should not really be a problem later on.
+
+In this case it was even an advantage that the Rust version was developed last since it revealed a critical error in the other implementations.
 
 \subsection{Comparison}
 \label{subsec:Implementation::Verification::Comparison}
@@ -392,7 +402,6 @@ For \textit{streets4C} the most time was spent on dealing with the edges. As men
 Of course reallocating arrays are not part of the C language or standard library and the application had to rely on GLib once again. The used types were \shinline{GPtrArray} to store pointers to the heap allocated \textit{node} and \textit{edge} structures and the regular \shinline{GArray} to store the \gls{osm} ids of the constructed edges. With this implementation the file only needed to get read once creating the actual values and counts (useful to pass to the graph creation method as capacities later) in the process.
 
 Another option would have been to rewrite part of the graph structure to use GArrays internally for storing edges and nodes in the first place. This idea was not realized to keep the number of external data structures in the graph representation minimal. However that change would have simplified this milestone considerably.
-
 
 \subsection{Go}
 \label{subsec:Implementation::SequentialBenchmark::Go}
