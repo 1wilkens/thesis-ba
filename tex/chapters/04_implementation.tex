@@ -123,7 +123,7 @@ This probably does not apply to seasoned C developers and one could make the arg
 
         Allocation count
             & 2,390,566
-            & 11,164,068\fnote{The memory statistics for Go have not been acquired by valgrind but by \shinline{runtime.MemStats} this and the fact that Go is garbage collected explain the discrepancy in allocations and frees}
+            & 11,164,068\fnote{The memory statistics for Go have not been acquired by valgrind but by \shinline{runtime.MemStats}. The fact that Go is garbage collected explains the discrepancy in allocations and frees}
             & 11,373,558 \\
 
         Free count
@@ -347,16 +347,25 @@ From a performance standpoint \textit{streets4go} falls short compared to the ot
 
 During the implementation an effort was made to randomize the order of languages between milestones. It just happened that Rust was the last candidate in this phase since an update in the nightly version of the compiler broke the \gls{protobuf} package on which the \gls{osm} library depended on. Although the author was quick to update the code to the changes there was a downtime of about three to four days where the development could not continue since the other versions were finished but \textit{streets4Rust} did not build. Although this was the only case where the code was majorly broken for larger timespan it still effectively halted the whole process. Luckily the first stable release is scheduled for shortly after the deadline of this thesis so this should not really be a problem later on.
 
-In this case it was even an advantage that the Rust version was developed last since it revealed a critical error in the other implementations.
+In this case it was even an advantage that the Rust version was developed last since it revealed a critical error in the other implementations. When creating the sample graph all data was derived from indices of two for loops. The assumption was that edges created in the second loop would only reference existing nodes created in the first one. Since both other implementations did not crash or produce any errors the creation code was not thoroughly verified. Running the same sample data through the Rust application revealed the error. The \shinline{add\_edge} method did not check whether the edge ids passed as arguments were previously added to the graph. This is mandatory since the ids get converted to array indices to be able to add the nodes in the respecting adjecency lists. A map lookup in Go or C is achieved via the indexing operator which then returns and the value element associated with the given key. Obviously this operation can fail when the given key is not found in the map. While both C and Go indicate this error case with a return of zero the possibility of failure is directly encoded in the corresponding Rust. Instead of simply returning the value it returns an \shinline{Option} which is a Rust enumeration is either containing a value or \shinline{None}. This type is a perfect fit for functions which might fail to return the desired value since it shifts the responsibility to deal with the failure to the callee which can potentially recover or otherwise abort completely. The following listings show the id to index conversion in Go and Rust highlighting the differences.
+\\
+\lstinputlisting[caption={Map lookup in Go}, label={lst:map_lookup.go}, style=go]{code/map_lookup.go}
+\\
+\lstinputlisting[caption={Map lookup in Rust}, label={lst:map_lookup.rs}, style=rust]{code/map_lookup.rs}
+
+Although not shown here the C version behaves identical to the Go version but uses a static function \shinline{g\_hash\_table\_lookup}. While the indexing seems more convenient is does not offer precise feedback over the success state of the operation. In this context this is especially critical since zero is a semantically valid index to retrieve. As mentioned above the return value of Rust's \shinline{HashMap.get} is an \shinline{Option} and as such it has to be ``unwrapped'' to get the contained value. This method panics the thread if called on a \shinline{None} value which is exactly what happened when the application processed the sample data. Further investigation then revealed a missing check whether the key is contained in the map which got silently ignored in both other applications. This is a good exaple of how a sophisticated typesystem can prevent potential errors through descriptive types.
+
+The statistics for this milestone are once again very promising for Rust. With the lowest \gls{sloc} count as well as develoment time it still remains competitive with the execution performance of C. The allocation count also hints that Rust's vectors reallocate larget than the GHashTable from GLib. While the count of function calls is smaller the amount of memory allocated is larger.
 
 \subsection{Comparison}
 \label{subsec:Implementation::Verification::Comparison}
 
 
+
 \section{Sequential benchmark}
 \label{sec:Implementation::SequentialBenchmark}
 
-In this milestone runtime performance came back into focus. Since the algorithms at this point were proven to work correctly it could now be applied to real geographical data. The main technical challenge here was to efficiently process the input file while ideally directly filling the graph with the accumulated data. The caveat was the handling of \gls{osm} \shinline{ways} which are later represented by one or more edges in the graph. The input format lists all ids of the nodes which are part of the way but these nodes might not have been processed and added to the graph yet. This forced the implementations to retain the ways' data in some way and construct edges from that data in a second step.
+In this milestone runtime performance came back into the main focus. Since the algorithms at this point were proven to work correctly it could now be applied to real geographical data. The main technical challenge here was to efficiently process the input file while ideally directly filling the graph with the accumulated data. The caveat was the handling of \gls{osm} \shinline{ways} which are later represented by one or more edges in the graph. The input format lists all ids of the nodes which are part of the way but these nodes might not have been processed and added to the graph yet. This forced the implementations to retain the ways' data in some way and construct edges from that data in a second step.
 
 \begin{table}[htb]
     \centering
@@ -476,3 +485,6 @@ Last but not least it was time to parallelize the calculations.
 
 \subsection{Comparison}
 \label{subsec:Implementation::ParallelBenchmark::Comparison}
+
+\section{Preparing execution on the high performance machine}
+\label{sec:Implementation::ClusterPreparation}

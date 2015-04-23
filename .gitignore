@@ -16,6 +16,7 @@ code/streets4rust/target
 # Ignore .vim swap files
 *.swp
 
-# Ignore script besides build.sh
+# Ignore scripts besides build.sh
 !build.sh
 *.sh
+*.rb
