@@ -331,7 +331,7 @@ The next goal was to verify the implemented algorithms on some sample data. To a
 
 Unsurprisingly the C implementation has the lowest execution time among the compared languages. Unfortunately the performance was once again paid with a high development time following the trend from previous milestones. In this phase a lot of time was invested into debugging the custom priority queue implementation. Although the there was a simple test performed in the last stage the real data revealed a bug when queuing zero indices. Similar to the GHashTable the zero index was casted to a void pointer and treated as null which caused errors during the pop operation later on. Unfortunately the defect manifested in the typical C style with a nondescriptive segmentation fault.
 
-Performancewise C proves once again why it is one of the two major players in \gls{hpc}. The execution time is unbeaten (even unoptimized) and the allocation amount is the lowest among the contestants by far. As explained in the annotation the mismatch in \shinline{malloc} and \shinline{free} calls
+Performancewise C proves once again why it is one of the two major players in \gls{hpc}. The execution time is unbeaten (even unoptimized) and the allocation amount is the lowest among the contestants by far. As explained in the annotation the mismatch in \shinline{malloc} and \shinline{free} calls can be explained by the inclusion of GLib. For its advanced features like memory pooling it retains some global state which \textit{valgrind} mistakenly classifies as a potentital leak.
 
 \subsection{Go}
 \label{subsec:Implementation::Verification::Go}
@@ -360,7 +360,7 @@ The statistics for this milestone are once again very promising for Rust. With t
 \subsection{Comparison}
 \label{subsec:Implementation::Verification::Comparison}
 
-
+This milestone highlighted the importance of strong typesystems in particular. They can prevent bugs which would otherwise require intensive testing to be even noticed in the first place. In addition C once again comes in last in terms of developer productivity and while the performance benefit is still in its favor Rust reaches a similar speed with less implementation time. While Go is certainly not as fast as the other two languages as of yet it is a very comfortable language. // feels short/wrong?
 
 \section{Sequential benchmark}
 \label{sec:Implementation::SequentialBenchmark}
@@ -412,9 +412,20 @@ Of course reallocating arrays are not part of the C language or standard library
 
 Another option would have been to rewrite part of the graph structure to use GArrays internally for storing edges and nodes in the first place. This idea was not realized to keep the number of external data structures in the graph representation minimal. However that change would have simplified this milestone considerably.
 
+The performance statistics from this phase contains the first real surprise. \textit{streets4C} does not have the lowest execution time. Rust outshines the C implementation by more than an hour. This might reflect a suboptimal architecture on the C side which can be traced back to my limited experience with the language. However this might very well be reflective of a scientist with similar limited programming skills. Considering the development time and \gls{sloc} count the result is even more alarming. The redeeming factor of the C variant is the memory footprint which is the lowest among the three languages. Although memory is typically not as critical as processing time it is still an important criteria when evaluating \gls{hpc} applications.
+
 \subsection{Go}
 \label{subsec:Implementation::SequentialBenchmark::Go}
 
+This phase did not offer any difficult technical challenges for the Go implementation. Nodes could be added right as they were encountered while parsing whereas edges were temporarly stored in a growing slice and were appended in a second pass.
+
+An essential function for this milestone was the calculation of the length between two nodes based on latitude and longitude. Based on \textit{streets4MPI} the haversine formula~\fnote{\url{http://en.wikipedia.org/wiki/Haversine_formula}} was chosen to perform this calculation. This kind of mathematical formulae can be implemented very compactly in Go. Especially the assignments of multiple variables in the same line helps readability and reduces the amount of lines required.
+\\
+\lstinputlisting[caption={Haversine fomular in Go}, label={lst:haversine.go}, style=go]{code/haversine.go}
+
+While the listing is a bit small in width the advantages should be clearly visible. The multiline assignment are very compact and are useful for these shortlived intermediate results. In Go all identifiers are located on the left side of the assignment while a multi assignment in C consists of multiple assignment separated with a comma. This mix of identifiers and values takes some additional time to mentally parse - a problem which the Go way does not suffer from.
+
+In the performance comparison Go comes in at the third place as expected but the gap to C is actually not as big predicted. Interestingly \textit{streets4Go} has only the second highest memory consumption despite being garbage collected. 
 
 \subsection{Rust}
 \label{subsec:Implementation::SequentialBenchmark::Rust}
