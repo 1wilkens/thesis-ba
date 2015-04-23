@@ -103,7 +103,7 @@ This probably does not apply to seasoned C developers and one could make the arg
             & Rust \\
         \midrule
 
-        SLOC
+        \gls{sloc}
             & 163
             & 55
             & 36 \\
@@ -199,7 +199,7 @@ Since this milestone included a preliminary implementation of the actual algorit
             & Rust \\
         \midrule
 
-        SLOC (total)
+        \gls{sloc} (total)
             & 385
             & 196
             & 170 \\
@@ -288,7 +288,7 @@ The next goal was to verify the implemented algorithms on some sample data. To a
             & Rust \\
         \midrule
 
-        SLOC (total)
+        \gls{sloc} (total)
             & 633
             & 275
             & 232 \\
@@ -377,7 +377,7 @@ In this milestone runtime performance came back into the main focus. Since the a
             & Rust \\
         \midrule
 
-        SLOC (total)
+        \gls{sloc} (total)
             & 757
             & 359
             & 292 \\
@@ -421,15 +421,24 @@ This phase did not offer any difficult technical challenges for the Go implement
 
 An essential function for this milestone was the calculation of the length between two nodes based on latitude and longitude. Based on \textit{streets4MPI} the haversine formula~\fnote{\url{http://en.wikipedia.org/wiki/Haversine_formula}} was chosen to perform this calculation. This kind of mathematical formulae can be implemented very compactly in Go. Especially the assignments of multiple variables in the same line helps readability and reduces the amount of lines required.
 \\
-\lstinputlisting[caption={Haversine fomular in Go}, label={lst:haversine.go}, style=go]{code/haversine.go}
+\lstinputlisting[caption={Haversine formula in Go}, label={lst:haversine.go}, style=go]{code/haversine.go}
 
 While the listing is a bit small in width the advantages should be clearly visible. The multiline assignment are very compact and are useful for these shortlived intermediate results. In Go all identifiers are located on the left side of the assignment while a multi assignment in C consists of multiple assignment separated with a comma. This mix of identifiers and values takes some additional time to mentally parse - a problem which the Go way does not suffer from.
 
-In the performance comparison Go comes in at the third place as expected but the gap to C is actually not as big predicted. Interestingly \textit{streets4Go} has only the second highest memory consumption despite being garbage collected. 
+In the performance comparison Go comes in at the third place as expected but the gap to C is actually not as big predicted. Interestingly \textit{streets4Go} has only the second highest memory consumption despite being garbage collected and therefore lacking deterministic destruction.
 
 \subsection{Rust}
 \label{subsec:Implementation::SequentialBenchmark::Rust}
 
+The Rust implementation follows the same pattern as the Go version. Nodes are added to the graph as they are decoded while edges are stored in a vector to add later. There was a caveat though where Rust's ownership tracking typesystem
+
+After the input data has been processed the \shinline{edges} vector contains all edges found in the file. Which means in Rust terms that the vector \textit{owns} all objects inside it. On the other hand the \shinline{add\_edge} method also needs to take ownership of the edge argument passed to it. This was a deliberate choice while designing the interface since the graph should own all edges and nodes it consists of. This creates a conflict because indexing the vector only returns a reference to the object. The solution was to use a moving iterator to remove the objects from the vector to be able to pass them to \shinline{add\_edge}. In addition the two node ids of the edge, which were stored in additional vectors, needed to be retrieved the same way. To achieve this the two iterators were zipped and as a consequence all required variables could be in scope at the same time.
+\\
+\lstinputlisting[caption={Zipped iterators in Rust}, label={lst:zipped_iterators.rs}, style=rust]{code/zipped_iterators.rs}
+
+The \shinline{Iterator.zip} method takes an iterator and returns a composite iterator which yields elements from the two as a pair. Here \shinline{indices} is a vector of pairs of i64 (Rust's 64-bit integer) so the iterator created by zip yields a pair of type \shinline{(edge, (i64, i64))}. Also the edge length had to be calculated before the edge could be added to the graph. This meant the \shinline{mut} keywork had to be added in front of the edge variable. The resulting expression \lstinline|for (mut e, (n1, n2)) in edges.into_iter().zip(indices.into_iter())| looks very complicated but is actually pretty simple when taken apart. These tangled statements are probably the major disadvantage of the complex typesystem. There are a lot of sigils which sometimes even have double meanings.
+
+The performance comparison was specifically interesting in this stage because Rust was actually ahead of C for the first time.
 
 \subsection{Comparison}
 \label{subsec:Implementation::SequentialBenchmark::Comparison}
@@ -439,7 +448,9 @@ In the performance comparison Go comes in at the third place as expected but the
 \section{Parallel benchmark}
 \label{sec:Implementation::ParallelBenchmark}
 
-Last but not least it was time to parallelize the calculations.
+Last but not least it was time to parallelize the calculations. Because the algorithm itself is not very easy to execute concurrently the choice was made to calculate multiple shortest paths in different threads. Also the main loop over the first 100.000 nodes was already in place from the previous milestone and so only this block had to be updated to run in parallel.
+
+It is also important that the parallelized code does not make any use of the computed results as the previous versions did not do that either. In concurrent scenarios this becomes a separate problem because of synchronization issues. Although it is not included in the implementations each of the following sections will describe possible strategies to deal with the calculated results.
 
 \begin{table}[htb]
     \centering
@@ -451,15 +462,15 @@ Last but not least it was time to parallelize the calculations.
             & Rust \\
         \midrule
 
-        SLOC (added)
+        \gls{sloc} (incl. previous stages)
             & 777
             & 381
             & 314 \\
 
-        SLOC (final)
-            &
-            &
-            & \\
+        \gls{sloc} (final)
+            & 668
+            & 285
+            & 253\\
 
         Development time (hours)
             & 00:08:11
@@ -485,10 +496,12 @@ Last but not least it was time to parallelize the calculations.
 \subsection{C}
 \label{subsec:Implementation::ParallelBenchmark::C}
 
+As mentioned in the previous chapter OpenMP was the framework of choice to parallelize \tetit{streets4C}. Given this there were two possible approaches to consider. Either the \shinline{for} pragma applied to the existing loop or a regular \shinline{omp parallel} block.
 
 \subsection{Go}
 \label{subsec:Implementation::ParallelBenchmark::Go}
 
+\textit{street4Go} obviously used goroutines for concurrent execution. As the development time shows the implementation was really simple and convenient. Similar to the C variant the only required change 
 
 \subsection{Rust}
 \label{subsec:Implementation::ParallelBenchmark::Rust}
