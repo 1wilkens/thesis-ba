@@ -8,7 +8,7 @@
 \section{Project setup}
 \label{sec:Implementation::Setup}
 
-All applications written for this thesis have been developed on Linux thus the setup instructions are for this operating system. They \textbf{should} work on *nix as well but there is no definite guarantee this is the case. Also each section assumes the toolchains for the various languages are installed as this is largely different based on what operating system and on Linux which distribution is used. It is therefore not covered in this thesis.
+All applications written for this thesis have been developed on Linux thus the setup instructions are for this operating system. They \textit{should} work on *nix as well but there is no guarantee this is the case. Also each section assumes the toolchains for the various languages are installed as this is largely different based on what operating system and on Linux which distribution is used. It is therefore not covered in this thesis.
 
 \subsection{C}
 \label{subsec:Implementation::Setup::C}
@@ -80,7 +80,7 @@ Of course this strategy is not without limitations. To be able to use \shinline{
 \subsection{Comparison}
 \label{subsec:Implementation::Setup::Comparison}
 
-For newcomers Rust definitely provides the best experience. One can get a valid \textit{Hello world!} application without any prior knowledge which lowers the barrier of entry dramatically. In addition Rust does not require any presetup before the first project. just install the language toolchain (either through the operating system's package manager or the very simple setup script~\fnote{\url{https://static.rust-lang.org/rustup.sh}}) and start coding.
+For newcomers Rust definitely provides the best experience. One can get a valid \textit{Hello world!} application without any prior knowledge which lowers the barrier of entry dramatically. In addition Rust does not require any presetup before the first project. just install the language toolchain (either through the operating system's package manager or the very simple setup script\fnote{\url{https://static.rust-lang.org/rustup.sh}}) and start coding.
 
 Go required some intial setup besides the installation but it still quite easy to setup. The \shinline{GOPATH} exporting is a small annoyance but it balances out with the benefits the developer gets later down the line like easy dependency management. The syntax is very concise so creating a new source file with a \shinline{main} function is still quite fast.
 
@@ -147,12 +147,12 @@ The other big caveat in working with \gls{osm} data was the manual memory manage
 \\
 \lstinputlisting[caption={Manual memory management with Protobuf in C}, label={lst:manual_pbf_freeing.c}, style=c]{code/manual_pbf_freeing.c}
 
-Considering this fact the \gls{sloc} count is still decent. With the help of a clever library interface the overhead for the memory management is comparatively small and the data is even loopable by a \shinline{while} loop which allows for convenient access and conversion. Also the statistics clearly show why C is still that dominant in the \gls{hpc} area. With low allocation counts~\fnote{Although these are also caused by the simplicity of the custom osmpbfreader abstraction} and superior singlethreaded(!) performance C is the clear winner in the performance area for this first milestone.
+Considering this fact the \gls{sloc} count is still decent. With the help of a clever library interface the overhead for the memory management is comparatively small and the data is even loopable by a \shinline{while} loop which allows for convenient access and conversion. Also the statistics clearly show why C is still that dominant in the \gls{hpc} area. With low allocation counts\fnote{Although these are also partially caused by the simplicity of the custom osmpbfreader abstraction} and superior singlethreaded(!) performance C is the clear winner in the performance area for this first milestone.
 
 \subsection{Go}
 \label{subsec:Implementation::Counting::Go}
 
-To parse the .osm.pbf files \textit{streets4Go} uses an existing library simply called \shinline{osmpbf}~\fnote{\url{https://github.com/qedus/osmpbf}}. The library follows common Go ``best practices'' which makes it easy to use. Internally goroutines are used to decode data in parallel which can then be retrieved through a \shinline{Decoder} struct. The naming of the struct and the corresponding methods follow the conventions of the official Decoder types of the Go standard library. This adherence to conventions directly shows in the development time which is the shortes amongst the candidates for this first phase.
+To parse the .osm.pbf files \textit{streets4Go} uses an existing library simply called \textit{osmpbf}\fnote{\url{https://github.com/qedus/osmpbf}}. The library follows common Go ``best practices'' which makes it easy to use. Internally goroutines are used to decode data in parallel which can then be retrieved through a \shinline{Decoder} struct. The naming of the struct and the corresponding methods follow the conventions of the official Decoder types of the Go standard library. This adherence to conventions directly shows in the development time which is the shortes amongst the candidates for this first phase.
 \\
 \lstinputlisting[caption={Dependency management in Go}, label={lst:dependency_management.go}, style=go]{code/dependency_management.go}
 
@@ -167,7 +167,7 @@ Considering the aforementioned simplicity \textit{streets4Go}'s performance char
 \subsection{Rust}
 \label{subsec:Implementation::Counting::Rust}
 
-\textit{streets4Rust} also had the advantage of an existing library to use for \gls{osm} decoding which is called \textit{osmpbfreader-rs}~\fnote{\url{https://github.com/texitoi/osmpbfreader-rs}}. Similar to Go the dependency management was extremely convenient and simple. The only changes necessary were an added line in the Cargo manifest (Cargo.toml) and an \shinline{extern crate osmpbfreader;} in the crate root \shinline{main.rs}. After that \mdinline{cargo build} downloaded the dependency (which in this case meant cloning the \shinine{git} repository) and integrated it into the compilation process.
+\textit{streets4Rust} also had the advantage of an existing library to use for \gls{osm} decoding which is called \textit{osmpbfreader-rs}\fnote{\url{https://github.com/texitoi/osmpbfreader-rs}}. Similar to Go the dependency management was extremely convenient and simple. The only changes necessary were an added line in the Cargo manifest (Cargo.toml) and an \shinline{extern crate osmpbfreader;} in the crate root \shinline{main.rs}. After that \mdinline{cargo build} downloaded the dependency (which in this case meant cloning the \shinine{git} repository) and integrated it into the compilation process.
 
 Compared to C and Go \textit{streets4Rust} required a medium amount of development time and had the lowest \gls{sloc} count in this phase. This can mainly be attributed to the library's use of common Rust idioms and structures like \shinline{iterators} and \shinline{enums}. Unlike C enums, which are basically named integer constants, the Rust variant provides a lot more features like beeing useable in pattern matching expressions. The next listing shows the complete decode part of this stage which is very compact and easy to understand.  //add implementation details of the lib? (chained interators)
 \\
@@ -220,7 +220,7 @@ Since this milestone included a preliminary implementation of the actual algorit
 
 As seen in \autoref{tb:milestone2} this stage resulted in a much higher \gls{sloc} count for C. This is due to the fact that development took place in another source files. To encapsulate graph functionality properly a new file called \shinline{graph.c} was created. Following established conventions this meant also creating a matching header (\shinline{graph.h}) to be able to use the newly written code in the main application. While this separation is decently useful to not have to clobber you source file with structure definitions it also introduces a fair bit of redundancy. Functions are declared in the header and implemented in the source files which means the signature appears twice. In addition C had the unfortunate problem of not having a proper implementation of a priority queue easily available which required the addition of another source file / header combination (\shinline{util.c/h}). This increased the \gls{sloc} count even further and added some additional development time as well.
 
-At this point it became clear the C version would not be created dependency free. Advanced data structures such as hash tables or growing arrays are essential when properly modelling a graph and the choice was made to use the popular \textit{GLib}~\fnote{\url{https://developer.gnome.org/glib/stable/}} to provide these types. It is a commonly used library containing data structures, threading routines, conversion functions or macros and much more. Since both Rust and Go's standard library are mch more comprehensive then C's the addition of GLib to the project is easily justified.
+At this point it became clear the C version would not be created dependency free. Advanced data structures such as hash tables or growing arrays are essential when properly modelling a graph and the choice was made to use the popular \textit{GLib}\fnote{\url{https://developer.gnome.org/glib/stable/}} to provide these types. It is a commonly used library containing data structures, threading routines, conversion functions or macros and much more. Since both Rust and Go's standard library are mch more comprehensive then C's the addition of GLib to the project is easily justified.
 
 Implementing the graph representation itself was very straight forward. Similar to the mathematical representation a \shinline{graph} in \textit{streets4C} consists of an array of \shinline{node}s and \shinline{edge}s. To be able to map from \gls{osm} IDs to array indices two hash tables were added using \lstinline[style=c]{long}s as keys and \lstinline[style=c]{int}s as values. The \shinline{dgraph} structure can be created with a pointer to an existing \shinline{graph} and is then able to execute Dijkstra's \acrshort{sssp} algorithm.
 \\
@@ -308,12 +308,12 @@ The next goal was to verify the implemented algorithms on some sample data. To a
 
         Allocation count
             & 108
-            & 519\fnote{See footnote 3}
+            & 519
             &  47 \\
 
         Free count
             & 106\fnote{Due to the use of GLib some global state remains reachable after exiting. This is likely intended behaviour and not a memory leak (see: \url{http://stackoverflow.com/a/4256967}).}
-            & 169\fnote{See footnote 3}
+            & 169
             &  47 \\
 
         Allocation amount (bytes)
@@ -392,7 +392,7 @@ In this milestone runtime performance came back into the main focus. Since the a
             & 09:08:19
             & 07:31:37 (-O3) \\
 
-        Memory usage (MB)~\fnote{Obtained via htop (\url{http://hisham.hm/htop/}) at the time of shortest path calculation}
+        Memory usage (MB)\fnote{Obtained via htop (\url{http://hisham.hm/htop/}) at the time of shortest path calculation}
             & 994
             & 1551
             & 2235 \\
@@ -419,13 +419,13 @@ The performance statistics from this phase contains the first real surprise. \te
 
 This phase did not offer any difficult technical challenges for the Go implementation. Nodes could be added right as they were encountered while parsing whereas edges were temporarly stored in a growing slice and were appended in a second pass.
 
-An essential function for this milestone was the calculation of the length between two nodes based on latitude and longitude. Based on \textit{streets4MPI} the haversine formula~\fnote{\url{http://en.wikipedia.org/wiki/Haversine_formula}} was chosen to perform this calculation. This kind of mathematical formulae can be implemented very compactly in Go. Especially the assignments of multiple variables in the same line helps readability and reduces the amount of lines required.
+An essential function for this milestone was the calculation of the length between two nodes based on latitude and longitude. Based on \textit{streets4MPI} the haversine formula\fnote{\url{http://en.wikipedia.org/wiki/Haversine_formula}} was chosen to perform this calculation. This kind of mathematical formulae can be implemented very compactly in Go. Especially the assignments of multiple variables in the same line helps readability and reduces the amount of lines required.
 \\
 \lstinputlisting[caption={Haversine formula in Go}, label={lst:haversine.go}, style=go]{code/haversine.go}
 
 While the listing is a bit small in width the advantages should be clearly visible. The multiline assignment are very compact and are useful for these shortlived intermediate results. In Go all identifiers are located on the left side of the assignment while a multi assignment in C consists of multiple assignment separated with a comma. This mix of identifiers and values takes some additional time to mentally parse - a problem which the Go way does not suffer from.
 
-In the performance comparison Go comes in at the third place as expected but the gap to C is actually not as big predicted. Interestingly \textit{streets4Go} has only the second highest memory consumption despite being garbage collected and therefore lacking deterministic destruction.
+In the performance comparison Go comes in at the third place as expected but the gap to C is actually not as big predicted. Interestingly \textit{streets4Go} has only the second highest memory consumption despite being garbage collected and therefore lacking deterministic destruction. This differentiates Go from other garbage collected languages like \textit{C\#} or \textit{Java} which encourage ``allocations hevy programming'' under the premise that memory cannot leak and can therefore be allocated often.
 
 \subsection{Rust}
 \label{subsec:Implementation::SequentialBenchmark::Rust}
@@ -438,7 +438,7 @@ After the input data has been processed the \shinline{edges} vector contains all
 
 The \shinline{Iterator.zip} method takes an iterator and returns a composite iterator which yields elements from the two as a pair. Here \shinline{indices} is a vector of pairs of i64 (Rust's 64-bit integer) so the iterator created by zip yields a pair of type \shinline{(edge, (i64, i64))}. Also the edge length had to be calculated before the edge could be added to the graph. This meant the \shinline{mut} keywork had to be added in front of the edge variable. The resulting expression \lstinline|for (mut e, (n1, n2)) in edges.into_iter().zip(indices.into_iter())| looks very complicated but is actually pretty simple when taken apart. These tangled statements are probably the major disadvantage of the complex typesystem. There are a lot of sigils which sometimes even have double meanings.
 
-The performance comparison was specifically interesting in this stage because Rust was actually ahead of C for the first time.
+The performance comparison was specifically interesting in this stage because Rust was actually ahead of C for the first time. It is also remarkable that the development time and \gls{sloc} count are the lowest of the three languages compared. This means the usual tradeoff between performance and productivity does not apply in this particular case and Rust straightup beats Go and C in all three tracked categories which is impressive.
 
 \subsection{Comparison}
 \label{subsec:Implementation::SequentialBenchmark::Comparison}
@@ -482,7 +482,7 @@ It is also important that the parallelized code does not make any use of the com
             & 03:47:30
             & 02:32:06 (-O3) \\
 
-        Memory usage (MB)~\fnote{Obtained via htop (\url{http://hisham.hm/htop/}) at the time of shortest path calculation}
+        Memory usage (MB)\fnote{Obtained via htop (\url{http://hisham.hm/htop/}) at the time of shortest path calculation}
             & 994
             & 1551
             & 2235 \\
@@ -501,7 +501,7 @@ As mentioned in the previous chapter OpenMP was the framework of choice to paral
 \subsection{Go}
 \label{subsec:Implementation::ParallelBenchmark::Go}
 
-\textit{street4Go} obviously used goroutines for concurrent execution. As the development time shows the implementation was really simple and convenient. Similar to the C variant the only required change 
+\textit{streets4Go} obviously used goroutines for concurrent execution. As the development time shows the implementation was really simple and convenient. Similar to the C variant the only required change
 
 \subsection{Rust}
 \label{subsec:Implementation::ParallelBenchmark::Rust}

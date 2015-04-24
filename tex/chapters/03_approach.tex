@@ -9,7 +9,7 @@
 
 As stated in~\autoref{sec:Introduction::Goals} the concept for the implementations to compare is inspired by \textit{streets4MPI}, which was implemented to evaluate Python's usefulness for ``computational intensive parallel applications''~\cite[p.3]{streets_report}. It was written by Julian Fietkau and Joachim Nitschke in scope of the module ``Parallel Programming Project'' in Spring 2012 and makes heavy use of the various libraries of the Python ecosystem.
 
-\textit{streets4MPI} parses \gls{osm} input data, builds a directed graph and repeatedly computes shortest paths for a set amount of ``trips'' (randomly chose node pairs from the graph) in the graph. Over time it gradually modifies the graph based on results of previous iterations to emulate structural changes in the traffic network in the simulated area. The results can then optionally be written to a custom output format which is visualizable by an additional script.~\cite{streets_report}
+\textit{streets4MPI} parses \gls{osm} input data, builds a directed graph and repeatedly computes shortest paths for a set amount of ``trips'' (randomly chose node pairs from the graph) in the graph. Over time it gradually modifies the graph based on results of previous iterations to emulate structural changes in the traffic network in the simulated area. The results can then optionally be written to a custom output format which is visualizable by an additional script~\cite{streets_report}.
 
 As mentioned the applications written in scope of this thesis perform only the graph calculations discarding the produced results. Consequently the implementations do not produce any data besides the runtime statistics externally acquired by benchmark tools.
 
@@ -25,14 +25,14 @@ In the remaining part of the thesis the different applications will be reference
 \subsection*{Input format}
 \label{subsec:Approach::Differences::Input}
 
-The original \textit{streets4MPI} uses the somewhat dated \gls{osm} \gls{xml} format~\fnote{\url{http://wiki.openstreetmap.org/wiki/OSM_XML}} as input which is parsed by \textit{imposm.parser}~\fnote{\url{http://imposm.org/docs/imposm.parser/latest/}}. It then builds a directed graph via the \textit{python-graph}~\fnote{\url{https://code.google.com/p/python-graph/}} library to base the simulation on.\cite{streets_report}
+The original \textit{streets4MPI} uses the somewhat dated \gls{osm} \gls{xml} format\fnote{\url{http://wiki.openstreetmap.org/wiki/OSM_XML}} as input which is parsed by \textit{imposm.parser}\fnote{\url{http://imposm.org/docs/imposm.parser/latest/}}. It then builds a directed graph via the \textit{python-graph}\fnote{\url{https://code.google.com/p/python-graph/}} library to base the simulation on~\cite{streets_report}.
 
 The derived versions require the input to be in ``.osm.pbf'' format. This newer version of the \gls{osm} format is based on Google's \gls{protobuf} and is superior to the \gls{xml} variant in both size and speed~\cite{osm_wiki_pbf}. It also simplifies multi language development because the code performing the actual parsing is auto generated from a language independent description file. There are \gls{protobuf} backends for C, Rust and Go which can perform that generation.
 
 \subsection*{Simulation}
 \label{subsec:Approach::Differences::Simulation}
 
-The simulation in the base application is based on randomly picked node pairs from the source graph. For these trips the shortest path is calculated by Dijkstra's algorithm as seen in \cite{cormen} and a random factor called ``jam tolerance'' is introduced to avoid oscillation in between interations.~\cite{streets_report} Then after some time has passed in the simulation existing streets get expanded or shut down depending on their usage.
+The simulation in the base application is based on randomly picked node pairs from the source graph. For these trips the shortest path is calculated by Dijkstra's algorithm as seen in \cite{cormen} and a random factor called ``jam tolerance'' is introduced to avoid oscillation in between interations~\cite{streets_report}. Then after some time has passed in the simulation existing streets get expanded or shut down depending on their usage.
 
 The compared implementations of this thesis also perform trip based simulation but to without the added randomness and street modification. The concrete algorithm is a variant of the \shline{Dijkstra-NoDec} algorithm as seen in~\cite[p. 16]{dijkstra_utcs}. It was mainly chosen because of its reduced complexity in required data structures which again reduces complexity and scope. The algorithm is implemented separately in all three languages so it could theoretically get benchmarked standalone to get clearer results. Mainly because of time constraints this was not attempted in this thesis.
 
