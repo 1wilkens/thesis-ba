@@ -492,14 +492,18 @@ As mentioned in the previous chapter \textit{OpenMP} was the framework of choice
 \\
 \lstinputlisting[caption={Parallelization with OpenMP}, label={lst:openmp.c}, style=c]{code/openmp.c}
 
-The required changes were less than expected which proves why OpenMP is a popular choice for thread based parallelization in C. The existing loop was surrounded with the correct pragma and of course each thread has to calculate new limits for the loop based on its id. Luckily the \shinline{dgraph} structure was designed with concurrency in mind and as such can be instantiated independently in each thread. The \shinline{dijkstra} function is then called in a loop to calculate shortest paths for all nodes this thread was assigned to process and results are discarded immediatly.\fnote{This is not directly clear from the code but the calculating function only stores results internally and since the loop instantly continues to the next node they are overwritten during the next call}
+The required changes were less than expected which proves why OpenMP is a popular choice for thread based parallelization in C. The existing loop was surrounded with the correct pragma and of course each thread has to calculate new limits for the loop based on its id. Luckily the \shinline{dgraph} structure was designed with concurrency in mind and as such can be instantiated independently in each thread. The \shinline{dijkstra} function is then called in a loop to calculate shortest paths for all nodes this thread was assigned to process and results are discarded immediatly.\fnote{This is not directly clear from the code but the calculating function only stores results in the struct and since the loop instantly continues to the next node they are overwritten during the next call}
 
 The ideomatic way in C to save and use the resulting data would be writing to a shared array. Assuming the nodes processed by each thread are disjoint the array access can be safely shared for writing. While the benchmarked implementation actually does not guarantee this for all amounts of threads (because of remainders in certain configurations) it could easily be changed to use this pattern. It is also possible to create a result array in each thread and then later manually reduce it to a global one via an \shinline{omp critical} section. While this approach would thoretically support overlapping node lists in different threads it is not very useful in this context because the affected values would just be overwritten. Also the use of a critical block obviously impacts performance quite heavily because threads might have to wait for each other to finish the global update.
 
 \subsection{Go}
 \label{subsec:Implementation::ParallelBenchmark::Go}
 
-\textit{streets4Go} obviously used goroutines for concurrent execution. As the development time shows the implementation was really simple and convenient. Similar to the C variant the only required change
+\textit{streets4Go} obviously used \glspl{goroutine} for concurrent execution. As predicted the changes to parallelize the application were minimal and simple. A for loop was added to start up the required amount of \glspl{goroutine} which then calculate their limits based on the outer loop index and start executing the algorithm. Again the following \hyperref[lst:goroutines.go]{Listing} shows the relevant lines responsible for concurrent execution without print statements.
+\\
+\lstinputlisting[caption={Parallelization with goroutines}, label={lst:goroutines.go}, style=go]{code/goroutines.go}
+
+
 
 \subsection{Rust}
 \label{subsec:Implementation::ParallelBenchmark::Rust}
