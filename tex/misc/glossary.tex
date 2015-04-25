@@ -10,6 +10,10 @@
     description={A lightweigth concurrently executing function which gets multiplexed into OS threads by the Go runtime~\cite{effective_go}},
     plural={goroutines}
 }
+\newglossaryentry{iterator_invalidation}{
+    name={iterator invalidation},
+    description={A common problem in languages without automatic memory management which can occur when an iterator is used on a mutable container. For example when iterating over a dynamically growing vector which reallocates itself, the pending iterator pointer can become dangling. Thus making it effectively unusable or invalid.}
+}
 \newglossaryentry{llvm}{
     name={LLVM},
     description={The LLVM Compiler Infrastructure Project (formerly short for Low Level Virtual Machine) is an umbrella project for various compiler and other low-level tools. LLVM Core is the primary subproject and a set of libraries for code generation and optimization for various platforms.~\cite{llvm_main}}

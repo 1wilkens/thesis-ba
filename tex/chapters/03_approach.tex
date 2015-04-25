@@ -7,20 +7,18 @@
 \section{Overview: \textit{streets4MPI}}
 \label{sec:Approach::Overview}
 
-As stated in~\autoref{sec:Introduction::Goals} the concept for the implementations to compare is inspired by \textit{streets4MPI}, which was implemented to evaluate Python's usefulness for ``computational intensive parallel applications''~\cite[p.3]{streets_report}. It was written by Julian Fietkau and Joachim Nitschke in scope of the module ``Parallel Programming Project'' in Spring 2012 and makes heavy use of the various libraries of the Python ecosystem.
+As stated in~\autoref{sec:Introduction::Goals} the concept for the implementations to compare is inspired by \textit{streets4MPI}, which was implemented to evaluate Python's usefulness for ``computational intensive parallel applications''~\cite[p.3]{streets_report}. It was written by Julian Fietkau and Joachim Nitschke in scope of the module ``Parallel Programming'' in Spring 2012 and makes heavy use of the various libraries of the Python ecosystem.
 
-\textit{streets4MPI} parses \gls{osm} input data, builds a directed graph and repeatedly computes shortest paths for a set amount of ``trips'' (randomly chose node pairs from the graph) in the graph. Over time it gradually modifies the graph based on results of previous iterations to emulate structural changes in the traffic network in the simulated area. The results can then optionally be written to a custom output format which is visualizable by an additional script~\cite{streets_report}.
+\textit{streets4MPI} parses \gls{osm} input data, builds a directed graph and repeatedly computes shortest paths for a set amount of ``trips'' (randomly chosen node pairs from the graph) in the graph. Over time it gradually modifies the graph based on results of previous iterations to emulate structural changes in the traffic network in the simulated area. The results can then optionally be written to a custom output format which is visualizable by an additional script~\cite{streets_report}.
 
 As mentioned the applications written in scope of this thesis perform only the graph calculations discarding the produced results. Consequently the implementations do not produce any data besides the runtime statistics externally acquired by benchmark tools.
-
-%The original project contained the main simulation as well as a visualization script.~\cite[p.~3]{streets_report} For the purpose of this thesis the visualization was omitted and the evaluation is only based on software quality metrics as well as the result's correctness.
 
 \section{Differences to \texit{streets4MPI}}
 \label{sec:Approach::Differences}
 
 Although the evaluated implementations are based on the original \textit{streets4MPI}, there are some key implementational differences. This section gives a brief overview over the most important aspects that have been changed and describes both the original application's functionality as well as the derived implementations.
 
-In the remaining part of the thesis the different applications will be referenced quite frequently. For brevity the language implementations to compare will be called by after the following scheme: ``streets4<language>''. The Go version for example is called ``streets4go''.
+In the remaining part of the thesis the different applications will be referenced quite frequently. For brevity the language implementations to compare will be called by the following scheme: ``streets4<language>''. The Go version for example is called ``streets4go''.
 
 \subsection*{Input format}
 \label{subsec:Approach::Differences::Input}
@@ -32,9 +30,9 @@ The derived versions require the input to be in ``.osm.pbf'' format. This newer 
 \subsection*{Simulation}
 \label{subsec:Approach::Differences::Simulation}
 
-The simulation in the base application is based on randomly picked node pairs from the source graph. For these trips the shortest path is calculated by Dijkstra's algorithm as seen in \cite{cormen} and a random factor called ``jam tolerance'' is introduced to avoid oscillation in between interations~\cite{streets_report}. Then after some time has passed in the simulation existing streets get expanded or shut down depending on their usage.
+The simulation in the base application is based on randomly picked node pairs from the source graph. For these trips the shortest path is calculated by Dijkstra's algorithm as seen in \cite{cormen} and a random factor called ``jam tolerance'' is introduced to avoid oscillation in between iterations~\cite{streets_report}. Then after some time has passed in the simulation, existing streets get expanded or shut down depending on their usage.
 
-The compared implementations of this thesis also perform trip based simulation but to without the added randomness and street modification. The concrete algorithm is a variant of the \shline{Dijkstra-NoDec} algorithm as seen in~\cite[p. 16]{dijkstra_utcs}. It was mainly chosen because of its reduced complexity in required data structures which again reduces complexity and scope. The algorithm is implemented separately in all three languages so it could theoretically get benchmarked standalone to get clearer results. Mainly because of time constraints this was not attempted in this thesis.
+The compared implementations of this thesis also perform trip based simulation but without the added randomness and street modification. The concrete algorithm is a variant of the \shline{Dijkstra-NoDec} algorithm as seen in~\cite[p. 16]{dijkstra_utcs}. It was mainly chosen because of its reduced complexity in required data structures which again reduces complexity and scope. The algorithm is implemented separately in all three languages so it could theoretically get benchmarked standalone to get clearer results. Mainly because of time constraints this was not attempted in this thesis.
 
 \subsection*{Concurrency}
 \label{subsec:Approach::Differences::Concurrency}
@@ -43,20 +41,19 @@ The compared implementations of this thesis also perform trip based simulation b
 
 Although Rust as well as Go can integrate decently with existing native code, the reimplementations will be limited to shared memory parallelization on threads. This was mostly decided to evaluate and compare the language inherent concurrency constructs rather than the quality of their foreign funtion interfaces. To achieve a fair comparison \textit{streets4c} will use \textit{OpenMP}~\fnote{\url{http://www.openmp.org}} as it is the de facto standard for simple thread parallelization in C. Of course this solution might not match the performance of hand optimized implementations parallelized with the help of \textit{pthreads} but since the focus is on simple concurrency in the context of scientific applications \textit{OpenMP} was selected as the framework of choice.
 
-
 \section{Implementation process}
 \label{sec:Approach::Implementation}
 
 The implementation process was performed iteratively. Certain milestones were defined and implemented in all three languages. The process only advanced to the next phase when the previous milestone was reached in all applications. This approach was chosen to allow for a fair comparison of the different stages of development. If the implementations would have been developed one after another to completion (or in any other arbitrary order), this might have introduced a certain bias to the evaluation because of possible knowledge about the problem aquired in a previous language translating to faster results in the next one.
 
-For each stage various characteristics were captured and compared to highlight the languages' features and performance in the various areas. While the main development and test runs were performed on a laptop the final application was run on a cluster(?) computer of the DKRZ ()\\acronym or explain) to compare scalability beyond common desktop level processors.
+For each stage various characteristics were captured and compared to highlight the languages' features and performance in the various areas. While the main development and test runs were performed on a laptop the final application was run on a high performance machine provided by the research group Scientific Computing to compare scalability beyond common desktop level processors.
 
 \setcounter{subsection}{-1}
 
-\subsection{[Setting up the project]}
+\subsection{Setting up the project}
 \label{subsec:Approach::Implementation::Setup}
 
-The first stage of development was to create project skeletons and infrastructure for the future development. The milestone was to have a working environment in place where the sample application could be build and executed. While this is certainly not the most important or even interesting part it did show the differences in comfort between the various toolchains.
+The first stage of development was to create project skeletons and infrastructure for the future development. The milestone was to have a working environment in place where the sample application could be built and executed. While this is certainly not the most important or even interesting part it did show the differences in comfort between the various toolchains.
 
 \subsection{Counting nodes, ways and relations in an .osm.pbf file}
 \label{subsec:Approach::Implementation::Counting}
@@ -71,9 +68,7 @@ The next goal was to conceptionally build the graph and related structures the s
 \subsection{Verifying structure and algorithm}
 \label{subsec:Approach::Implementation::Verification}
 
-// wording?!
-
-After the base structure to represent graphs and calculate shortest paths was in place it was time to validate the implementations. Unfortunately the OSM data used in the first phase~\ref{subsec:Approach::Implementation::Counting} contained too much nodes and ways to be able to efficiently verify any computed results. Therefore a small example graph was manually populated and fed to the algorithm.
+After the base structure to represent graphs and calculate shortest paths was in place it was time to validate the implementations. Unfortunately the OSM data used in the first phase contained too much nodes and ways to be able to efficiently verify any computed results. Therefore a small example graph was manually populated and fed to the algorithm.
 
 \subsection{Benchmarking graph performance}
 \label{subsec:Approach::Implementation::SequentialBenchmark}
@@ -83,4 +78,4 @@ The fourth milestone was preliminary benchmark of the implementations. The basic
 \subsection{Benchmarking parallel execution}
 \label{subsec:Approach::Implementation::ParallelBenchmark}
 
-The fifth and final stage consisted of modifying the existing benchmark to operate in parallel via threading and benchmarking the results for various configurations. While all the development and previous benchmarks were performed on a personal laptop the final benchmarks were taken on a computation node of the DKRZ to gather relevant results in high concurrency situations.
+The fifth and final stage consisted of modifying the existing benchmark to operate in parallel via threading and benchmarking the results for various configurations. While all the development and previous benchmarks were performed on a personal laptop the final benchmarks were taken on a computation node of the research group to gather relevant results in high concurrency situations.
