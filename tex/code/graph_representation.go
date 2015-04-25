@@ -7,8 +7,8 @@ type Node struct {
 
 type Edge struct {
 	osmID       int64
-	length      int
-	drivingTime uint   // == edge weight
+	length      int    // == edge weight
+	drivingTime uint
 	maxSpeed    uint8
 }
 

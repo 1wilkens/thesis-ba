@@ -8,9 +8,9 @@ pub struct Node {
 
 pub struct Edge {
     pub osm_id: i64,
-    pub length: u32,
+    pub length: u32, // == edge weight
     pub max_speed: u8,
-    pub driving_time: u32 // == edge weight
+    pub driving_time: u32
 }
 
 pub struct Graph {
@@ -24,7 +24,6 @@ pub struct Graph {
 pub struct DijkstraGraph<'a> {
     pub graph: &'a Graph,
     pub queue: BinaryHeap<NodeState>,
-
     pub dist: Vec<u32>,
     pub parents: Vec<usize>
 }

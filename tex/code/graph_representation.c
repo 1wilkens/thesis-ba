@@ -3,15 +3,15 @@ struct node_t
     long osm_id;
     double lon, lat;
 
-    GHashTable *adj; // == adjecent edges/nodes
+    GHashTable *adj;    // == adjecent edges/nodes
 };
 
 struct edge_t
 {
     long osm_id;
-    int length;
+    int length;         // == edge weight
     int max_speed;
-    int driving_time; // == edge weight
+    int driving_time;
 };
 
 struct graph_t
