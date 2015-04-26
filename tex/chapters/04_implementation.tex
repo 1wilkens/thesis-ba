@@ -476,7 +476,7 @@ The resulting code from this milestone was later benchmarked on a cluster comput
             & 03:47:30
             & 02:32:06 (-O3) \\
 
-        Memory usage (MB)\fnote{Obtained via htop (\url{http://hisham.hm/htop/}) at the time of shortest path calculation}
+        Memory usage (4 threads) (MB)\fnote{Obtained via htop (\url{http://hisham.hm/htop/}) at the time of shortest path calculation}
             & 1213
             & 1693
             & 2501 \\
@@ -487,7 +487,7 @@ The resulting code from this milestone was later benchmarked on a cluster comput
     \label{tb:milestone5}
 \end{table}
 
-The execution time was measured on the development laptop with 4 threads to have a quick overview about the general performance of each application. Although it is not representative of the final results the tracked time was the result of the same code that was later extensively run on the high performance machine.
+The execution time and memory usage were measured on the development laptop with 4 threads to have a quick overview about the general performance of each application. Although it is not representative of the final results the tracked time was the result of the same code that was later extensively run on the high performance machine.
 
 \subsection{C}
 \label{subsec:Implementation::ParallelBenchmark::C}
@@ -513,7 +513,7 @@ The existing for loop was surrounded by a second one starting up \glspl{goroutin
 
 The common way in Go to share memory is by communicating over channels. As the data from the graph was only read it was easier to just share the memory readonly but for concurrent writes channels are definitely preferred. The actual implementation would create a channel pair in the parent thread and then pass a copy of the transmitting end to all \glspl{goroutine}. When a calculation is finished the result is written to the channel and the loop continues. The parent thread can wait to retrieve results from the receiving end of the channel and store or directly use them for further calculations.
 
-Performancewise the preliminary results one again place Go slightly behind C with lower memory usage than Rust. Considering the low amount of work required to achieve this runtime it is safe to say Go fulfilled the promise of ``simple concurrency''.
+Performancewise the statistics one again place Go slightly behind C with lower memory usage than Rust. Considering the low amount of work required to achieve this runtime it is safe to say Go fulfilled the promise of ``simple concurrency''.
 
 \subsection{Rust}
 \label{subsec:Implementation::ParallelBenchmark::Rust}
@@ -522,15 +522,23 @@ While both other languages had the advantage of having a framework of some sort 
 \\
 \lstinputlisting[caption={Parallelization with threads in Rust}, label={lst:concurrency.rs}, style=rust]{code/concurrency.rs}
 
-Similar to the Go variant an outer loop is added responsible for spawning child threads which calculate shortest paths concurrently. Again similar to Go each threads receives its work through an anonymous function. As the keywork \shinline{move} suggests all variables used inside this functions are moved inside the thread and cannot be used after that. Luckily references and primitives implement the \shinlin{Copy} which allows them to be copied instead. To be able to copy a reference to the graph data into the thread stack it has to be explicitly bound (line 3). Otherwise a call to 
+Similar to the Go variant an outer loop is added responsible for spawning child threads which calculate shortest paths concurrently. Again comparable to Go each thread receives its work through an anonymous function. As the keywork \shinline{move} suggests all variables used inside this function are essentially moved inside the thread and cannot be used after that. Luckily references and primitives implement the \shinlin{Copy} which allows them to be copied instead. To be able to copy a reference to the graph data into the thread stack it has to be explicitly bound (line 3). Otherwise the use of \shinline{\&g} would cause a move of the graph itself. After the threads have been spawned the main thread calls join on all \shinline{JoinGuard}s to ensure the child threads do not outlive it. This strategy is similar to Go's \shinline{WaitGroup} but in Rust the \shinline{thread::scoped} function returns a JoinGuard instance. It is therefore not as optional as the WaitGroup since the caller has to handle the return value in some way. This once again shows Rust's power to encode usage semantics into return values.
+
+As noted above the Rust solution directly uses threads. The language provides the tools to build efficient concurrency abstractions but does not offer a complete framework like OpenMP. Since the language is still young these frameworks will most likely be developed by the community in after a stable release. Of course C also provides raw threading capabilities but in Go concurrency is completely abstracted into \glspl{goroutine} and the programmer is forced to use those.
+
+There are multiple ways to retrieve calculation results. One choice are channels which Rust's standard library also contains. In this case the solution would be identical to the Go strategy effectively cloning the transmitting end of the channel for each thread. Another option is shared writing supported by locks or mutexes both of which are also part of the standard library. Since scoped threads (which are used in this implementation) are able to share stack data with their owning thread it is possible to write to a shared variable when locking accordingly. This approach would be comparable to the first possibility proposed for C \hyperref[subsec:Implementation::ParallelBenchmark::C]{above} with the additional safety benefits of locking.
+
+Like the previous stage the parallelized Rust variant is the fastest among the compared implementations. And once again this performance comes at the price of memory consumption. However it is interesting to note that the memory footprint only increased slightly when using four threads. This hints at a suboptimal data layout in the immutable structures of the application which are only allocated once even in parallel scenarios.
 
 \subsection{Comparison}
 \label{subsec:Implementation::ParallelBenchmark::Comparison}
 
+This final milestone offered some insight about the difficulty of parallelization in the three languages. As expected Go shines here with the lowest develoment time proving \glspl{goroutine} are a simple yet powerful abstraction for concurrency. C surprisingly also took very little effort thanks to OpenMP. Combined with the language inherent speed this makes for a very good result only beaten by Rust in execution time which is again in a leading position. However the memory footprint is also very high roughly doubling C in this aspect. Although these are only intermediate results they show a trend with Rust beeing ahead in both performance and productivity.
+
 \section{Preparing execution on the high performance machine}
 \label{sec:Implementation::ClusterPreparation}
 
-The results for the next section were gathered from a machine provided by the research group. Since access to this machine was only available via \gls{ssh} and had different libraries installed the code of the various implementations had to be prepared to be able to perform the benchmarks. Although these additional preparations are not a real milestone and no statistics were tracked they are briefly described here as they were certainly a part of the development process.
+The results for the next chapter were gathered from a machine provided by the research group. Since access to this machine was only available via \gls{ssh} and had different libraries installed the code of the various implementations had to be prepared to be able to perform the benchmarks. Although these additional preparations are not a real milestone and no statistics were tracked they are briefly described here as they were certainly a part of the development process.
 
 \subsection*{C}
 \label{subsec:Implementation::ClusterPreparation::C}
