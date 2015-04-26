@@ -4,7 +4,7 @@
 \abstract{This chapter provides the analysis of the statistics gathered from the final implementations. As stated in the introduction the evaluation considers raw performance characteristics as well as developer productivity. Both areas are evaulated based on statistics from the previous chapter.
 }
 
-Preface: All data in this chapter was gathered from a high performance computer by courtesy of the research group \gls{wr}. The machine has access to four 12-core processors and 128 GB of memory. It is therefore ideal to compare shared memory performance on a large scale.
+Preface: All data in this chapter was gathered from a high performance computer by courtesy of the research group Scientific Computing. The machine has access to four 12-core processors and 128 GB of memory. It is therefore ideal to compare shared memory performance on a large scale.
 
 \section{Performance}
 \label{sec:Evaluaton::Performance}
@@ -123,93 +123,96 @@ Another important statistic to compare is the parallel speedup. A slow execution
     \label{tb:final_speedup}
 \end{table}
 
-Again the results are interesting for multiple reasons. C scales very well up to four threads but falls off quite heavily. Rust and Go are evenly matched with Go scaling better up to the final benchmark with 48 threads where it gets beaten slightly by Rust. It would be interesting to see the trend continue here but unfotunately the target machine ``only'' offered 48 logical cores. C' strong scaling in the lower thread counts shows OpenMP's efficiency in generating threaded code for common desktop scenarios. In the high concurrency configurations though the scaling diminishes resulting in a big discrepancy of about 3 (\~13\%). For these use cases it might be worthwhile to implement custom parallelization with \textit{pthreads}.\fnote{\url{http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/pthread.h.html}} This approach will most likely result in much higher development time but might yield better performance results for higher thread counts.
+Again the results are interesting for multiple reasons. C scales very well up to four threads but falls off quite heavily. Rust and Go are evenly matched with Go scaling better up to the final benchmark with 48 threads where it gets beaten slightly by Rust. It would be interesting to see the trend continue here but unfotunately the target machine ``only'' offered 48 logical cores. C' strong scaling in the lower thread counts shows OpenMP's efficiency in generating threaded code for common desktop scenarios. In the high concurrency configurations though the scaling diminishes resulting in a big discrepancy of about 3 (\textasciitilde13\%). For these use cases it might be worthwhile to implement custom parallelization with \textit{pthreads}.\fnote{\url{http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/pthread.h.html}} This approach will most likely result in much higher development time but might yield better performance results for higher thread counts.
 
-Rust and Go scale both comparably well. Although the final speedup of about 19 is not great for 48 cores it is still a serious improvement about the serial version.
+Rust and Go scale both comparably well. Although the final speedup of about 19 is not great for 48 threads it is still a serious improvement about the serial version. It is also important to note that the threads share the work with statically which means there is no load balancing once the threads are started. This results in some threads exiting early effectively reducing the speedup. To solve this the work could be dynamically distributed for example through a queue like construct which threads use to retrieve new tasks. A possible implementation could be channel based as both Go and Rust offer those as part of the standard library.
 
 \section{Additional metrics / productivity}
 \label{sec:Evaluation::Metrics}
 
-Next to performance the second main area evaluated in this thesis is developer productivity.
+Next to performance the second main area evaluated in this thesis is developer productivity. The two criteria tracked to compare this category are \gls{sloc} count and development time. While the \gls{sloc} count is certainly not the best code quality metric it allows for some basic conclusions. Less lines can contain potentially less errors, lowering maintenance costs, and \textit{should} take less time develop. Although this is obviously not always true but the following graphs mostly confirm this correlation for the evaluated implementations.
 
-\begin{figure}
+\begin{figure}[htb]
     \centering
-    \begin{tikzpicture}
-        \begin{axis}[
-            xlabel={Milestone},
-            ylabel={SLOC},
-            xtick={1,2,3,4,5,6},
-            legend pos=north west
-        ]
+    \makebox[\textwidth][c]{%
+        \subfloat[Development time]{%
+        \begin{tikzpicture}
+            \begin{axis}[
+                xlabel={Milestone},
+                ylabel={Total time (sec)},
+                xtick={1,2,3,4,5,6},
+                scaled y ticks = false,
+                ylabel near ticks,
+                legend pos=north west]
 
-        \addplot[red] plot coordinates {
-            (1,163)
-            (2,385)
-            (3,494)
-            (4,757)
-            (5,777)
-            (6,668)};
-        \addlegendentry{C}
+                \addplot[red] plot coordinates {
+                  (1,3078)
+                  (2,12110)
+                  (3,18920)
+                  (4,23392)
+                  (5,23883)};
+                \addlegendentry{C}
 
-        \addplot[color=blue] plot coordinates {
-            (1,55)
-            (2,196)
-            (3,275)
-            (4,359)
-            (5,381)
-            (6,285)};
-        \addlegendentry{Go}
+                \addplot[color=blue] plot coordinates {
+                  (1,1276)
+                  (2,5242)
+                  (3,9851)
+                  (4,13227)
+                  (5,13703)};
+                \addlegendentry{Go}
 
-        \addplot[color=green] plot coordinates {
-            (1,36)
-            (2,170)
-            (3,232)
-            (4,292)
-            (5,314)
-            (6,253)};
-        \addlegendentry{Rust}
-        \end{axis}
-    \end{tikzpicture}
-    \label{fig:sloc_graph}
-    \caption{\gls{sloc} counts across the various milestones}
+                \addplot[color=green] plot coordinates {
+                  (1,1989)
+                  (2,6457)
+                  (3,10335)
+                  (4,13055)
+                  (5,14698)};
+                \addlegendentry{Rust}
+
+            \end{axis}
+        \end{tikzpicture}
+        }
+        \subfloat[SLOC counts]{%
+        \begin{tikzpicture}
+            \begin{axis}[
+                xlabel={Milestone},
+                ylabel={SLOC},
+                xtick={1,2,3,4,5,6},
+                legend pos=north west]
+
+                \addplot[red] plot coordinates {
+                  (1,163)
+                  (2,385)
+                  (3,494)
+                  (4,757)
+                  (5,777)
+                  (6,668)};
+                \addlegendentry{C}
+
+                \addplot[color=blue] plot coordinates {
+                  (1,55)
+                  (2,196)
+                  (3,275)
+                  (4,359)
+                  (5,381)
+                  (6,285)};
+                \addlegendentry{Go}
+
+                \addplot[color=green] plot coordinates {
+                  (1,36)
+                  (2,170)
+                  (3,232)
+                  (4,292)
+                  (5,314)
+                  (6,253)};
+                \addlegendentry{Rust}
+
+            \end{axis}
+        \end{tikzpicture}
+        }
+    }
+    \caption{Productivity metrics across the various milestones}
+    \label{fig:productivity_metrics}
 \end{figure}
 
-
-\begin{figure}
-    \centering
-    \begin{tikzpicture}
-        \begin{axis}[
-            xlabel={Milestone},
-            ylabel={Total time (sec)},
-            xtick={1,2,3,4,5,6},
-            legend pos=north west
-        ]
-
-        \addplot[red] plot coordinates {
-            (1,3078)
-            (2,12110)
-            (3,18920)
-            (4,23392)
-            (5,23883)};
-        \addlegendentry{C}
-
-        \addplot[color=blue] plot coordinates {
-            (1,1276)
-            (2,5242)
-            (3,9851)
-            (4,13227)
-            (5,13703)};
-        \addlegendentry{Go}
-
-        \addplot[color=green] plot coordinates {
-            (1,1989)
-            (2,6457)
-            (3,10335)
-            (4,13055)
-            (5,14698)};
-        \addlegendentry{Rust}
-        \end{axis}
-    \end{tikzpicture}
-    \label{fig:sloc_graph}
-    \caption{Development time across the various milestones}
-\end{figure}
+The sixth milestone in the \gls{sloc} count graph measured the final stripped down versions as introduced in \autoref{sec:Implementation::ParallelBenchmark}. It is not included in the development time comparison as this statistic was not tracked.

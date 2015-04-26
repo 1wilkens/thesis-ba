@@ -22,11 +22,4 @@ While testing is just one example there are a lot of ``best practices'' and tech
 
 This thesis aims to evaluate Rust and Go as potential programming languages in the \gls{hpc} environment. The comparison is based on three implementations of a shortest path algorithm in the two language candidates as well as C. The idea is based on an existing parallel application called \textit{streets4MPI} which was written in Python. It simulates ongoing traffic in a geographical area creating heatmaps as a result. The programs written for this thesis implement the computational intensive part which is the shortest path calculation to be able to review Go and Rust's performance characteristics as well as development productivity and tooling support. Since libraries for interprocess communication in Rust and Go are nowhere near production-ready this thesis will focus on shared memory parallelization only to avoid unfair bias based solely on the quality of the supporting library ecosystem.
 
-To reduce complexity the implementations perform no real error handling nor produce any usable simulation output. They simply perform Dijkstra's algorithm in the most language ideomatic way which can optionally be parallelized. While raw performance will be the main criteria, additional software metrics will also be reviewed to measure the complexity and overall quality of the produced applications. In addition the general development experience especially for newcomers to the respective languages will be judged to be able to evaluate the usefulness for scientist not specialized in programming.
-
-% - evaluate languages for use in (scientific) high-performance computing
-    % - shared memory -> thread-parallelization
-    % - tools, (common) frameworks,
-% - through implementation of streets4mpi in C, go and rust
-    % - performance(!)
-    % - metrics
+To reduce complexity the implementations perform no real error handling nor produce any usable simulation output. They simply perform Dijkstra's algorithm in the most language ideomatic way which can optionally be parallelized. While raw performance will be the main criteria, additional productivity metrics will also be reviewed to rate the general development experience. Another focus will be the barrier of entry for newcomers to the respective languages which is important for scientiest less proficient in programming.

@@ -13,7 +13,7 @@ As stated in~\autoref{sec:Introduction::Goals} the concept for the implementatio
 
 As mentioned the applications written in scope of this thesis perform only the graph calculations discarding the produced results. Consequently the implementations do not produce any data besides the runtime statistics externally acquired by benchmark tools.
 
-\section{Differences to \texit{streets4MPI}}
+\section{Differences to \textit{streets4MPI}}
 \label{sec:Approach::Differences}
 
 Although the evaluated implementations are based on the original \textit{streets4MPI}, there are some key implementational differences. This section gives a brief overview over the most important aspects that have been changed and describes both the original application's functionality as well as the derived implementations.
@@ -32,7 +32,7 @@ The derived versions require the input to be in ``.osm.pbf'' format. This newer 
 
 The simulation in the base application is based on randomly picked node pairs from the source graph. For these trips the shortest path is calculated by Dijkstra's algorithm as seen in \cite{cormen} and a random factor called ``jam tolerance'' is introduced to avoid oscillation in between iterations~\cite{streets_report}. Then after some time has passed in the simulation, existing streets get expanded or shut down depending on their usage.
 
-The compared implementations of this thesis also perform trip based simulation but without the added randomness and street modification. Also the edge weights are not calculated based on speed limit and length of the street. Instead the derived implementations calculate the length once from the corrdinates of the corresponding nodes and use this as edge weigth directly. The concrete algorithm is a variant of the \shline{Dijkstra-NoDec} algorithm as seen in~\cite[p. 16]{dijkstra_utcs}. It was mainly chosen because of its reduced complexity in required data structures which again reduces complexity and scope. The algorithm is implemented separately in all three languages so it could theoretically get benchmarked standalone to get clearer results. Mainly because of time constraints this was not attempted in this thesis.
+The compared implementations of this thesis also perform trip based simulation but without the added randomness and street modification. Also the edge weights are not calculated based on speed limit and length of the street. Instead the derived implementations calculate the length once from the corrdinates of the corresponding nodes and use this as edge weigth directly. The concrete algorithm is a variant of the \shinline{Dijkstra-NoDec} algorithm as seen in~\cite[p. 16]{dijkstra_utcs}. It was mainly chosen because of its reduced complexity in required data structures which again reduces complexity and scope. The algorithm is implemented separately in all three languages so it could theoretically get benchmarked standalone to get clearer results. Mainly because of time constraints this was not attempted in this thesis.
 
 \subsection*{Concurrency}
 \label{subsec:Approach::Differences::Concurrency}

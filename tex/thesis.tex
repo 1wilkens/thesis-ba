@@ -47,12 +47,17 @@
 % Modern latin font
 \usepackage{lmodern}
 
+% Load xcolor first
+\usepackage[usenames, dvipsnames]{xcolor}
+
 % Various useful packages
 \usepackage[footnote]{acronym}
 \usepackage[page]{appendix}
 \usepackage{booktabs}
+\usepackage{caption}
 \usepackage[autostyle,babel,strict]{csquotes}
-%\usepackage{float} % Don't need that for now?
+\usepackage{footnote}
+\usepackage{float}
 \usepackage{graphicx}
 \usepackage[htt]{hyphenat}
 \usepackage{listings}
@@ -63,13 +68,10 @@
 \usepackage{subfig}
 \usepackage{textcomp}
 \usepackage{tikz}
+\usepackage{tikzscale}
 \usepackage[subfigure,titles]{tocloft}
 \usepackage{units}
 \usepackage{xparse}
-
-% Need to add footnote after xcolor to avoid conflict
-\usepackage[usenames, dvipsnames]{xcolor}
-\usepackage{footnote}
 
 % For dates
 \newcommand{\leadingzero}[1]{\ifnum #1<10 0\the#1\else\the#1\fi}

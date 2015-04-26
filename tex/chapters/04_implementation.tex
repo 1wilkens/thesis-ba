@@ -272,7 +272,6 @@ The next goal was to verify the implemented algorithms on some sample data. To a
     \centering
     \begin{tabular}{llll}
         \toprule
-        % Header
             & C
             & Go
             & Rust \\
@@ -522,7 +521,7 @@ While both other languages had the advantage of having a framework of some sort 
 \\
 \lstinputlisting[caption={Parallelization with threads in Rust}, label={lst:concurrency.rs}, style=rust]{code/concurrency.rs}
 
-Similar to the Go variant an outer loop is added responsible for spawning child threads which calculate shortest paths concurrently. Again comparable to Go each thread receives its work through an anonymous function. As the keywork \shinline{move} suggests all variables used inside this function are essentially moved inside the thread and cannot be used after that. Luckily references and primitives implement the \shinlin{Copy} which allows them to be copied instead. To be able to copy a reference to the graph data into the thread stack it has to be explicitly bound (line 3). Otherwise the use of \shinline{\&g} would cause a move of the graph itself. After the threads have been spawned the main thread calls join on all \shinline{JoinGuard}s to ensure the child threads do not outlive it. This strategy is similar to Go's \shinline{WaitGroup} but in Rust the \shinline{thread::scoped} function returns a JoinGuard instance. It is therefore not as optional as the WaitGroup since the caller has to handle the return value in some way. This once again shows Rust's power to encode usage semantics into return values.
+Similar to the Go variant an outer loop is added responsible for spawning child threads which calculate shortest paths concurrently. Again comparable to Go each thread receives its work through an anonymous function. As the keywork \shinline{move} suggests all variables used inside this function are essentially moved inside the thread and cannot be used after that. Luckily references and primitives implement the \shinline{Copy} which allows them to be copied instead. To be able to copy a reference to the graph data into the thread stack it has to be explicitly bound (line 3). Otherwise the use of \shinline{\&g} would cause a move of the graph itself. After the threads have been spawned the main thread calls join on all \shinline{JoinGuard}s to ensure the child threads do not outlive it. This strategy is similar to Go's \shinline{WaitGroup} but in Rust the \shinline{thread::scoped} function returns a JoinGuard instance. It is therefore not as optional as the WaitGroup since the caller has to handle the return value in some way. This once again shows Rust's power to encode usage semantics into return values.
 
 As noted above the Rust solution directly uses threads. The language provides the tools to build efficient concurrency abstractions but does not offer a complete framework like OpenMP. Since the language is still young these frameworks will most likely be developed by the community in after a stable release. Of course C also provides raw threading capabilities but in Go concurrency is completely abstracted into \glspl{goroutine} and the programmer is forced to use those.
 
