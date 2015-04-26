@@ -59,7 +59,7 @@ In \acrlong{hpc} the most important criteria when evaluating a language is perfo
 
         \bottomrule
     \end{tabular}
-    \caption{Execution time of the final applications (100.000 nodes)}
+    \caption{Execution time of the final applications (100K nodes)}
     \label{tb:final_execution_time}
 \end{table}
 
@@ -67,9 +67,9 @@ These results already contain the first real surprise. C that was chosen as a co
 
 In contrast the Go binary that was also compiled on the development laptop was executed without any changes on the target machine and shows great result even reaching similar performance to Rust in the high concurrency configurations. This shows that a garbage collected language is not immediately unsuitable for use in \gls{hpc}. Combined with the portability caused by full static linking Go might very well be suited for cluster computations on nodes with a minimum of system libraries installed.
 
-Rust
+Finally Rust demonstrates that it might be a competent successor to C in \gls{hpc}. It is the fastest language out of the compared three across all scenarios while provding additional memory safety through its unique typesystem. It prevented multiple errors from compiling in the Rust implementation throughout the whole development process. On one occasion it even revealed an error which had gone unnoticed in both C and Go. This really highlights how static analysis can provide safety without sacrificing performance.
 
-Another important statistic to compare is the parallel speedup. A slow execution time alone does not mean a language is completely unfit for \gls{hpc} because the implementation might simply be flawed to begin with. If this is the case the application can still offer above average speedups making it viable for high concurrency scenarios. The following table highlights the achieved speedup for each language in the same configurations as above.
+Another important statistic to compare is the parallel speedup. A slow execution time alone does not mean a language is completely unfit for \gls{hpc} because the implementation might simply be flawed to begin with. If this is the case the application can still offer above average speedups making it viable for high concurrency scenarios. The following table lists the achieved speedup for each language in the same configurations as above.
 
 \begin{table}[htb]
     \centering
@@ -119,9 +119,13 @@ Another important statistic to compare is the parallel speedup. A slow execution
 
         \bottomrule
     \end{tabular}
-    \caption{Parallel speedup of the final applications (100.000 nodes)}
+    \caption{Parallel speedup of the final applications (100K nodes)}
     \label{tb:final_speedup}
 \end{table}
+
+Again the results are interesting for multiple reasons. C scales very well up to four threads but falls off quite heavily. Rust and Go are evenly matched with Go scaling better up to the final benchmark with 48 threads where it gets beaten slightly by Rust. It would be interesting to see the trend continue here but unfotunately the target machine ``only'' offered 48 logical cores. C' strong scaling in the lower thread counts shows OpenMP's efficiency in generating threaded code for common desktop scenarios. In the high concurrency configurations though the scaling diminishes resulting in a big discrepancy of about 3 (\~13\%). For these use cases it might be worthwhile to implement custom parallelization with \textit{pthreads}.\fnote{\url{http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/pthread.h.html}} This approach will most likely result in much higher development time but might yield better performance results for higher thread counts.
+
+Rust and Go scale both comparably well. Although the final speedup of about 19 is not great for 48 cores it is still a serious improvement about the serial version.
 
 \section{Additional metrics / productivity}
 \label{sec:Evaluation::Metrics}
