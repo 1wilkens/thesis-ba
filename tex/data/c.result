@@ -12,3 +12,9 @@
 
 95988.68user 299.70system 3:17:28elapsed 812%CPU (0avgtext+0avgdata 4688432maxresident)k
 0inputs+16outputs (0major+104980812minor)pagefaults 0swaps
+
+118595.83user 231.63system 2:06:08elapsed 1570%CPU (0avgtext+0avgdata 5511056maxresident)k
+0inputs+16outputs (0major+49379488minor)pagefaults 0swaps
+
+155083.81user 279.12system 1:21:58elapsed 3158%CPU (0avgtext+0avgdata 7152400maxresident)k
+0inputs+16outputs (0major+30626729minor)pagefaults 0swaps

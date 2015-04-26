@@ -71,6 +71,9 @@
 \usepackage[usenames, dvipsnames]{xcolor}
 \usepackage{footnote}
 
+% For dates
+\newcommand{\leadingzero}[1]{\ifnum #1<10 0\the#1\else\the#1\fi}
+
 % Allow footnotes in tables
 \makesavenoteenv{tabular}
 \makesavenoteenv{table}
@@ -249,6 +252,6 @@ Ich versichere, dass ich die Arbeit selbstständig verfasst und keine anderen, a
 \bigskip
 \bigskip
 
-Hamburg, den 26.11.2014  \quad \dotfill
+Hamburg, den \leadingzero{\day}.\leadingzero{\month}.\leadingzero{\year} \quad \dotfill
 
 \end{document}
