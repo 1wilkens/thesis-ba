@@ -1,7 +1,7 @@
 \chapter{Implementation}
 \label{ch:Implementation}
 
-\abstract{This chapter describes the implementation process for all three compared languages. It is divided in sections based on the development milestones defined in the previous chapter~\ref{sec:Approach::Implementation}.
+\abstract{This chapter describes the implementation process for all three compared languages. It is divided in sections based on the development milestones defined in the previous chapter~\ref{sec:Approach::Implementation}. The last section briefly describes the preparaton process for the final benchmarks.
 }
 
 \setcounter{section}{-1}
@@ -426,14 +426,14 @@ After the input data has been processed the \shinline{edges} vector contains all
 \\
 \lstinputlisting[caption={Zipped iterators in Rust}, label={lst:zipped_iterators.rs}, style=rust]{code/zipped_iterators.rs}
 
-The \shinline{Iterator.zip} method takes an iterator and returns a composite iterator which yields elements from the two as a pair. Here \shinline{indices} is a vector of pairs of i64 (Rust's 64-bit integer) so the iterator created by zip yields a pair of type \shinline{(edge, (i64, i64))}. Also the edge length had to be calculated before the edge could be added to the graph. This meant the \shinline{mut} keywork had to be added in front of the edge variable. The resulting expression \lstinline|for (mut e, (n1, n2)) in edges.into_iter().zip(indices.into_iter())| looks very complicated but is actually pretty simple when taken apart. These tangled statements are probably the major disadvantage of the complex typesystem. There are a lot of sigils which sometimes even have double meanings. Ultimately though it has to be noted that the compiler messages are very helpful even in these seemingly complex situations. They are a big reason why the development time for this milestone is the lowest despite the difficulties with the ownership. It takes some time to be able to parse through the sheer amount of information the compiler prints in case of a problem but once that is done the messages help to identify all kinds of errors rather quickly.
+The \shinline{Iterator.zip} method takes an iterator and returns a composite iterator which yields elements from the two as a pair. Here \shinline{indices} is a vector of pairs of i64 (Rust's 64-bit integer) so the iterator created by zip yields a pair of type \shinline{(edge, (i64, i64))}. Also the edge length had to be calculated before the edge could be added to the graph. This meant the \shinline{mut} keywork had to be added in front of the edge variable. The resulting expression \shinline{\lstinline[style=rust]|for (mut e, (n1, n2)) in edges.into_iter().zip(indices.into_iter())|} looks very complicated but is actually pretty simple when taken apart. These tangled statements are probably the major disadvantage of the complex typesystem. There are a lot of sigils which sometimes even have double meanings. Ultimately though it has to be noted that the compiler messages are very helpful even in these seemingly complex situations. They are a big reason why the development time for this milestone is the lowest despite the difficulties with the ownership. It takes some time to be able to parse through the sheer amount of information the compiler prints in case of a problem but once that is done the messages help to identify all kinds of errors rather quickly.
 
 The performance comparison was specifically interesting in this stage because Rust was actually ahead of C for the first time. It is also remarkable that the development time and \gls{sloc} count are the lowest of the three languages compared. This means the usual tradeoff between performance and productivity does not apply in this particular case and Rust straightup beats Go and C in three important categories which is impressive.
 
 \subsection{Comparison}
 \label{subsec:Implementation::SequentialBenchmark::Comparison}
 
-This milestone really highlighted the power of Rust. On the one hand it increases productivity through high level abstractions saving valuable development time. On the other hand these abstractions produce very efficient machine code even beating C in execution time by about 33\% which in turn also consume about twice the amount of memory. Since the structures contain nearly the same fields it is unclear what causes this big difference exactly but consindering Rust's current development state these results are promising and might even improve with optimizations reaching the compiler when 1.0.0 is released.
+This milestone really highlighted the power of Rust. On the one hand it increases productivity through high level abstractions saving valuable development time. On the other hand these abstractions produce very efficient machine code even beating C in execution time by about 33\% which in turn also consume about twice the amount of memory. Since the structures contain nearly the same fields it is unclear what causes this big difference exactly but consindering Rust's current development state these results are promising and might even improve with optimizations when the language reaches a stable release.
 
 Although the results for the C implementation are certainly still optimizable and may be the consequence of a subotimal architecture, the statistics undeniably show that it is \textit{possible} to write faster applications in less time using Rust instead of C with moderate experience in both languages. Go also poduces decent results especially in the productivity sections. Only slightly slower than C \textit{streets4Go} took vastly less development time and consumes less memory than the Rust version.
 
@@ -442,7 +442,9 @@ Although the results for the C implementation are certainly still optimizable an
 
 Last but not least it was time to parallelize the calculations. Because the algorithm itself is not very easy to execute concurrently the choice was made to calculate multiple shortest paths in different threads. Also the main loop over the first 100.000 nodes was already in place from the previous milestone and so only this block had to be updated to run in parallel.
 
-It is also important that the parallelized code does not make any use of the computed results as the previous versions did not do that either. In concurrent scenarios this becomes a separate problem because of synchronization issues. Although it is not included in the implementations each of the following sections will describe possible strategies to deal with the calculated results.
+It is also important to note that the parallelized code does not make any use of the computed results as the previous versions did not do that either. In concurrent scenarios this becomes a separate problem because of synchronization issues. Although it is not included in the implementations each of the following sections will describe possible strategies to deal with the calculated results in an ideomatic way.
+
+The resulting code from this milestone was later benchmarked on a cluster computer of the research group. To lower binary size all applications were stripped of unneeded code for this final stage. This mostly meant removing the incremental parts from previous milestone as they were not required for the final versions. The result are two \gls{sloc} count categories for this stage. The first is the logical continuation from the previous stages counting all lines written up to this point while the second represents the final amount of lines required after all old code had been removed and the benchmark function was inlined into the main function. This number really shows how much lines were needed to successfully implement the application in each language.
 
 \begin{table}[htb]
     \centering
@@ -475,9 +477,9 @@ It is also important that the parallelized code does not make any use of the com
             & 02:32:06 (-O3) \\
 
         Memory usage (MB)\fnote{Obtained via htop (\url{http://hisham.hm/htop/}) at the time of shortest path calculation}
-            & 994
-            & 1551
-            & 2235 \\
+            & 1213
+            & 1693
+            & 2501 \\
 
         \bottomrule
     \end{tabular}
@@ -485,29 +487,42 @@ It is also important that the parallelized code does not make any use of the com
     \label{tb:milestone5}
 \end{table}
 
+The execution time was measured on the development laptop with 4 threads to have a quick overview about the general performance of each application. Although it is not representative of the final results the tracked time was the result of the same code that was later extensively run on the high performance machine.
+
 \subsection{C}
 \label{subsec:Implementation::ParallelBenchmark::C}
 
 As mentioned in the previous chapter \textit{OpenMP} was the framework of choice to parallelize \textit{streets4C}. Given this there were two possible approaches to consider. Either the \shinline{for} pragma applied to the existing loop or a regular \shinline{omp parallel} block calculating offsets manually. To have finer grained control over the threads the seconds strategy was favored. The following \hyperref[lst:openmp.c]{Listing} shows the resulting \shinline{omp parallel} block with some print statements removed for brevity.
-\\
+\\ \\
 \lstinputlisting[caption={Parallelization with OpenMP}, label={lst:openmp.c}, style=c]{code/openmp.c}
 
 The required changes were less than expected which proves why OpenMP is a popular choice for thread based parallelization in C. The existing loop was surrounded with the correct pragma and of course each thread has to calculate new limits for the loop based on its id. Luckily the \shinline{dgraph} structure was designed with concurrency in mind and as such can be instantiated independently in each thread. The \shinline{dijkstra} function is then called in a loop to calculate shortest paths for all nodes this thread was assigned to process and results are discarded immediatly.\fnote{This is not directly clear from the code but the calculating function only stores results in the struct and since the loop instantly continues to the next node they are overwritten during the next call}
 
 The ideomatic way in C to save and use the resulting data would be writing to a shared array. Assuming the nodes processed by each thread are disjoint the array access can be safely shared for writing. While the benchmarked implementation actually does not guarantee this for all amounts of threads (because of remainders in certain configurations) it could easily be changed to use this pattern. It is also possible to create a result array in each thread and then later manually reduce it to a global one via an \shinline{omp critical} section. While this approach would thoretically support overlapping node lists in different threads it is not very useful in this context because the affected values would just be overwritten. Also the use of a critical block obviously impacts performance quite heavily because threads might have to wait for each other to finish the global update.
+also
+The execution time shows once again C as only second fastest implementation. While these results were only gathered from a single run they still show an ongoing trend from the previous phase. The short development time can be attributed to OpenMP's matureness as a framework reducing the changes to a bare minimum. Only beaten by Go (which basically chosen for a promise of simple concurrency) this results is very positive and is great contrasts to previous milestones.
 
 \subsection{Go}
 \label{subsec:Implementation::ParallelBenchmark::Go}
 
-\textit{streets4Go} obviously used \glspl{goroutine} for concurrent execution. As predicted the changes to parallelize the application were minimal and simple. A for loop was added to start up the required amount of \glspl{goroutine} which then calculate their limits based on the outer loop index and start executing the algorithm. Again the following \hyperref[lst:goroutines.go]{Listing} shows the relevant lines responsible for concurrent execution without print statements.
+\textit{streets4Go} obviously used \glspl{goroutine} for concurrent execution. As predicted the changes to parallelize the application were minimal and simple. A for loop was added to start up the required amount of \glspl{goroutine} which then calculate their limits based on the outer loop index and start executing the algorithm. The following \hyperref[lst:goroutines.go]{Listing} shows the relevant lines responsible for concurrent execution without print statements.
 \\
 \lstinputlisting[caption={Parallelization with goroutines}, label={lst:goroutines.go}, style=go]{code/goroutines.go}
 
+The existing for loop was surrounded by a second one starting up \glspl{goroutine} to work concurrently. In typical fashion these \glspl{goroutine} get their function body passed as an anonymous function with the loop argument passed as a paramter. While it would be possible to extract the code into a seperate function and call it with the \shinline{go} keyword this solution is much easier to understand and really highlights how anonymous functionc can enhance code readability. To prevent the parent thread from returning prematurely a \shinline{WaitGroup} is added which effectively joins all running \glspl{goroutine} before exiting.
 
+The common way in Go to share memory is by communicating over channels. As the data from the graph was only read it was easier to just share the memory readonly but for concurrent writes channels are definitely preferred. The actual implementation would create a channel pair in the parent thread and then pass a copy of the transmitting end to all \glspl{goroutine}. When a calculation is finished the result is written to the channel and the loop continues. The parent thread can wait to retrieve results from the receiving end of the channel and store or directly use them for further calculations.
+
+Performancewise the preliminary results one again place Go slightly behind C with lower memory usage than Rust. Considering the low amount of work required to achieve this runtime it is safe to say Go fulfilled the promise of ``simple concurrency''.
 
 \subsection{Rust}
 \label{subsec:Implementation::ParallelBenchmark::Rust}
 
+While both other languages had the advantage of having a framework of some sort at their disposal the Rust solution creates raw threads to parallelize the execution. This shows in the development time which is more than three times as high as the time spent on the other implementations. The \hyperref[lst:concurrency.rs]{Listing} below includes the relevant parts from the parallel version of the benchmark function.
+\\
+\lstinputlisting[caption={Parallelization with threads in Rust}, label={lst:concurrency.rs}, style=rust]{code/concurrency.rs}
+
+Similar to the Go variant an outer loop is added responsible for spawning child threads which calculate shortest paths concurrently. Again similar to Go each threads receives its work through an anonymous function. As the keywork \shinline{move} suggests all variables used inside this functions are moved inside the thread and cannot be used after that. Luckily references and primitives implement the \shinlin{Copy} which allows them to be copied instead. To be able to copy a reference to the graph data into the thread stack it has to be explicitly bound (line 3). Otherwise a call to 
 
 \subsection{Comparison}
 \label{subsec:Implementation::ParallelBenchmark::Comparison}
@@ -515,4 +530,21 @@ The ideomatic way in C to save and use the resulting data would be writing to a 
 \section{Preparing execution on the high performance machine}
 \label{sec:Implementation::ClusterPreparation}
 
-The results for the next section were gathered from a machine provided by the research group. Since access to this machine was only available via \gls{ssh} and had different libraries installed the code of the various implementations had to be prepared to be able to perform the benchmarks.
+The results for the next section were gathered from a machine provided by the research group. Since access to this machine was only available via \gls{ssh} and had different libraries installed the code of the various implementations had to be prepared to be able to perform the benchmarks. Although these additional preparations are not a real milestone and no statistics were tracked they are briefly described here as they were certainly a part of the development process.
+
+\subsection*{C}
+\label{subsec:Implementation::ClusterPreparation::C}
+
+When first started on the cluster the binary compiled on the development laptop did not run correctly. The first problem was the version of the libgomp \textit{streets4C} was linked against. This was the result of a newer compiler version on the development laptop compared to the remote machine which uses a \gls{lts} distribution and therefore generally older software. The solution was to simply compile the application on the remote machine from sources.
+
+Unfortunately not all sources were easily available and as a consequence two libraries were only linked in binary form. This probably introduced a small performance penalty as the libraries were not fully optimized but due to time restrictions this approach had to be chosen. The two libraries in question were the \gls{protobuf} C runtime \mdinline{libprotobuf-c.a} and a custom fork of the \gls{osm} library \mdinline{libosmpbf.a}\fnote{Located at \url{https://github.com/MrFloya/libosmpbf}}. These two files were compiled on the developmend laptop and then copied to the cluster.
+
+\subsection*{Go}
+\label{subsec:Implementation::ClusterPreparation::Go}
+
+When preparing the Go implementation for the benchmarks it came in handy the a Go executable is always linked statically without any further dependencies. Since the remote machine and the development shared the same architecture the process was as simple as copying the clustern executing it. Considering that the binary was never recompiled and could not take advantage of special processor specific features the results from the next chapter are very promising.
+
+\subsection*{Rust}
+\label{subsec:Implementation::ClusterPreparation::Rust}
+
+Porting the Rust version posed an interesting challenge. All executable who link against the Rust standard library require at least a C standard library installed.\fnote{Currently onle the GNU \shinline{glibc} is supported but that will change. See \url{https://github.com/rust-lang/rfcs/issues/625} for further information} While there there is a minimun required version compiler takes advantage of newer versions which in turn means an executable linking against a newer version of \shinline{glibc} is not executable with older versions. But the same code can be compiled on the target system without problems. This strategy was employed on the remote machine. It is worth mentioning that the excellent toolchain aroung \textit{cargo} was very helpful in the process. In contrast to the C variant where some libraries were not available and had to copied from the development laptop \textit{cargo} was able to fetch all dependencies and build them without any problems.
