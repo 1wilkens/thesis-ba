@@ -6,6 +6,12 @@
 \section{Summary}
 \label{sec:Conclusion::Summary}
 
+The results from the previous chapter indicate that C might not be the best choice for high performance applications anymore. While C has been known to be a lesser productive language (mostly but not exclusively because of manual memory management) there was usually a trade-off between performance and productivity. Since in \gls{hpc} low execution times are the highest goal the lower productivity was accepted to eventually gain superior speed. This thesis proves that this trade-off does not neccessarily have to exist anymore as new languages provide higher productivity paired with equal or better performance characteristics. While the produced results are certainly not comprehensive enough to completely invalidate C as \textit{the} high performance language they still show that there are possible successors with Go and Rust.
+
+Go as a garbage collected languages allows the programmer to forget about memory management. This can be helpful especially for newcomers because they are able to focus on the core functionality. Similarly scientists of other fields are able to just focus on their research and expressing it in code without having to think about allocations and memory freeing. Concurrency is an built into the language and \glspl{goroutine} allow for simple parallelization in shared memory scenarios. All this is achieved without the typical loss of performance as the execution time statistics show.
+
+Although Go's results are impressive in itself Rust's benchmarks look even more promising. As the fastest among the three evaluated languages it is already worth considering for adoption but combined with the equally good productivity metrics Rust is a serious contender for the next big language in \acrlong{hpc}. The tooling support is already quite good and improving every day and the standard library provides a complete toolbox for various kind of concurrency abstractions. Unfortunately it is currently also limited to shared memory parallelization but this might change afte the language gets a first stable release.
+
 \section{Improvements and future work}
 \label{sec:Conclusion::Improvements}
 
@@ -14,7 +20,7 @@ Although this evaluation already yielded some interesting results regarding new 
 \subsection*{General code quality}
 \label{subsec:Conclusion::Improvements::CodeQuality}
 
-As mentioned a few times in the thesis the quality of the implementations might not be optimal especially in the case \textit{streets4C}. This can mostly be attributed to the author's lack of equal experience in the three evaluated languages. While this is to a point intentional, as scientists might not be proficient in these languages either the implementations could be reviewed by language experts to really demonstrate the absolute highest possible performance.
+As mentioned a few times in the thesis the quality of the implementations might not be optimal especially in the case \textit{streets4C}. This can mostly be attributed to the author's lack of equal experience in the three evaluated languages. While this is to a point intentional, as scientists might not be proficient in these languages either, the implementations could be reviewed by language experts to really demonstrate the absolute highest possible performance.
 
 \subsection*{Limited benchmark configurations}
 \label{subsec:Conclusion::Improvements::Configuration}

@@ -130,7 +130,7 @@ Rust and Go scale both comparably well. Although the final speedup of about 19 i
 \section{Additional metrics / productivity}
 \label{sec:Evaluation::Metrics}
 
-Next to performance the second main area evaluated in this thesis is developer productivity. The two criteria tracked to compare this category are \gls{sloc} count and development time. While the \gls{sloc} count is certainly not the best code quality metric it allows for some basic conclusions. Less lines can contain potentially less errors, lowering maintenance costs, and \textit{should} take less time develop. Although this is obviously not always true but the following graphs mostly confirm this correlation for the evaluated implementations.
+Next to performance the second main area evaluated in this thesis is developer productivity. The two criteria tracked to compare this category are \gls{sloc} count and development time. While the \gls{sloc} count is certainly not the best code quality metric it allows for some basic conclusions. Less lines can contain potentially less errors, lowering maintenance costs, and \textit{should} take less time develop. This is obviously not always the case but the following graphs mostly confirm this correlation for the evaluated implementations.
 
 \begin{figure}[htb]
     \centering
@@ -215,4 +215,10 @@ Next to performance the second main area evaluated in this thesis is developer p
     \label{fig:productivity_metrics}
 \end{figure}
 
-The sixth milestone in the \gls{sloc} count graph measured the final stripped down versions as introduced in \autoref{sec:Implementation::ParallelBenchmark}. It is not included in the development time comparison as this statistic was not tracked.
+The sixth milestone in the \gls{sloc} count graph references the final stripped down versions as introduced in \autoref{sec:Implementation::ParallelBenchmark}. This small phase was not included in the development time comparison as this statistic was not tracked.
+
+Comparing developer productivity C comes in last by a large margin. The high development time can be traced back to the manual implementation of common data structures and the high amount of memory and type related errors encountered during the development. This naturally lead to a much higher \gls{sloc} count which was increased further by code duplication caused by the conventional header files. It is important to note here that the \gls{sloc} count for C is also partially caused by the dominant bracing style. While Go forces the programmer to set all curly braces on the same line as the preceeding statement the C implementations were written in a different style always placing curly braces on new lines. Rust follows the Go rules but only encourages them as a convention allowing for other styles to be used. This in turn produces some extra lines on the C side while Rust and Go remain unaffected. However the difference is still way too significant to be only attributed to the style choice.
+
+Rust and Go on the other hand both allow for substantial productivity gains. There seems to be just a little tradeoff between the two tracked criteria with Rust requiring slightly less lines of code while Go is a little faster to develop in. Although the results are so close together that it does not matter very much when compared to C. While these changes are certainly largely caused by the languages themselves especially the lower development time is also possible through the superior tooling. Both Go and Rust offer excellent tool support for dependency management and other parts of the build process. Especially for compilations on foreign machines this is invaluable because the application is mostly independent from systemwide installed libraries.
+
+All these results reinforce the inital motivation from the \hyperref[sec:Introduction::Motivation]{Introduction} for a new successor to C in the context of \acrlong{hpc}. Considering productivity only both Go and Rust offer excellent advantages over C.
