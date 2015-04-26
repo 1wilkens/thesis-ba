@@ -9,6 +9,8 @@ Preface: All data in this chapter was gathered from a high performance computer 
 \section{Performance}
 \label{sec:Evaluaton::Performance}
 
+In \acrlong{hpc} the most important criteria when evaluating a language is performance. The first table lists the raw data for execution time for increasing amounts of threads.
+
 \begin{table}[htb]
     \centering
     \begin{tabular}{rccc}
@@ -26,22 +28,22 @@ Preface: All data in this chapter was gathered from a high performance computer 
             & 14:15:06 \\
 
             2
-            & xx:xx:xx
+            & 12:29:56
             & 10:21:36
             & 09:12:47 \\
 
             4
-            & xx:xx:xx
+            & 07:16:34
             & 05:58:35
             & 05:09:56 \\
 
             8
-            & xx:xx:xx
+            & 04:13:04
             & 03:01:54
             & 02:49:35 \\
 
             12
-            & xx:xx:xx
+            & 03:17:28
             & 02:06:08
             & 01:55:33 \\
 
@@ -61,6 +63,8 @@ Preface: All data in this chapter was gathered from a high performance computer 
     \label{tb:final_execution_time}
 \end{table}
 
+Another important statistic to compare is the parallel speedup. A slow execution time alone does not mean a language is completely unfit for \gls{hpc} because the implementation might simply be flawed to begin with. If this is the case the application can still offer above average speedups making it viable for high concurrency scenarios. The following table highlights the achieved speedup for each language in the same configurations as above.
+
 \begin{table}[htb]
     \centering
     \begin{tabular}{rccc}
@@ -78,22 +82,22 @@ Preface: All data in this chapter was gathered from a high performance computer 
             & 1.0000 \\
 
             2
-            & xx:xx:xx
+            & 1.7486
             & 1.6221
             & 1.5469 \\
 
             4
-            & xx:xx:xx
+            & 3.0037
             & 2.8119
             & 2.7590 \\
 
             8
-            & xx:xx:xx
+            & 5.1816
             & 5.5432
             & 5.0424 \\
 
             12
-            & xx:xx:xx
+            & 6.6406
             & 7.9941
             & 7.4003 \\
 
@@ -116,39 +120,44 @@ Preface: All data in this chapter was gathered from a high performance computer 
 \section{Additional metrics / productivity}
 \label{sec:Evaluation::Metrics}
 
-\begin{tikzpicture}
-    \begin{axis}[
-        xlabel=$Milestone$,
-        ylabel=$SLOC$,
-        xtick={1,2,3,4,5,6},
-        legend pos=north west
-    ]
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            xlabel=$Milestone$,
+            ylabel=$SLOC$,
+            xtick={1,2,3,4,5,6},
+            legend pos=north west
+        ]
 
-    \addplot[red] plot coordinates {
-        (1,163)
-        (2,385)
-        (3,494)
-        (4,757)
-        (5,777)
-        (6,668)};
-    \addlegendentry{C}
+        \addplot[red] plot coordinates {
+            (1,163)
+            (2,385)
+            (3,494)
+            (4,757)
+            (5,777)
+            (6,668)};
+        \addlegendentry{C}
 
-    \addplot[color=blue] plot coordinates {
-        (1,55)
-        (2,196)
-        (3,275)
-        (4,359)
-        (5,381)
-        (6,285)};
-    \addlegendentry{Go}
+        \addplot[color=blue] plot coordinates {
+            (1,55)
+            (2,196)
+            (3,275)
+            (4,359)
+            (5,381)
+            (6,285)};
+        \addlegendentry{Go}
 
-    \addplot[color=green] plot coordinates {
-        (1,36)
-        (2,170)
-        (3,232)
-        (4,292)
-        (5,314)
-        (6,253)};
-    \addlegendentry{Rust}
-    \end{axis}
-\end{tikzpicture}
+        \addplot[color=green] plot coordinates {
+            (1,36)
+            (2,170)
+            (3,232)
+            (4,292)
+            (5,314)
+            (6,253)};
+        \addlegendentry{Rust}
+        \end{axis}
+    \end{tikzpicture}
+    \label{fig:sloc_graph}
+    \caption{\gls{sloc} counts across various the milestones}
+\end{figure}

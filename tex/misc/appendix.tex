@@ -22,6 +22,8 @@
 \chapter{Software versions}
 \label{ap:Versions}
 
+These are the compiler and toolchain versions which were used to develop and compile all code in this thesis.
+\\ \\
 \lstinputlisting[caption={Output of \mdinline{gcc -{}-version}}, label={lst:gcc.version}, style=plain]{misc/gcc.version}
 
 \lstinputlisting[caption={Output of \mdinline{go version}}, label={lst:go.version}, style=plain]{misc/go.version}
@@ -30,7 +32,7 @@
 
 \lstinputlisting[caption={Output of \mdinline{cargo -{}-version}}, label={lst:cargo.version}, style=plain]{misc/cargo.version}
 
-% - System configuration
-% 	-> clang/gcc version
-% 	-> rustc and cargo version (possibly including commit hash!)
-% 	-> go version and implementation (cgo?)
+\chapter{Final notes}
+\label{ap:notes}
+
+All source code is available at \url{https://github.com/mrfloya/thesis-ba} under various \gls{osi} approved licenses. The versions containing all code from intermediate milestones are in a separate branch called \shinline{incremental}. The \shinline{master} branch only consists of the final variants that were used in the benchmarks on the cluster.
