@@ -9,7 +9,7 @@ Preface: All data in this chapter was gathered from a high performance computer 
 \section{Performance}
 \label{sec:Evaluaton::Performance}
 
-In \acrlong{hpc} the most important criteria when evaluating a language is performance. The important statistic that was tracked to compare performance is execution time. The benchmarks that were performed on the development laptop also roughly measured memory usage but that proved difficult to automate on the remote machine. It is therefore not directly included in this final evaluation. The first table shows the benchmark results in varying concurrency scenarios from singlethreaded execution up to 48 calculating in parallel.
+In \acrlong{hpc} the most important criteria when evaluating a language is performance. The important statistic that was tracked to compare performance is execution time. The benchmarks that were performed on the development laptop also roughly measured memory usage but that proved difficult to automate on the remote machine. It is therefore not directly included in this final evaluation. \autoref{tb:final_execution_time} shows the benchmark results in varying concurrency scenarios from singlethreaded execution up to 48 calculating in parallel.
 
 \begin{table}[htb]
     \centering
@@ -69,7 +69,7 @@ In contrast the Go binary that was also compiled on the development laptop was e
 
 Finally Rust demonstrates that it might be a competent successor to C in \gls{hpc}. It is the fastest language out of the compared three across all scenarios while provding additional memory safety through its unique typesystem. It prevented multiple errors from compiling in the Rust implementation throughout the whole development process. On one occasion it even revealed an error which had gone unnoticed in both C and Go. This really highlights how static analysis can provide safety without sacrificing performance.
 
-Another important statistic to compare is the parallel speedup. A slow execution time alone does not mean a language is completely unfit for \gls{hpc} because the implementation might simply be flawed to begin with. If this is the case the application can still offer above average speedups making it viable for high concurrency scenarios. The following table lists the achieved speedup for each language in the same configurations as above.
+Another important statistic to compare is the parallel speedup. A slow execution time alone does not mean a language is completely unfit for \gls{hpc} because the implementation might simply be flawed to begin with. If this is the case the application can still offer above average speedups making it viable for high concurrency scenarios. \autoref{tb:final_speedup} lists the achieved speedup for each language in the same configurations as above.
 
 \begin{table}[htb]
     \centering
@@ -126,6 +126,118 @@ Another important statistic to compare is the parallel speedup. A slow execution
 Again the results are interesting for multiple reasons. C scales very well up to four threads but falls off quite heavily. Rust and Go are evenly matched with Go scaling better up to the final benchmark with 48 threads where it gets beaten slightly by Rust. It would be interesting to see the trend continue here but unfotunately the target machine ``only'' offered 48 logical cores. C' strong scaling in the lower thread counts shows OpenMP's efficiency in generating threaded code for common desktop scenarios. In the high concurrency configurations though the scaling diminishes resulting in a big discrepancy of about 3 (\textasciitilde13\%). For these use cases it might be worthwhile to implement custom parallelization with \textit{pthreads}.\fnote{\url{http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/pthread.h.html}} This approach will most likely result in much higher development time but might yield better performance results for higher thread counts.
 
 Rust and Go scale both comparably well. Although the final speedup of about 19 is not great for 48 threads it is still a serious improvement about the serial version. It is also important to note that the threads share the work with statically which means there is no load balancing once the threads are started. This results in some threads exiting early effectively reducing the speedup. To solve this the work could be dynamically distributed for example through a queue like construct which threads use to retrieve new tasks. A possible implementation could be channel based as both Go and Rust offer those as part of the standard library.
+
+\begin{figure}[htb]
+    \centering
+    \makebox[\textwidth][c]{%
+        \subfloat[Execution time]{%
+        \begin{tikzpicture}
+            \begin{axis}[
+                xlabel={Amount of threads},
+                ylabel={Execution time (sec)},
+                xtick={1,2,4,8,12,24,48},
+                xmode=log,
+                log base x=2,
+                log ticks with fixed point,
+                scaled y ticks = false,
+                ylabel near ticks,
+                legend pos=north east]
+
+                \addplot[red] plot coordinates {
+                    (1,78678)
+                    (2,44996)
+                    (4,26194)
+                    (8,15184)
+                    (12,11848)
+                    (24,7568)
+                    (48,4918)};
+                \addlegendentry{C}
+
+                \addplot[color=blue] plot coordinates {
+                    (1,60499)
+                    (2,37296)
+                    (4,21512)
+                    (8,10914)
+                    (12,7568)
+                    (24,4427)
+                    (48,3234)};
+                \addlegendentry{Go}
+
+                \addplot[color=green] plot coordinates {
+                    (1,51306)
+                    (2,33167)
+                    (4,18596)
+                    (8,10175)
+                    (12,6933)
+                    (24,3814)
+                    (48,2694)};
+                \addlegendentry{Rust}
+
+            \end{axis}
+        \end{tikzpicture}
+        }
+        \subfloat[Parallel speedup]{%
+        \begin{tikzpicture}
+            \begin{axis}[
+                xlabel={Amount of threads},
+                ylabel={Speedup},
+                xtick={1,2,4,8,12,24,48},
+                xmode=log,
+                ymode=log,
+                log base x=2,
+                log base y=2,
+                log ticks with fixed point,
+                legend pos=north west]
+
+                \addplot[red] plot coordinates {
+                    (1,1.0000)
+                    (2,1.7486)
+                    (4,3.0037)
+                    (8,5.1816)
+                    (12,6.6406)
+                    (24,10.3961)
+                    (48,15.9980)};
+                \addlegendentry{C}
+
+                \addplot[color=blue] plot coordinates {
+                    (1,1.0000)
+                    (2,1.6221)
+                    (4,2.8119)
+                    (8,5.5432)
+                    (12,7.9941)
+                    (24,13.6659)
+                    (48,18.7072)};
+                \addlegendentry{Go}
+
+                \addplot[color=green] plot coordinates {
+                    (1,1.0000)
+                    (2,1.5469)
+                    (4,2.7590)
+                    (8,5.0424)
+                    (12,7.4003)
+                    (24,13.4520)
+                    (48,19.0445)};
+                \addlegendentry{Rust}
+
+                \addplot[color=black] plot coordinates {
+                    (1,1.0000)
+                    (2,2.0000)
+                    (4,4.0000)
+                    (8,8.0000)
+                    (12,12.0000)
+                    (24,24.0000)
+                    (48,48.0000)};
+                \addlegendentry{ideal}
+
+            \end{axis}
+        \end{tikzpicture}
+        }
+    }
+    \caption{Performance metrics across the various milestones}
+    \label{fig:performance_metrics}
+\end{figure}
+
+\autoref{fig:performance_metrics} compares the execution time and speedup side by side. //continue this..
 
 \section{Additional metrics / productivity}
 \label{sec:Evaluation::Metrics}

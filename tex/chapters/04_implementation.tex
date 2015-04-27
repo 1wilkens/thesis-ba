@@ -8,7 +8,7 @@
 \section{Project setup}
 \label{sec:Implementation::Setup}
 
-All applications written for this thesis have been developed on Linux thus the setup instructions are for this operating system. They \textit{should} work on *nix as well but there is no guarantee this is the case. Also each section assumes the toolchains for the various languages are installed as this is largely different based on what operating system and on which Linux distribution is used. It is therefore not covered in this thesis.
+All applications written for this thesis have been developed on Linux as it is the predominant operating system in \gls{hpc}. They \textit{should} compile and run on *nix as well but there is no guarantee this is the case. Also each section assumes the toolchains for the various languages are installed as this is largely different based on what operating system and on which Linux distribution is used. It is therefore not covered in this thesis.
 
 \subsection{C}
 \label{subsec:Implementation::Setup::C}
@@ -32,7 +32,7 @@ To achieve this convenience the \shinline{go} tool requires some setup work befo
 \\
 \lstinputlisting[caption={Project setup: streets4Go}, label={lst:setup_go.sh}, style=shell]{code/setup_go}
 
-Listing \ref{lst:setup_go.sh} describes the steps that were taken to create the \textit{streets4Go} project inside the thesis's repository. It is pretty similiar to the C version. A directory gets created then a source file containing a \shinline{main} function is created which can be built and run with a single command. Unfortunately this variant does not follow the guidelines for project layout as described in \href{https://golang.org/doc/code.html#Workspaces}{the official documentation} because the code does not live inside the globally unique \shinline{GOPATH} folder.
+\autoref{lst:setup_go.sh} describes the steps that were taken to create the \textit{streets4Go} project inside the thesis's repository. It is pretty similiar to the C version. A directory gets created then a source file containing a \shinline{main} function is created which can be built and run with a single command. Unfortunately this variant does not follow the guidelines for project layout as described in \href{https://golang.org/doc/code.html#Workspaces}{the official documentation} because the code does not live inside the globally unique \shinline{GOPATH} folder.
 
 To be able to download packages only once the \shinline{go} commandline utility assumes an environment variable called \shinline{GOPATH} is configured to point to a directory which it has full control over. This directory contains all source files as well a the compiled binaries all stored through a consistent naming scheme. Normally it is assumed that all Go projects live inside their own subdirectories of the \shinline{GOPATH} but it is possible to avoid this at the cost of some convenience.
 
