@@ -83,6 +83,11 @@
 % Use hyperref last to make sure it can define all necessary commands
 \usepackage[pdfborder={0 0 0}]{hyperref}
 
+\addto\extrasenglish{%
+	\def\chapterautorefname{Chapter}%
+	\def\sectionautorefname{Section}%
+}
+
 % Use glossaries/xindy after hyperref to make it use links
 \usepackage[nonumberlist,nopostdot,numberedsection=autolabel,style=altlist,toc,xindy]{glossaries}
 \usepackage[xindy]{imakeidx}

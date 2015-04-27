@@ -57,47 +57,47 @@ The implementation process was performed iteratively. Certain milestones were de
     \centering
     \includegraphics[width=\textwidth]{img/milestone_timeline.png}
     \caption{Milestone overview}
-    \label{fig:timeline}
+    \label{fig:milestone_timeline}
 \end{figure}
 
-For each phase various characteristics were captured and compared to highlight the languages' features and performance in the various areas. While the main development and test runs were performed on a laptop the final application was run on a high performance machine provided by the research group Scientific Computing to compare scalability beyond common desktop level processors.
+\autoref{fig:milestone_timeline} shows the different milestones in order. For each phase various characteristics were captured and compared to highlight the languages' features and performance in the various areas. While the main development and test runs were performed on a laptop the final application was run on a high performance machine provided by the research group Scientific Computing to compare scalability beyond common desktop level processors. In the following sections each milestone is briefly described.
 
-\setcounter{subsection}{-1}
-
-\subsection{Setting up the project}
+\subsection*{Setting up the Project}
 \label{subsec:Concept::Implementation::Setup}
 
-The first phase of development was to create project skeletons and infrastructure for the future development. The milestone was to have a working environment in place where the sample application could be built and executed. While this is certainly not the most important or even interesting part it did show the differences in comfort between the various toolchains.
+The first phase of development was to create project skeletons and infrastructure for the future development. The milestone was to have a working environment in place where the sample application could be built and executed. While this is certainly not the most important or even interesting part it might show the differences in comfort between the various toolchains.
 
-\subsection{Counting nodes, ways and relations in an .osm.pbf file}
+\subsection*{Counting Nodes, Ways and Relations}
 \label{subsec:Concept::Implementation::Counting}
 
-The first real milestone was to read a .osm.pbf file and count all nodes, ways and relations in it. This was done to get familiar with the required libraries and the file format in general. The time recorded began from the initial project created in phase 0 and finished after the milestone was reached. As this is the most input and output intensive phase it already showed some key differences between the candidates both in speed as well as memory consumption.
+The first real milestone was to read a .osm.pbf file and count all nodes, ways and relations in it. This was done to get familiar with the required libraries and the file format in general. The time recorded began from the initial project created in phase 0 and finished after the milestone was reached. As this is the most input and output intensive phase it should reveal some key differences between the candidates both in speed as well as memory consumption.
 
-\subsection{Building a basic graph representation}
+\subsection*{Building a basic Graph Representation}
 \label{subsec:Concept::Implementation::Graph_Representation}
 
 The next goal was to conceptionally build the graph and related structures the simulation would later operate on. This involved thinking about the relation between edges and nodes as well as the choice of various containers to store the objects efficiently while also keeping access simple. This milestone tested the language's standard libraries and expressiveness in terms of typed containers.
 
-\subsection{Verifying structure and algorithm}
+\subsection*{Verifying Structure and Algorithm}
 \label{subsec:Concept::Implementation::Verification}
 
 After the base structure to represent graphs and calculate shortest paths was in place it was time to validate the implementations. Unfortunately the OSM data used in the first phase contained too much nodes and ways to be able to efficiently verify any computed results. Therefore a small example graph was manually populated and fed to the algorithm.
 
-\subsection{Benchmarking graph performance}
+\subsection*{Benchmarking Graph Performance}
 \label{subsec:Concept::Implementation::SequentialBenchmark}
 
 The fourth milestone was preliminary benchmark of the implementations. The basic idea was to parse the \gls{osm} data used in phase one and build the representing graph. After that the shortest path algorithm is executed once for each node. The total execution time as well as the time taken for each step (building the graph and calculating shortest paths) should be measured and compared as well as the usual memory statistics from previous phases.
 
-\subsection{Benchmarking parallel execution}
+\subsection*{Benchmarking Parallel Execution}
 \label{subsec:Concept::Implementation::ParallelBenchmark}
 
-The fifth and final phase consisted of modifying the existing benchmark to operate in parallel via threading and benchmarking the results for various configurations. While all the development and previous benchmarks were performed on a personal laptop the final benchmarks were taken on a computation node of the research group to gather relevant results in high concurrency situations.
+The fifth phase consisted of modifying the existing benchmark to operate in parallel via threading and benchmarking the results for various configurations. While all the development and previous benchmarks were performed on a personal laptop the final benchmarks were taken on a computation node of the research group to gather relevant results in high concurrency situations.
 
-\subsection{Cluster preperation}
+\subsection*{Cluster Preperation}
 \label{subsec:Concept::Implementation::ClusterPreparation}
 
-\section{Overview of evaluated criteria}
+The final milestone was to prepare the implementations for the execution on the cluster provided by the research group. As this was a remote environment with some key differences to the development laptop the implementations had to be prepared and slightly changed.
+
+\section{Overview of evaluated Criteria}
 \label{sec:Concept::Criteria}
 
 \begin{itemize}
@@ -116,7 +116,7 @@ The fifth and final phase consisted of modifying the existing benchmark to opera
     \end{itemize}
 \end{itemize}
 
-\section{Related work}
+\section{Related Work}
 \label{sec:Concept::Related}
 
 The search for new programming languages which are fit for \gls{hpc} is not a recently developing trend. There have been multiple studies and evaluations but so far none of the proposed languages have gained enough traction to receive widespread adoption. Also most reports focused on the execution performance without really considering additional software metrics or developer productivity~\cite{related_multicore}. at least adds lines of code and development time to the equation but both of these metrics only allow for superficial conclusions about the code quality.
