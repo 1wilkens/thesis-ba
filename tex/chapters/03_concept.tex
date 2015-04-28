@@ -4,7 +4,7 @@
 \abstract{The first section of the third chapter describes the existing application this evaluation is based on. In addition the various phases of the development process are roughly illustrated.
 }
 
-\section{Overview of the case study \textit{streets4MPI}}
+\section{Overview of the Case Study \textit{streets4MPI}}
 \label{sec:Concept::Overview}
 
 As stated in~\autoref{sec:Introduction::Goals} the concept for the implementations to compare is inspired by \textit{streets4MPI}, which was implemented to evaluate Python's usefulness for ``computational intensive parallel applications''~\cite[p.3]{streets_report}. It was written by Julian Fietkau and Joachim Nitschke in scope of the module ``Parallel Programming'' in Spring 2012 and makes heavy use of the various libraries of the Python ecosystem. \autoref{fig:architecture_streets4mpi} provides a rough overview about the architecture of \textit{streets4MPI}.
@@ -18,7 +18,7 @@ As stated in~\autoref{sec:Introduction::Goals} the concept for the implementatio
 
 The \textit{GraphBuilder} class parses \gls{osm} input data and builds a directed graph which is stored in the \textit{StreetNetwork}. The \textit{Simulation} than uses this data and repeatedly computes shortest paths for a set amount of \textit{trips} (randomly chosen node pairs from the graph). Over time it gradually modifies the graph based on results of previous iterations to emulate structural changes in the traffic network in the simulated area. The \texit{Persistence} class then optionally writes to results to a custom output format which is visualizable by an additional script~\cite{streets_report}.
 
-\section{Differences and limitations}
+\section{Differences and Limitations}
 \label{sec:Concept::Differences}
 
 Although the evaluated applications are based on the original \textit{streets4MPI}, there are some key differences in the implementation. This section gives a brief overview over the most important aspects that have been changed. The first paragraph of each subsection describes the original application's functionality while the second highlights differences and limitations in the evaluated implementations.
@@ -46,7 +46,7 @@ The compared implementations of this thesis also perform trip based simulation b
 
 Although Rust as well as Go can integrate decently with existing native code, the reimplementations will be limited to shared memory parallelization on threads. This was mostly decided to evaluate and compare the language inherent concurrency constructs rather than the quality of their foreign funtion interfaces. To achieve a fair comparison \textit{streets4c} will use \textit{OpenMP}~\fnote{\url{http://www.openmp.org}} as it is the de facto standard for simple thread parallelization in C. Of course this solution might not match the performance of hand optimized implementations parallelized with the help of \textit{pthreads} but since the focus is on simple concurrency in the context of scientific applications \textit{OpenMP} was selected as the framework of choice.
 
-\section{Implementation process}
+\section{Implementation Process}
 \label{sec:Concept::Implementation}
 
 The implementation process was performed iteratively. Certain milestones were defined and implemented in all three languages. The process only advanced to the next phase when the previous milestone was reached in all applications. This approach was chosen to allow for a fair comparison of the different phases of development. If the implementations would have been developed one after another to completion (or in any other arbitrary order), this might have introduced a certain bias to the evaluation because of possible knowledge about the problem aquired in a previous language translating to faster results in the next one.

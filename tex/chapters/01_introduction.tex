@@ -17,7 +17,7 @@ One example for this is the common practice of testing. Specifically with the gr
 
 While testing is just one example there are a lot of ``best practices'' and techniques which can greatly increase both developer productivity and code quality but require a language-level integration to work best. Combined with the advancements in type system theory and compiler construction both C and Fortran's feature sets look very dated. With this in mind it is time to review new potential successors of the two giants of \gls{hpc}.
 
-\section{Goals of this thesis}
+\section{Goals of this Thesis}
 \label{sec:Introduction::Goals}
 
 This thesis aims to evaluate Rust and Go as potential programming languages in the \gls{hpc} environment. The comparison is based on three implementations of a shortest path algorithm in the two language candidates as well as C. The idea is based on an existing parallel application called \textit{streets4MPI} which was written in Python. It simulates ongoing traffic in a geographical area creating heat-maps as a result. The programs written for this thesis implement the computational intensive part which is the shortest path calculation to be able to review Go and Rust's performance characteristics as well as development productivity based on multiple criteria. Since libraries for inter-process communication in Rust and Go are nowhere near production-ready this thesis will focus on shared memory parallelization. Additionally unfair bias based solely on the quality of the supporting library ecosystem should be avoided.
