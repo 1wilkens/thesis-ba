@@ -37,7 +37,7 @@ The derived versions require the input to be in ``.osm.pbf'' format. This newer 
 
 The simulation in the base application is based on randomly picked node pairs from the source graph. For these trips the shortest path is calculated by Dijkstra's \gls{sssp} algorithm as seen in \cite{cormen}. Also a random factor called ``jam tolerance'' is introduced to avoid oscillation between two high traffic routes in alternating iterations~\cite{streets_report}. Then after some time has passed in the simulation, existing streets get expanded or shut down depending on their usage to simulate road construction.
 
-The compared implementations of this thesis also perform trip based simulation but without the added randomness and street modification. Also the edge weights are not dynamically recalculated in each iterations. Instead the street's length is calculated once from the corrdinates of the corresponding nodes and used as edge weigth directly. The concrete algorithm is a variant of the \shinline{Dijkstra-NoDec} algorithm as seen in~\cite[p. 16]{dijkstra_utcs}. It was mainly chosen because of its reduced complexity in required data structures. The algorithm is implemented separately in all three languages so it could theoretically get benchmarked standalone to get clearer results. This was not attempted in scope of the thesis because of time constraints.
+The compared implementations of this thesis also perform trip based simulation but without the added randomness and street modification. Also the edge weights are not dynamically recalculated in each iterations. Instead the street's length is calculated once from the corrdinates of the corresponding nodes and used as edge weigth directly. The concrete algorithm is a variant of the \shinline{Dijkstra-NoDec} \gls{sssp} algorithm as seen in~\cite[p. 16]{dijkstra_utcs}. It was mainly chosen because of its reduced complexity in required data structures. The algorithm is implemented separately in all three languages so it could theoretically get benchmarked standalone to get clearer results. This was not attempted in scope of the thesis because of time constraints.
 
 \subsection*{Concurrency}
 \label{subsec:Concept::Differences::Concurrency}
@@ -115,6 +115,8 @@ For the evaluation of the three languages multiple criteria have been selected. 
         \textit{Source lines of code to roughly estimate the code's complexity and maintainability. Tracked in all milestones}
         \item Development Time\\
         \textit{Time required to implementation the desired functionality. Tracked in all milestones}
+        \item Resource Management
+        \textit{Amout of work required to properly manage resources like memory, file handle or threads in a given language}
         \item Tooling Support\\
         \textit{Tooling support for common tasks throughout the development process. This includes the compiler, dependency management, project setup automation and many more}
         \item Library Ecosystem\\
