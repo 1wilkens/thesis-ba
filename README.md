@@ -1,7 +1,5 @@
 # thesis-ba
 
-My bachelor's thesis titled *Evaluation of performance and productivity metrics of potential programming languages in the HPC environment*.
-
 ### Abstract
 
 This thesis aims to analyze new programming languages in the context of high-performance computing. In contrast to many other evaluations the focus is not only on **performance** but also on developer **productivity metrics**. The two new languages Go and Rust are compared with C as it is one of the two commonly used languages in HPC next to Fortran.
