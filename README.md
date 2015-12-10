@@ -17,8 +17,7 @@ TL;DR
     $ git clone http://github.com/mrfloya/thesis-ba.git
     $ cd thesis-ba/tex
     $ ./build.sh
-    $ <
-    pdfviewer> thesis.pdf
+    $ <pdfviewer> thesis.pdf
 
 ### LICENSE
 
