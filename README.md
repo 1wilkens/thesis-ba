@@ -14,7 +14,7 @@ The thesis is written in LaTex so you will need a working Tex installation (usua
 
 TL;DR
 
-    $ git clone http://github.com/mrfloya/thesis-ba.git
+    $ git clone http://github.com/1wilkens/thesis-ba.git
     $ cd thesis-ba/tex
     $ ./build.sh
     $ <pdfviewer> thesis.pdf
